@@ -10,11 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Stylesheets -->
+    <!-- Base Stylesheets (Always included) -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/home.css">
-    <!-- Page-specific CSS will be linked based on the active page -->
+    <!-- Page-specific CSS will be loaded by the router dynamically -->
 </head>
 <body class="home-page">
     <!-- Header with navigation -->
@@ -34,21 +33,9 @@
         </nav>
     </header>
 
-    <!-- Main content area -->
+    <!-- Main content area - will be filled by router -->
     <main id="app">
-        <!-- Home Page Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <div class="title-container">
-                    <h1 class="hero-title">Your Mentor</h1>
-                </div>
-                <p class="hero-subtitle">who can guide your career journey</p>
-                <div class="hero-actions">
-                    <a href="/signin" class="btn btn-try">Try here</a>
-                    <a href="/explore" class="btn btn-see">See what we have now →</a>
-                </div>
-            </div>
-        </section>
+        <!-- Content will be loaded here dynamically -->
     </main>
 
     <!-- Core JS -->

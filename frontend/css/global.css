@@ -158,3 +158,48 @@ input, select, textarea, button {
 .btn:hover {
     opacity: 0.9;
 }
+
+/* Page transition effects */
+#app {
+    position: relative;
+    min-height: 100vh;
+}
+
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Slide transition effect */
+.slide-out {
+    transform: translateX(-20px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.slide-in {
+    transform: translateX(20px);
+    opacity: 0;
+    animation: slideIn 0.5s ease forwards;
+}
+
+@keyframes slideIn {
+    from { 
+        transform: translateX(20px);
+        opacity: 0; 
+    }
+    to { 
+        transform: translateX(0);
+        opacity: 1; 
+    }
+}

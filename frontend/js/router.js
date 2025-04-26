@@ -5,36 +5,211 @@
 
 class Router {
     constructor() {
-        // Routes configuration
+        // Routes configuration - maps routes to page HTML files and CSS files
         this.routes = {
-            // Define routes here
-            // Example: '/login': loginPageFunction
+            '/': { 
+                page: 'pages/home.html',
+                title: 'Mentorship Matching Platform',
+                css: 'css/home.css',
+                bodyClass: 'home-page'
+            },
+            '/signin': { 
+                page: 'pages/signin.html',
+                title: 'Sign In - Mentorship Platform',
+                css: 'css/auth.css',
+                bodyClass: 'auth-page'
+            },
+            '/signup': { 
+                page: 'pages/signup.html',
+                title: 'Sign Up - Mentorship Platform',
+                css: 'css/auth.css',
+                bodyClass: 'auth-page'
+            }
         };
         
+        // DOM element to render pages into
+        this.appContainer = document.getElementById('app');
+        
         // Current active route
-        this.currentRoute = '/';
+        this.currentRoute = window.location.pathname;
+        
+        if (this.currentRoute === '/' && window.location.hash) {
+            this.currentRoute = window.location.hash.slice(1);
+        }
         
         // Initialize
         this.init();
     }
     
     init() {
-        // Initialize router
-        // Set up event listeners
+        // Set up click event listener for all links
+        document.addEventListener('click', (e) => {
+            // Only handle clicks on links
+            if (e.target.tagName === 'A') {
+                const href = e.target.getAttribute('href');
+                
+                // Only handle internal links (start with / or #)
+                if (href && (href.startsWith('/') || href.startsWith('#'))) {
+                    e.preventDefault();
+                    
+                    // Strip the # if it exists
+                    const route = href.startsWith('#') ? href.slice(1) : href;
+                    this.navigateTo(route);
+                }
+            }
+        });
+        
+        // Handle browser back/forward navigation
+        window.addEventListener('popstate', () => {
+            this.handleRouteChange();
+        });
+        
         // Handle initial route
+        this.handleRouteChange();
     }
     
     navigateTo(route) {
-        // Navigate to a specific route
         // Update browser history
-        // Render the appropriate page
+        window.history.pushState({}, '', route);
+        
+        // Update current route
+        this.currentRoute = route;
+        
+        // Render the page
+        this.handleRouteChange();
     }
     
     handleRouteChange() {
-        // Handle route changes
-        // Extract the route from URL
-        // Load the corresponding page
+        // Get current route (path)
+        const path = window.location.pathname;
+        
+        // Find the route configuration
+        const route = this.routes[path] || this.routes['/'];
+        
+        // Update page title
+        document.title = route.title;
+        
+        // Update body class
+        document.body.className = route.bodyClass;
+        
+        // First apply the fade-out transition to the current content
+        this.appContainer.classList.add('slide-out');
+        
+        // After the transition completes, load the new content
+        setTimeout(() => {
+            // Update CSS and load page content
+            this.updatePageCSS(route.css)
+                .then(() => {
+                    // Load and render the page content after CSS is loaded
+                    this.loadPage(route.page, true); // Pass true to trigger the slide-in effect
+                })
+                .catch(error => {
+                    console.error('Error in route change:', error);
+                    this.loadPage(route.page, true);
+                });
+        }, 300); // Match this with the transition duration in CSS
+    }
+    
+    updatePageCSS(cssFile) {
+        return new Promise((resolve) => {
+            // Remove previous page-specific CSS if it exists
+            const oldPageCSS = document.querySelector('link[data-page-css]');
+            if (oldPageCSS) {
+                oldPageCSS.remove();
+            }
+            
+            // If no page-specific CSS needed, resolve immediately
+            if (!cssFile || cssFile === 'css/global.css' || cssFile === 'css/layout.css') {
+                resolve();
+                return;
+            }
+            
+            // Create and add the new CSS link
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = cssFile;
+            link.setAttribute('data-page-css', '');
+            
+            // Wait for the CSS to load before resolving
+            link.onload = () => resolve();
+            link.onerror = () => {
+                console.error('Failed to load CSS:', cssFile);
+                resolve(); // Still resolve to continue loading the page
+            };
+            
+            document.head.appendChild(link);
+        });
+    }
+    
+    loadPage(pageUrl, applyTransition = false) {
+        // Fetch the page HTML
+        fetch(pageUrl)
+            .then(response => response.text())
+            .then(html => {
+                // Remove any transition classes first
+                this.appContainer.classList.remove('slide-out');
+                
+                // Render the HTML
+                this.appContainer.innerHTML = html;
+                
+                // Apply slide-in transition if requested
+                if (applyTransition) {
+                    this.appContainer.classList.add('slide-in');
+                    
+                    // Remove the animation class after it completes
+                    setTimeout(() => {
+                        this.appContainer.classList.remove('slide-in');
+                    }, 500); // Match this with the animation duration in CSS
+                }
+                
+                // Initialize any scripts needed for the page
+                this.initPageScripts();
+            })
+            .catch(error => {
+                console.error('Error loading page:', error);
+                this.appContainer.innerHTML = '<p>Error loading page. Please try again.</p>';
+            });
+    }
+    
+    initPageScripts() {
+        // Initialize form handlers for authentication forms
+        if (this.currentRoute === '/signin') {
+            this.initSigninForm();
+        } else if (this.currentRoute === '/signup') {
+            this.initSignupForm();
+        }
+    }
+    
+    initSigninForm() {
+        const form = document.getElementById('signin-form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                console.log('Sign in attempt:', { email });
+                // Here you would add actual authentication logic
+            });
+        }
+    }
+    
+    initSignupForm() {
+        const form = document.getElementById('signup-form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('full-name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                console.log('Sign up attempt:', { name, email });
+                // Here you would add actual registration logic
+            });
+        }
     }
 }
 
-// Create router instance
+// Create router instance when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    window.router = new Router();
+});

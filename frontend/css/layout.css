@@ -2,7 +2,15 @@
 /* This includes grid systems, flexbox configurations, and page layout rules */
 
 /* Main layout */
-header, footer {
+header {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    position: absolute;
+    z-index: 1000;
+}
+
+footer {
     width: 100%;
     padding: 1rem;
 }

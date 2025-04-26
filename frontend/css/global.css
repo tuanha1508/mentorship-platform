@@ -1,4 +1,15 @@
 /* Global CSS styles for the entire application */
+/* Font declarations */
+@font-face {
+    font-family: 'Researcher';
+    src: url('../fonts/researcher-researcher-bold-700.ttf') format('truetype'),
+         url('../fonts/researcher-researcher-thin-200.ttf') format('truetype'),
+         url('../fonts/researcher-researcher-regular-400.ttf') format('truetype'),
+         url('../fonts/researcher-researcher-squid-700.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* Reset and base styles */
 * {
     margin: 0;
@@ -8,6 +19,11 @@
 
 :root {
     /* Color variables will be defined here */
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --background-color: #000000;
+    --text-color: #ffffff;
+    --nav-transparency: rgba(0, 0, 0, 0);
     /* Typography variables will be defined here */
     /* Spacing variables will be defined here */
 }
@@ -15,25 +31,130 @@
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
+    color: var(--text-color);
+    /* Add background image to entire page */
+    background-image: url('../images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* This keeps the background fixed while scrolling */
+    /* Overlay to improve text readability */
+    position: relative;
+}
+
+/* Add overlay to the entire page for better readability */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: -1;
 }
 
 /* Global typography */
 h1, h2, h3, h4, h5, h6 {
-    /* Heading styles will go here */
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text-color);
 }
 
 a {
-    /* Link styles will go here */
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 /* Form elements */
 input, select, textarea, button {
-    /* Form element styles will go here */
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.5rem;
+    border-radius: 4px;
 }
 
 /* Utility classes */
 .container {
-    /* Container styles will go here */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
 }
 
 /* Global components */
+
+/* Navigation Bar */
+.navbar {
+    /* Remove backdrop filter for transparency */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    font-family: 'Researcher', sans-serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    /* Remove border and box-shadow for full transparency */
+    border-bottom: none;
+    box-shadow: none;
+    background: var(--nav-transparency);
+}
+
+.navbar-brand {
+    font-size: 1.0rem;
+    font-weight: 400;
+    font-family: 'Researcher', sans-serif;
+}
+
+.navbar-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.9rem;
+    font-family: 'Researcher', sans-serif;
+}
+
+.navbar-menu a {
+    padding: 0.3rem 1.1rem;
+}
+
+.navbar-auth {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.btn {
+    padding: 0.3rem 0.9rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.6rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+}
+
+.btn:hover {
+    opacity: 0.9;
+}

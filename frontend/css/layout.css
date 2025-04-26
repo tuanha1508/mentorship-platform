@@ -1,0 +1,41 @@
+/* Layout styles for the application */
+/* This includes grid systems, flexbox configurations, and page layout rules */
+
+/* Main layout */
+header, footer {
+    width: 100%;
+    padding: 1rem;
+}
+
+main {
+    min-height: calc(100vh - 150px); /* Adjust as needed */
+    width: 100%;
+    padding: 1rem;
+}
+
+/* Layout containers */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Grid system */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -1rem;
+}
+
+.col {
+    padding: 0 1rem;
+}
+
+/* Responsive layout classes */
+@media (max-width: 768px) {
+    /* Responsive layout rules will go here */
+}
+
+@media (max-width: 576px) {
+    /* Mobile layout rules will go here */
+}

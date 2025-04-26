@@ -1,0 +1,45 @@
+# Dependencies
+/node_modules
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Build directories
+/build
+/dist
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+*.log
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Assignment file
+Take-home Assignment*.md
+
+# Database files
+*.sqlite
+*.db
+
+# Coverage directory
+/coverage
+
+# Temp files
+.temp
+.tmp

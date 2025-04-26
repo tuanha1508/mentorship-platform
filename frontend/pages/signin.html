@@ -1,8 +1,6 @@
 <div class="auth-container">
     <div class="auth-form-container">
         <h1>Login</h1>
-        <p class="auth-subtitle">Enter your email below to login to your account</p>
-        
         <form class="auth-form" id="signin-form">
             <div class="form-group">
                 <label for="email">Email</label>
@@ -10,18 +8,14 @@
             </div>
             
             <div class="form-group">
-                <div class="password-header">
-                    <label for="password">Password</label>
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" required>
+                <div class="password-footer">
                     <a href="/forgot-password" class="forgot-password">Forgot your password?</a>
                 </div>
-                <input type="password" id="password" class="form-control" required>
             </div>
             
             <button type="submit" class="btn btn-primary btn-block">Login</button>
-            
-            <div class="social-login">
-                <button type="button" class="btn btn-google">Login with Google</button>
-            </div>
             
             <div class="auth-footer">
                 <p>Don't have an account? <a href="/signup">Sign up</a></p>

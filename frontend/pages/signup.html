@@ -1,8 +1,6 @@
 <div class="auth-container">
     <div class="auth-form-container">
         <h1>Sign up</h1>
-        <p class="auth-subtitle">Create your account to get started</p>
-        
         <form class="auth-form" id="signup-form">
             <div class="form-group">
                 <label for="full-name">Full Name</label>
@@ -18,17 +16,21 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" class="form-control" required>
             </div>
-
+            
             <div class="form-group">
-                <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" class="form-control" required>
+                <div class="role-selection">
+                    <div class="role-option">
+                        <input type="radio" id="role-mentee" name="role" value="mentee" checked>
+                        <label for="role-mentee" class="role-label">Mentee</label>
+                    </div>
+                    <div class="role-option">
+                        <input type="radio" id="role-mentor" name="role" value="mentor">
+                        <label for="role-mentor" class="role-label">Mentor</label>
+                    </div>
+                </div>
             </div>
             
             <button type="submit" class="btn btn-primary btn-block">Sign up</button>
-            
-            <div class="social-login">
-                <button type="button" class="btn btn-google">Sign up with Google</button>
-            </div>
             
             <div class="auth-footer">
                 <p>Already have an account? <a href="/signin">Login</a></p>

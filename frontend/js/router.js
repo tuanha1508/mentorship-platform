@@ -69,6 +69,13 @@ class Router {
     }
     
     navigateTo(route) {
+        // Ensure route starts with a slash for consistency
+        if (!route.startsWith('/')) {
+            route = '/' + route;
+        }
+        
+        console.log('Navigating to route:', route);
+        
         // Update browser history
         window.history.pushState({}, '', route);
         
@@ -82,9 +89,15 @@ class Router {
     handleRouteChange() {
         // Get current route (path)
         const path = window.location.pathname;
+        console.log('Router handling route change for path:', path);
         
         // Find the route configuration
         const route = this.routes[path] || this.routes['/'];
+        if (!route) {
+            console.error('No route configuration found for', path, 'defaulting to home');
+        }
+        
+        console.log('Using route config:', route);
         
         // Update page title
         document.title = route.title;
@@ -100,6 +113,8 @@ class Router {
             // Update CSS and load page content
             this.updatePageCSS(route.css)
                 .then(() => {
+                    // Log loading of page
+                    console.log('Loading page from:', route.page);
                     // Load and render the page content after CSS is loaded
                     this.loadPage(route.page, true); // Pass true to trigger the slide-in effect
                 })
@@ -181,30 +196,64 @@ class Router {
     }
     
     initSigninForm() {
-        const form = document.getElementById('signin-form');
-        if (form) {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                console.log('Sign in attempt:', { email });
-                // Here you would add actual authentication logic
-            });
+        // Initialize login page functionality
+        console.log('Initializing login page functionality');
+        try {
+            if (typeof LoginPage !== 'undefined') {
+                console.log('LoginPage found, initializing...');
+                LoginPage.init();
+            } else {
+                console.error('LoginPage component not found in global scope');
+                
+                // Load the script dynamically
+                const script = document.createElement('script');
+                script.src = 'js/pages/auth/login.js';
+                script.onload = function() {
+                    console.log('Login script loaded dynamically');
+                    if (typeof LoginPage !== 'undefined') {
+                        LoginPage.init();
+                    } else {
+                        console.error('LoginPage still not available after script load');
+                    }
+                };
+                script.onerror = function() {
+                    console.error('Error loading login script');
+                };
+                document.head.appendChild(script);
+            }
+        } catch (error) {
+            console.error('Error initializing login form:', error);
         }
     }
     
     initSignupForm() {
-        const form = document.getElementById('signup-form');
-        if (form) {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const name = document.getElementById('full-name').value;
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-                console.log('Sign up attempt:', { name, email });
-                // Here you would add actual registration logic
-            });
+        // Initialize registration page functionality
+        console.log('Initializing signup page functionality');
+        try {
+            if (typeof RegisterPage !== 'undefined') {
+                console.log('RegisterPage found, initializing...');
+                RegisterPage.init();
+            } else {
+                console.error('RegisterPage component not found in global scope');
+                
+                // Load the script dynamically
+                const script = document.createElement('script');
+                script.src = 'js/pages/auth/register.js';
+                script.onload = function() {
+                    console.log('Register script loaded dynamically');
+                    if (typeof RegisterPage !== 'undefined') {
+                        RegisterPage.init();
+                    } else {
+                        console.error('RegisterPage still not available after script load');
+                    }
+                };
+                script.onerror = function() {
+                    console.error('Error loading register script');
+                };
+                document.head.appendChild(script);
+            }
+        } catch (error) {
+            console.error('Error initializing register form:', error);
         }
     }
 }

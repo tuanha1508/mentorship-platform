@@ -1,0 +1,190 @@
+<!-- Chat Page for Mentor/Mentee Communication -->
+<div class="chat-page">
+    <div class="chat-container">
+        <!-- Chat Sidebar with Conversations -->
+        <div class="chat-sidebar">
+            <div class="search-input-group">
+                <input type="text" class="search-input" placeholder="Search conversations...">
+            </div>
+            
+            <ul class="chat-list">
+                <!-- Active conversation -->
+                <li class="chat-item active">
+                    <img src="../images/mentor1.jpg" alt="Dr. Jane Smith" class="chat-avatar">
+                    <div class="chat-info">
+                        <div class="chat-name">Dr. Jane Smith</div>
+                        <div class="chat-preview">Let me know if you have any questions...</div>
+                    </div>
+                    <div class="chat-meta">
+                        <div class="chat-time">12:42 PM</div>
+                        <div class="chat-badge">2</div>
+                    </div>
+                </li>
+                
+                <li class="chat-item">
+                    <img src="../images/user1.jpg" alt="Web Dev Group" class="chat-avatar">
+                    <div class="chat-info">
+                        <div class="chat-name">Web Dev Group</div>
+                        <div class="chat-preview">Alex: Has anyone used Vue.js before?</div>
+                    </div>
+                    <div class="chat-meta">
+                        <div class="chat-time">Yesterday</div>
+                    </div>
+                </li>
+                
+                <li class="chat-item">
+                    <img src="../images/user2.jpg" alt="Sarah Johnson" class="chat-avatar">
+                    <div class="chat-info">
+                        <div class="chat-name">Sarah Johnson</div>
+                        <div class="chat-preview">Thanks for sharing those resources!</div>
+                    </div>
+                    <div class="chat-meta">
+                        <div class="chat-time">Apr 25</div>
+                    </div>
+                </li>
+                
+                <li class="chat-item">
+                    <img src="../images/user3.jpg" alt="JavaScript Study Group" class="chat-avatar">
+                    <div class="chat-info">
+                        <div class="chat-name">JavaScript Study Group</div>
+                        <div class="chat-preview">Meeting tomorrow at 5 PM</div>
+                    </div>
+                    <div class="chat-meta">
+                        <div class="chat-time">Apr 24</div>
+                    </div>
+                </li>
+                
+                <li class="chat-item">
+                    <img src="../images/user4.jpg" alt="Michael Chen" class="chat-avatar">
+                    <div class="chat-info">
+                        <div class="chat-name">Michael Chen</div>
+                        <div class="chat-preview">Did you check out that tutorial?</div>
+                    </div>
+                    <div class="chat-meta">
+                        <div class="chat-time">Apr 20</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Chat Main Area -->
+        <div class="chat-main">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <img src="../images/mentor1.jpg" alt="Dr. Jane Smith" class="chat-avatar">
+                <div>
+                    <h3>Dr. Jane Smith</h3>
+                    <p class="status-text">Online</p>
+                </div>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div class="chat-messages">
+                <!-- Day Separator -->
+                <div class="day-separator">
+                    <span>Today</span>
+                </div>
+                
+                <!-- Received Message -->
+                <div class="message received">
+                    <div class="message-content">
+                        <div class="message-text">Hi there! How's your progress with the JavaScript exercises?</div>
+                        <div class="message-time">10:30 AM</div>
+                    </div>
+                </div>
+                
+                <!-- Sent Message -->
+                <div class="message sent">
+                    <div class="message-content">
+                        <div class="message-text">Hello! I've completed most of them, but I'm stuck on the closure exercises.</div>
+                        <div class="message-time">10:35 AM</div>
+                    </div>
+                </div>
+                
+                <!-- Received Message -->
+                <div class="message received">
+                    <div class="message-content">
+                        <div class="message-text">Closures can be tricky. Remember that a closure gives you access to an outer function's scope from an inner function. Could you share the specific exercise you're struggling with?</div>
+                        <div class="message-time">10:40 AM</div>
+                    </div>
+                </div>
+                
+                <!-- Sent Message -->
+                <div class="message sent">
+                    <div class="message-content">
+                        <div class="message-text">Sure, it's the one where we need to create a counter function that increments each time it's called. Here's my code:
+
+function createCounter() {
+  let count = 0;
+  return count++;
+}</div>
+                        <div class="message-time">10:50 AM</div>
+                    </div>
+                </div>
+                
+                <!-- Received Message -->
+                <div class="message received">
+                    <div class="message-content">
+                        <div class="message-text">I see the issue. You're returning the value of count after incrementing it once, but not returning the function that would allow multiple calls.
+
+Try this:
+
+function createCounter() {
+  let count = 0;
+  return function() {
+    return count++;
+  }
+}
+
+const counter = createCounter();
+console.log(counter()); // 0
+console.log(counter()); // 1</div>
+                        <div class="message-time">11:05 AM</div>
+                    </div>
+                </div>
+                
+                <!-- Sent Message -->
+                <div class="message sent">
+                    <div class="message-content">
+                        <div class="message-text">Ah, I see! I need to return a function that has access to that count variable. That makes sense now. Let me try implementing this.</div>
+                        <div class="message-time">11:10 AM</div>
+                    </div>
+                </div>
+                
+                <!-- Received Message -->
+                <div class="message received">
+                    <div class="message-content">
+                        <div class="message-text">Exactly! The inner function "closes over" the count variable, maintaining access to it even after the outer function has completed execution. This is the essence of a closure.
+
+Let me know if it works for you!</div>
+                        <div class="message-time">11:15 AM</div>
+                    </div>
+                </div>
+                
+                <!-- Sent Message -->
+                <div class="message sent">
+                    <div class="message-content">
+                        <div class="message-text">It works perfectly! Thanks for the explanation. Do you have time this week to look at my React project as well?</div>
+                        <div class="message-time">11:30 AM</div>
+                    </div>
+                </div>
+                
+                <!-- Received Message -->
+                <div class="message received">
+                    <div class="message-content">
+                        <div class="message-text">Great job! Yes, I'd be happy to review your React project. How about our scheduled session on Thursday at 3 PM? You can walk me through what you've built so far.</div>
+                        <div class="message-time">12:42 PM</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Message Input -->
+            <div class="message-input-container">
+                <input type="text" class="message-input" placeholder="Type your message here...">
+                <button class="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

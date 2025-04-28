@@ -4,7 +4,7 @@
  */
 
 // Initialize mock users if they don't already exist
-function initializeMockUsers() {
+const initializeMockUsers = function() {
   console.log('Checking if mock data needs to be initialized...');
   
   // Check if users already exist in localStorage
@@ -219,7 +219,7 @@ function initializeMockUsers() {
 }
 
 // Create a function to force mock data initialization (clearing existing users)
-function forceMockDataInitialization() {
+const forceMockDataInitialization = function() {
   localStorage.removeItem('users');
   return initializeMockUsers();
 }

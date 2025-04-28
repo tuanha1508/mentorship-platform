@@ -2,20 +2,24 @@
 
 /* Fix body height on home page to prevent scrolling */
 body.home-page {
-    overflow: hidden;
+    overflow-x: hidden; /* Prevent horizontal scrolling but allow vertical if needed */
+    overflow-y: auto; /* Allow vertical scrolling if content is too tall */
     height: 100vh;
+    height: 100dvh; /* Support dynamic viewport height for mobile browsers */
     max-height: 100vh;
+    max-height: 100dvh; /* Support dynamic viewport height for mobile browsers */
 }
 
 /* ====== HERO SECTION ====== */
 .hero {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Center vertically */
     min-height: 100vh;
+    min-height: 100dvh; /* Support dynamic viewport height */
     width: 100%;
     margin: 0;
-    padding: 0; /* Remove top padding so background starts from the very top */
+    padding: 0; /* Remove top padding to center properly */
     position: relative;
 }
 
@@ -27,10 +31,10 @@ body.home-page {
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-width: 1200px;
-    padding: 0 20px;
+    height: auto;
+    max-width: 90%; /* More responsive max-width */
+    padding: clamp(10px, 3vh, 20px) clamp(10px, 4vw, 30px); /* Responsive padding both vertical and horizontal */
     position: relative;
-    z-index: 1; 
 }
 
 /* ====== TITLE ELEMENTS ====== */
@@ -50,22 +54,23 @@ body.home-page {
 
 .hero-title {
     font-family: 'Researcher', sans-serif;
-    font-size: 5.5rem;
+    font-size: clamp(2.5rem, 8vw, 5.5rem); /* Responsive font size */
     font-weight: 700;
-    margin: 0 0 1.5rem 0;
+    margin: 0 0 clamp(0.8rem, 3vh, 1.5rem) 0; /* Responsive margin */
     padding: 0;
     text-align: center;
     animation: fadeInUp 1s ease-out;
     color: #ffffff;
+    line-height: 1.1; /* Better line height for various screen sizes */
 }
 
 .hero-subtitle {
-    font-size: 1.5rem;
-    margin: 0 0 2.5rem 0;
+    font-size: clamp(1rem, 3vw, 1.5rem); /* Responsive font size */
+    margin: 0 0 clamp(1.5rem, 5vh, 2.5rem) 0; /* Responsive margin */
     line-height: 1.5;
     color: #ffffff;
     text-align: center;
-    max-width: 800px;
+    max-width: min(800px, 90%); /* Responsive max-width */
     animation: fadeInUp 1s ease-out 0.3s backwards;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
@@ -74,22 +79,23 @@ body.home-page {
 .hero-actions {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
+    gap: clamp(0.8rem, 3vw, 1.5rem); /* Responsive gap */
     width: 100%;
     animation: fadeInUp 1s ease-out 0.6s backwards;
     align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on very small screens */
 }
 
 /* Try here button - white pill-shaped button */
 .btn-try {
     background-color: white;
     color: black;
-    padding: 0.3rem 1.8rem;
-    font-size: 0.8rem;
+    padding: clamp(0.3rem, 1vh, 0.4rem) clamp(1rem, 4vw, 1.8rem); /* Responsive padding */
+    font-size: clamp(0.7rem, 2vw, 0.9rem); /* Responsive font size */
     border-radius: 50px; /* Pill shape */
     transition: all 0.3s ease;
     font-weight: 500;
-    min-width: 120px;
+    min-width: clamp(100px, 20vw, 120px); /* Responsive min-width */
     text-align: center;
 }
 
@@ -134,32 +140,90 @@ body.home-page {
 }
 
 /* ====== RESPONSIVE STYLES ====== */
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 3.5rem;
+/* Large devices (desktops) */
+@media (max-width: 992px) {
+    .hero {
+        min-height: 100vh;
     }
-    
-    .hero-subtitle {
-        font-size: 1.3rem;
+}
+
+/* Medium devices (tablets) */
+@media (max-width: 768px) {
+    .hero {
+        align-items: center;
     }
     
     .hero-actions {
         flex-direction: column;
         align-items: center;
+        gap: clamp(0.8rem, 2vh, 1.5rem);
     }
     
     .btn-primary, .btn-secondary {
         width: 100%;
-        max-width: 250px;
+        max-width: min(250px, 80vw);
     }
 }
 
+/* Small devices (landscape phones) */
+@media (max-width: 576px) {
+    .hero {
+        min-height: 90vh;
+    }
+}
+
+/* Extra small devices (portrait phones) */
 @media (max-width: 480px) {
+    .hero {
+        min-height: 85vh;
+    }
+    
+    .hero-actions {
+        gap: clamp(0.5rem, 2vh, 0.8rem);
+    }
+}
+
+/* Very small devices */
+@media (max-width: 375px) {
+    /* The clamp functions now handle most of these adjustments */
+}
+
+/* Height-based media queries */
+@media (max-height: 700px) {
+    .hero {
+        min-height: auto; /* Allow hero to be shorter than viewport */
+    }
+    
     .hero-title {
-        font-size: 2.8rem;
+        margin-bottom: clamp(0.5rem, 2vh, 1rem);
+        font-size: clamp(2rem, 6vw, 4rem); /* Smaller font for shorter screens */
     }
     
     .hero-subtitle {
-        font-size: 1.1rem;
+        margin-bottom: clamp(1rem, 3vh, 1.5rem);
+    }
+}
+
+@media (max-height: 500px) {
+    .hero {
+        padding: clamp(10px, 2vh, 20px);
+    }
+    
+    .hero-actions {
+        flex-direction: row; /* Use row layout for landscape orientation */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: clamp(0.5rem, 2vw, 1rem);
+    }
+}
+
+/* For extra large screens */
+@media (min-width: 1600px) and (min-height: 900px) {
+    .hero-content {
+        max-width: 1400px;
+    }
+    
+    .hero {
+        min-height: 100vh;
     }
 }

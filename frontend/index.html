@@ -16,8 +16,8 @@
     <!-- Page-specific CSS will be loaded by the router dynamically -->
 </head>
 <body class="home-page">
-    <!-- Header with navigation -->
-    <header>
+    <div class="page-container">
+        <!-- Navigation -->
         <nav class="navbar">
             <div class="navbar-brand">
                 <a href="/">Virtual Internship</a>
@@ -31,20 +31,26 @@
                 <a href="/signup" class="btn btn-outline">Sign Up</a>
             </div>
         </nav>
-    </header>
 
-    <!-- Main content area - will be filled by router -->
-    <main id="app">
-        <!-- Content will be loaded here dynamically -->
-    </main>
+        <!-- Main content area - will be filled by router -->
+        <div class="main-content">
+            <div id="app" class="content-container">
+                <!-- Content will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
 
     <!-- Core JS -->
     <script src="js/utils/helpers.js"></script>
     <script src="js/utils/validation.js"></script>
     <script src="js/api/apiClient.js"></script>
+    <!-- Connection service using localStorage -->
+    <script src="js/services/connectionService.js"></script>
     <script src="js/components/navigation.js"></script>
+    <script src="js/components/loadNavbar.js"></script>
     <script src="js/pages/auth/login.js"></script>
     <script src="js/pages/auth/register.js"></script>
+    <script src="js/mock-data.js"></script>
     <script src="js/router.js"></script>
     <script src="js/app.js"></script>
 </body>

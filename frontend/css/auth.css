@@ -1,75 +1,128 @@
 /* Styles for authentication pages (login, register) */
 
+/* Fix auth page to make it non-scrollable */
 html, body {
-    overflow: hidden;
     height: 100%;
+    overflow: hidden;
 }
 
 .auth-page {
     background-color: var(--background-color);
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    position: relative;
 }
 
+/* Common auth container styles */
 .auth-container {
     width: 100%;
     max-width: 1050px;
     margin: 0 auto;
     padding: 1rem;
-    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
+    flex: 1;
+    height: 100vh;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .auth-form-container {
     background-color: transparent;
     border-radius: 15px;
-    padding: 1.8rem;
+    padding: 1.5rem 1.8rem; /* Reduced top/bottom padding */
     border: 1px solid #ffffff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    width: 500px;
-    min-width: 400px;
+    width: 100%;
+    max-width: 500px;
     position: relative;
-    z-index: 1100;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* Align content to top */
+}
+
+@media (max-width: 768px) {
+    .auth-form-container {
+        padding: 1.5rem;
+    }
+    
+    #signin-form {
+        padding-top: 70px;
+    }
+    
+    #signup-form {
+        padding-top: 50px;
+    }
+    
+    .auth-form-container h1 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .role-selection {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .auth-form-container {
+        border: none;
+        padding: 1rem;
+        box-shadow: none;
+    }
+    
+    #signin-form {
+        padding-top: 60px;
+    }
+    
+    #signup-form {
+        padding-top: 30px;
+    }
+    
+    .auth-form-container h1 {
+        margin-bottom: 1.2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 0.7rem;
+    }
+    
+    .form-control {
+        padding: 0.5rem 0.75rem;
+    }
 }
 
 .auth-form-container h1 {
     color: #ffffff;
     font-size: 1.2rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem; /* Reduced gap between title and form fields */
     font-weight: 600;
+    margin-top: 0; /* Ensure no extra top margin */
 }
 
 .auth-subtitle {
     color: #aaaaaa;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     font-size: 0.6rem;
 }
 
 .auth-form {
     width: 100%;
-    min-width: 350px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    gap: 0.8rem;
 }
 
 .form-group {
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.8rem;
     position: relative;
+    margin-top: 0; /* Ensure no extra top margin */
 }
 
 .form-group label {
@@ -85,7 +138,6 @@ html, body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.4rem;
-    z-index: 1;
 }
 
 .forgot-password {
@@ -108,7 +160,6 @@ html, body {
     font-size: 0.8rem;
     transition: border-color 0.3s;
     position: relative;
-    z-index: 1100;
     pointer-events: auto;
 }
 

@@ -5,6 +5,9 @@
 
 class Router {
     constructor() {
+        // Create page transition overlay element
+        this.createTransitionOverlay();
+        
         // Routes configuration - maps routes to page HTML files and CSS files
         this.routes = {
             '/': { 
@@ -24,6 +27,46 @@ class Router {
                 title: 'Sign Up - Mentorship Platform',
                 css: 'css/auth.css',
                 bodyClass: 'auth-page'
+            },
+            '/dashboard': {
+                page: 'pages/dashboard.html',
+                title: 'Dashboard - Mentorship Platform',
+                css: 'css/dashboard.css',
+                bodyClass: 'dashboard-page',
+                requiresAuth: true,
+                js: 'js/pages/dashboard.js'
+            },
+            '/dashboard/my-mentor': {
+                page: 'pages/dashboard.html',
+                title: 'My Mentor - Mentorship Platform',
+                css: 'css/dashboard.css',
+                bodyClass: 'dashboard-page',
+                requiresAuth: true,
+                js: 'js/pages/dashboard.js'
+            },
+            '/dashboard/search-mentor': {
+                page: 'pages/dashboard.html',
+                title: 'Find a Mentor - Mentorship Platform',
+                css: 'css/dashboard.css',
+                bodyClass: 'dashboard-page',
+                requiresAuth: true,
+                js: 'js/pages/dashboard.js'
+            },
+            '/dashboard/chat': {
+                page: 'pages/dashboard.html',
+                title: 'Messages - Mentorship Platform',
+                css: 'css/dashboard.css',
+                bodyClass: 'dashboard-page',
+                requiresAuth: true,
+                js: 'js/pages/dashboard.js'
+            },
+            '/dashboard/profile': {
+                page: 'pages/dashboard.html',
+                title: 'Profile - Mentorship Platform',
+                css: 'css/dashboard.css',
+                bodyClass: 'dashboard-page',
+                requiresAuth: true,
+                js: 'js/pages/dashboard.js'
             }
         };
         
@@ -86,10 +129,53 @@ class Router {
         this.handleRouteChange();
     }
     
+    createTransitionOverlay() {
+        // Create transition overlay if it doesn't exist
+        let overlay = document.getElementById('page-transition-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'page-transition-overlay';
+            overlay.classList.add('page-transition-overlay');
+            document.body.appendChild(overlay);
+            
+            // Add the style for the overlay if it doesn't exist
+            if (!document.getElementById('transition-overlay-style')) {
+                const style = document.createElement('style');
+                style.id = 'transition-overlay-style';
+                style.textContent = `
+                    .page-transition-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-color: #121212;
+                        z-index: 9999;
+                        opacity: 0;
+                        pointer-events: none;
+                        transition: opacity 0.6s ease;
+                    }
+                    .page-transition-overlay.visible {
+                        opacity: 1;
+                        pointer-events: all;
+                    }
+                    .page-transition-overlay.fade-out {
+                        opacity: 0;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        this.transitionOverlay = overlay;
+    }
+    
     handleRouteChange() {
         // Get current route (path)
         const path = window.location.pathname;
         console.log('Router handling route change for path:', path);
+        
+        // Show transition overlay
+        this.transitionOverlay.classList.add('visible');
         
         // Find the route configuration
         const route = this.routes[path] || this.routes['/'];
@@ -99,30 +185,50 @@ class Router {
         
         console.log('Using route config:', route);
         
+        // Check for authentication requirement
+        if (route.requiresAuth) {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                // Redirect to signin page if user is not authenticated
+                console.log('Authentication required for route, redirecting to signin');
+                this.navigateTo('/signin');
+                return;
+            }
+        }
+        
+        // If it's a dashboard route, redirect to the dashboard without showing .html
+        if (path.startsWith('/dashboard')) {
+            // Extract the specific dashboard page from the path if any
+            const dashboardPath = path.replace('/dashboard', '');
+            window.location.href = '/dashboard' + (dashboardPath ? dashboardPath : '');
+            return;
+        }
+        
         // Update page title
         document.title = route.title;
         
-        // Update body class
-        document.body.className = route.bodyClass;
+        // Update body class - clear any previous classes first
+        document.body.className = '';
+        document.body.classList.add(route.bodyClass);
         
-        // First apply the fade-out transition to the current content
-        this.appContainer.classList.add('slide-out');
+        // First hide the container immediately
+        this.appContainer.style.opacity = '0';
+        this.appContainer.style.transform = 'translateY(10px)';
         
-        // After the transition completes, load the new content
-        setTimeout(() => {
-            // Update CSS and load page content
-            this.updatePageCSS(route.css)
-                .then(() => {
-                    // Log loading of page
-                    console.log('Loading page from:', route.page);
-                    // Load and render the page content after CSS is loaded
-                    this.loadPage(route.page, true); // Pass true to trigger the slide-in effect
-                })
-                .catch(error => {
-                    console.error('Error in route change:', error);
-                    this.loadPage(route.page, true);
-                });
-        }, 300); // Match this with the transition duration in CSS
+        // Load CSS first, then content
+        this.updatePageCSS(route.css)
+            .then(() => {
+                // Clear the container immediately
+                this.appContainer.innerHTML = '';
+                
+                // Load new page content
+                this.loadPage(route.page, false, route.js);
+            })
+            .catch(error => {
+                console.error('Error loading CSS:', error);
+                this.appContainer.innerHTML = '';
+                this.loadPage(route.page, true);
+            });
     }
     
     updatePageCSS(cssFile) {
@@ -135,7 +241,8 @@ class Router {
             
             // If no page-specific CSS needed, resolve immediately
             if (!cssFile || cssFile === 'css/global.css' || cssFile === 'css/layout.css') {
-                resolve();
+                // Add a small delay even if no new CSS to load
+                setTimeout(() => resolve(), 200);
                 return;
             }
             
@@ -146,44 +253,133 @@ class Router {
             link.setAttribute('data-page-css', '');
             
             // Wait for the CSS to load before resolving
-            link.onload = () => resolve();
+            link.onload = () => {
+                // Add additional delay after CSS loads to ensure browser applies it
+                setTimeout(() => resolve(), 300);
+            };
             link.onerror = () => {
                 console.error('Failed to load CSS:', cssFile);
-                resolve(); // Still resolve to continue loading the page
+                setTimeout(() => resolve(), 200); // Still resolve to continue loading the page
             };
             
             document.head.appendChild(link);
         });
     }
     
-    loadPage(pageUrl, applyTransition = false) {
-        // Fetch the page HTML
+    loadPage(pageUrl, applyTransition = true, jsFile = null) {
+        console.log('Loading page:', pageUrl, 'with transition:', applyTransition);
+        
+        // Dispatch event before page load
+        document.dispatchEvent(new CustomEvent('route:before'));
+        
+        // Completely unload any existing page content and scripts 
+        this.unloadCurrentPage();
+        
+        // Fetch the HTML for the page
         fetch(pageUrl)
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load page');
+                }
+                return response.text();
+            })
             .then(html => {
-                // Remove any transition classes first
-                this.appContainer.classList.remove('slide-out');
-                
-                // Render the HTML
+                // Render the HTML into the container
                 this.appContainer.innerHTML = html;
                 
-                // Apply slide-in transition if requested
-                if (applyTransition) {
-                    this.appContainer.classList.add('slide-in');
-                    
-                    // Remove the animation class after it completes
-                    setTimeout(() => {
-                        this.appContainer.classList.remove('slide-in');
-                    }, 500); // Match this with the animation duration in CSS
+                console.log('Page HTML loaded successfully');
+                
+                // Load page-specific JavaScript
+                if (jsFile) {
+                    this.loadPageScript(jsFile);
+                } else {
+                    this.initPageScripts();
                 }
                 
-                // Initialize any scripts needed for the page
-                this.initPageScripts();
+                // Ensure all resources are loaded before showing content
+                // Use setTimeout to allow browser to render DOM changes
+                setTimeout(() => {
+                    // Apply smooth transition to make content visible
+                    this.appContainer.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                    this.appContainer.style.opacity = '1';
+                    this.appContainer.style.transform = 'translateY(0)';
+                    
+                    // Hide the transition overlay
+                    setTimeout(() => {
+                        this.transitionOverlay.classList.add('fade-out');
+                        setTimeout(() => {
+                            this.transitionOverlay.classList.remove('visible');
+                            this.transitionOverlay.classList.remove('fade-out');
+                        }, 600); // Match the CSS transition duration
+                    }, 200); // Longer delay before starting overlay fade out
+                    
+                    console.log('Content made visible with transition');
+                }, 300); // Significantly increased timeout to ensure content is rendered
+                
+                // Dispatch event after page load
+                document.dispatchEvent(new CustomEvent('route:after'));
             })
             .catch(error => {
                 console.error('Error loading page:', error);
                 this.appContainer.innerHTML = '<p>Error loading page. Please try again.</p>';
+                this.transitionOverlay.classList.remove('visible');
             });
+    }
+    
+    /**
+     * Load a JavaScript file for a page
+     * @param {string} jsFile - Path to the JavaScript file
+     */
+    // Helper method to completely unload the current page
+    unloadCurrentPage() {
+        // Clear the main content container
+        this.appContainer.innerHTML = '';
+        
+        // Remove any page-specific scripts
+        const pageScripts = document.querySelectorAll('script[data-page-script]');
+        pageScripts.forEach(script => script.remove());
+        
+        // Clear any dynamic elements that might have been added outside the main container
+        const dynamicElements = document.querySelectorAll('[data-dynamic-element]');
+        dynamicElements.forEach(element => element.remove());
+    }
+    
+    loadPageScript(jsFile) {
+        try {
+            console.log('Loading page script:', jsFile);
+            
+            // First, remove any previous instance of this script
+            const existingScript = document.querySelector(`script[src="${jsFile}"]`);
+            if (existingScript) {
+                existingScript.remove();
+                console.log('Removed previous script instance:', jsFile);
+            }
+            
+            // Create script element and load it
+            const script = document.createElement('script');
+            script.src = jsFile;
+            script.setAttribute('data-page-script', 'true'); // Mark as page script for easy cleanup
+            
+            // Handle script load event
+            script.onload = () => {
+                console.log('Script loaded successfully:', jsFile);
+                
+                // Initialize dashboard if it's the dashboard script
+                if (jsFile.includes('dashboard.js') && typeof Dashboard !== 'undefined') {
+                    Dashboard.init();
+                }
+            };
+            
+            // Handle script loading error
+            script.onerror = () => {
+                console.error('Error loading script:', jsFile);
+            };
+            
+            // Add script to the document
+            document.body.appendChild(script);
+        } catch (error) {
+            console.error('Error in loadPageScript:', error);
+        }
     }
     
     initPageScripts() {
@@ -254,6 +450,65 @@ class Router {
             }
         } catch (error) {
             console.error('Error initializing register form:', error);
+        }
+    }
+    
+    /**
+     * Load the navbar component for all pages to standardize layout
+     */
+    loadNavbarComponent() {
+        // Skip navbar loading on dashboard pages
+        if (window.location.pathname.startsWith('/dashboard')) {
+            console.log('Skipping navbar for dashboard page');
+            return;
+        }
+        
+        console.log('Loading navbar component');
+        try {
+            // Always remove existing navbar to avoid duplicates or stale content
+            const existingNavbar = document.querySelector('.navbar');
+            if (existingNavbar) {
+                console.log('Removing existing navbar');
+                existingNavbar.remove();
+            }
+            
+            // Check for navbar placeholder
+            let navbarPlaceholder = document.getElementById('navbar-placeholder');
+            
+            // If there's no placeholder for the navbar, create one at the top of app container
+            if (!navbarPlaceholder) {
+                console.log('Creating navbar placeholder');
+                navbarPlaceholder = document.createElement('div');
+                navbarPlaceholder.id = 'navbar-placeholder';
+                
+                // Insert at the beginning of the app container
+                if (this.appContainer.firstChild) {
+                    this.appContainer.insertBefore(navbarPlaceholder, this.appContainer.firstChild);
+                } else {
+                    this.appContainer.appendChild(navbarPlaceholder);
+                }
+            }
+            
+            // Load the navbar component - use absolute path to avoid path issues
+            fetch('/components/navbar.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load navbar component');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    navbarPlaceholder.innerHTML = html;
+                    console.log('Navbar component loaded successfully');
+                    
+                    // Make sure navbar is visible
+                    navbarPlaceholder.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error loading navbar component:', error);
+                });
+        } catch (error) {
+            console.error('Error in loadNavbarComponent:', error);
         }
     }
 }

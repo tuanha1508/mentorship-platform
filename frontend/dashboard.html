@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Mentorship Platform</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Dashboard Stylesheet only - NO OTHER CSS DEPENDENCIES -->
+    <link rel="stylesheet" href="css/dashboard.css">
+    
+    <style>
+        /* Reset styles to prevent inheritance from other pages */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Base styles that would normally come from global.css */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --background-color: #000000;
+            --text-color: #ffffff;
+            --sidebar-bg: #0a1929;
+            --content-bg: #121212;
+            --card-bg: #1a1a1a;
+            --border-color: #333;
+        }
+        
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--content-bg);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Prevent scrolling on the main body */
+        }
+        
+        /* Ensure dashboard takes full width and height */
+        .dashboard-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        /* Hide any navbar elements that might be injected by other scripts */
+        .navbar, #navbar-placeholder, nav:not(.sidebar-nav) {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- This is a standalone dashboard without the standard navbar -->
+    <div class="dashboard-container">
+        <!-- Dashboard Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <img src="images/profile-placeholder.jpg" alt="Profile" class="profile-image" id="sidebar-profile-image">
+                <h3 class="user-name" id="sidebar-user-name">User Name</h3>
+                <p class="user-role" id="sidebar-user-role">Mentee</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="mentee-element">
+                        <a href="#main-dashboard" class="nav-item active" data-page="main-dashboard">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="mentee-element mentor-assigned" style="display: none;">
+                        <a href="#my-mentor" class="nav-item" data-page="my-mentor">
+                            <i class="fas fa-user-tie"></i> My Mentor
+                        </a>
+                    </li>
+                    <li class="mentee-element no-mentor" style="display: none;">
+                        <a href="#search-mentor" class="nav-item" data-page="search-mentor">
+                            <i class="fas fa-search"></i> Search Mentor
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#chat" class="nav-item" data-page="chat">
+                            <i class="fas fa-comments"></i> Chat
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#profile" class="nav-item" data-page="profile">
+                            <i class="fas fa-user-cog"></i> Profile
+                        </a>
+                    </li>
+                    <li class="mentor-element" style="display: none;">
+                        <a href="#my-mentees" class="nav-item" data-page="my-mentees">
+                            <i class="fas fa-users"></i> My Mentees
+                        </a>
+                    </li>
+                    <li class="mentor-element" style="display: none;">
+                        <a href="#assignments" class="nav-item" data-page="assignments">
+                            <i class="fas fa-tasks"></i> Assignments
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/" class="nav-item" id="logout-button">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" id="reset-data-button">
+                            <i class="fas fa-sync-alt"></i> Reset Test Data
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <header class="content-header">
+                <h2 id="page-title">Dashboard</h2>
+                <div class="header-actions">
+                    <!-- Notification icon and dropdown for mentors -->
+                    <div class="notification-wrapper mentor-element" style="display: none;">
+                        <div class="notification-icon" id="notification-icon">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-count" id="notification-count" style="display: none;">0</span>
+                        </div>
+                        <div class="notification-dropdown" id="notification-dropdown" style="display: none;">
+                            <div class="notification-header">
+                                <h3>Mentee Requests</h3>
+                            </div>
+                            <div class="notification-body" id="notification-body">
+                                <!-- Notification items will be added here dynamically -->
+                                <div class="empty-notification" id="empty-notification">
+                                    <p>No pending requests</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div id="dashboard-page-content">
+                <!-- This is where the page-specific content will be loaded -->
+                <div class="loading-spinner"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Core JS -->
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/validation.js"></script>
+    <script src="js/api/apiClient.js"></script>
+    <!-- Connection service using localStorage -->
+    <script src="js/services/connectionService.js"></script>
+    <script src="js/reset-data.js"></script>
+    <script src="js/pages/dashboard.js"></script>
+    
+    <script>
+        // Remove any navbar elements that might be injected by other scripts
+        function removeNavbar() {
+            const navbarElements = document.querySelectorAll('.navbar, #navbar-placeholder');
+            navbarElements.forEach(el => {
+                if (el && !el.closest('.dashboard-sidebar')) {
+                    el.remove();
+                }
+            });
+        }
+        
+        // Run immediately and set interval to keep checking
+        removeNavbar();
+        const navbarCheckInterval = setInterval(removeNavbar, 100);
+        
+        // Initialize the dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Run the navbar removal again when DOM is loaded
+            removeNavbar();
+            
+            // Load user data from localStorage
+            const userDataString = localStorage.getItem('userData');
+            if (!userDataString) {
+                // Redirect to sign in page if no user data is found
+                window.location.href = '/signin';
+                return;
+            }
+            
+            try {
+                const userData = JSON.parse(userDataString);
+                console.log('User data loaded:', userData);
+                
+                // Update UI based on user data
+                const userName = document.getElementById('sidebar-user-name');
+                const userRole = document.getElementById('sidebar-user-role');
+                const profileImage = document.getElementById('sidebar-profile-image');
+                
+                if (userName) {
+                    userName.textContent = userData.fullName || `${userData.firstName || ''} ${userData.lastName || ''}`.trim();
+                }
+                
+                if (userRole) {
+                    userRole.textContent = userData.role?.toLowerCase() === 'mentor' ? 'Mentor' : 'Mentee';
+                }
+                
+                if (profileImage && userData.imageUrl) {
+                    profileImage.src = userData.imageUrl;
+                }
+                
+                // Show/hide elements based on user role and mentor status
+                const menteeElements = document.querySelectorAll('.mentee-element');
+                const mentorElements = document.querySelectorAll('.mentor-element');
+                const mentorAssigned = document.querySelectorAll('.mentor-assigned');
+                const noMentor = document.querySelectorAll('.no-mentor');
+                
+                const isMentor = userData.role?.toLowerCase() === 'mentor';
+                const hasMentor = userData.hasMentor || false;
+                
+                menteeElements.forEach(el => {
+                    el.style.display = !isMentor ? '' : 'none';
+                });
+                
+                mentorElements.forEach(el => {
+                    el.style.display = isMentor ? '' : 'none';
+                });
+                
+                if (!isMentor) {
+                    mentorAssigned.forEach(el => {
+                        el.style.display = hasMentor ? '' : 'none';
+                    });
+                    
+                    noMentor.forEach(el => {
+                        el.style.display = hasMentor ? 'none' : '';
+                    });
+                }
+                
+                // Set up navigation
+                const navItems = document.querySelectorAll('.nav-item[data-page]');
+                navItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Update active class
+                        navItems.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Get the page to load
+                        const page = this.getAttribute('data-page');
+                        
+                        // Update page title
+                        const pageTitle = document.getElementById('page-title');
+                        if (pageTitle) {
+                            const titles = {
+                                'main-dashboard': 'Dashboard',
+                                'my-mentor': 'My Mentor',
+                                'search-mentor': 'Find a Mentor',
+                                'chat': 'Messages',
+                                'profile': 'Edit Profile',
+                                'my-mentees': 'My Mentees',
+                                'assignments': 'Assignments'
+                            };
+                            pageTitle.textContent = titles[page] || 'Dashboard';
+                        }
+                        
+                        // Load the page content
+                        loadDashboardPage(page);
+                    });
+                });
+                
+                // Handle logout
+                const logoutButton = document.getElementById('logout-button');
+                if (logoutButton) {
+                    logoutButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Clear user data and auth token
+                        localStorage.removeItem('userData');
+                        localStorage.removeItem('authToken');
+                        
+                        // Redirect to home page
+                        window.location.href = '/';
+                    });
+                }
+                
+                // Handle reset data
+                const resetDataButton = document.getElementById('reset-data-button');
+                if (resetDataButton) {
+                    resetDataButton.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        if (window.resetLocalStorage && typeof window.resetLocalStorage === 'function') {
+                            window.resetLocalStorage();
+                        } else {
+                            alert('Reset function not available.');
+                        }
+                    });
+                }
+                
+                // Initial page load - get from hash or default to main dashboard
+                const hash = window.location.hash.substring(1);
+                const initialPage = hash || 'main-dashboard';
+                loadDashboardPage(initialPage);
+                
+                // Update active nav item based on hash
+                const activeNav = document.querySelector(`.nav-item[data-page="${initialPage}"]`);
+                if (activeNav) {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    activeNav.classList.add('active');
+                }
+                
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                alert('An error occurred. Please sign in again.');
+                window.location.href = '/signin';
+            }
+        });
+        
+        // Function to load dashboard page content
+        function loadDashboardPage(page) {
+            const contentContainer = document.getElementById('dashboard-page-content');
+            if (!contentContainer) return;
+            
+            // Show loading indicator
+            contentContainer.innerHTML = '<div class="loading-spinner"></div>';
+            
+            // Load the page content
+            fetch(`pages/dashboard/${page}.html`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load page: ${page}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    contentContainer.innerHTML = html;
+                    
+                    // Initialize page-specific functionality
+                    if (typeof window.Dashboard !== 'undefined' && 
+                        typeof window.Dashboard[`init${page.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('')}Page`] === 'function') {
+                        window.Dashboard[`init${page.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('')}Page`]();
+                    }
+                    
+                    // Make sure no navbar is present after page load
+                    removeNavbar();
+                })
+                .catch(error => {
+                    console.error('Error loading dashboard page:', error);
+                    contentContainer.innerHTML = `
+                        <div class="error-message">
+                            <h3>Error Loading Page</h3>
+                            <p>${error.message}</p>
+                        </div>
+                    `;
+                });
+        }
+    </script>
+</body>
+</html>

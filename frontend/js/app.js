@@ -24,6 +24,10 @@ class App {
         document.addEventListener('route:before', () => {
             // Show loading indicator
             console.log('Page transition started');
+            // Force a repaint to ensure transition animations work properly
+            document.body.style.display = 'none';
+            void document.body.offsetHeight; // Force a reflow
+            document.body.style.display = '';
         });
 
         document.addEventListener('route:after', () => {

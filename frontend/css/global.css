@@ -17,6 +17,55 @@
     box-sizing: border-box;
 }
 
+/* Make scrollbars more subtle but still present */
+* {
+    scrollbar-width: thin; /* Firefox */
+    -ms-overflow-style: auto; /* IE and Edge */
+}
+
+/* WebKit scrollbar styling */
+*::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+/* Enable proper scrolling behavior */
+html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Make all elements responsive */
+div, section, article, aside, nav, header, footer, main,
+.container, .content-container, #app, .page-content {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    min-height: fit-content;
+    box-sizing: border-box;
+}
+
+/* Base layer for responsive elements */
+@layer base {
+    html, body {
+        overflow-x: hidden;
+    }
+}
+
 :root {
     /* Color variables will be defined here */
     --primary-color: #007bff;
@@ -40,6 +89,8 @@ body {
     background-attachment: fixed; /* This keeps the background fixed while scrolling */
     /* Overlay to improve text readability */
     position: relative;
+    min-height: 100vh;
+    min-height: 100dvh; /* Support dynamic viewport height for mobile browsers */
 }
 
 /* Add overlay to the entire page for better readability */
@@ -51,7 +102,6 @@ body::before {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
-    z-index: -1;
 }
 
 /* Global typography */
@@ -81,9 +131,11 @@ input, select, textarea, button {
 
 /* Utility classes */
 .container {
-    max-width: 1200px;
+    max-width: 90%;
+    width: 100%;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: clamp(0.5rem, 2vw, 1rem);
+    height: auto;
 }
 
 /* Global components */
@@ -101,10 +153,7 @@ input, select, textarea, button {
     font-size: 0.8rem;
     font-weight: 400;
     font-family: 'Researcher', sans-serif;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
+    position: relative; /* Changed from fixed to relative */
     /* Remove border and box-shadow for full transparency */
     border-bottom: none;
     box-shadow: none;
@@ -159,47 +208,36 @@ input, select, textarea, button {
     opacity: 0.9;
 }
 
-/* Page transition effects */
+/* Simple and effective page transition effects */
 #app {
     position: relative;
     min-height: 100vh;
 }
 
-.fade-out {
+/* Content container base styling */
+.content-container {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Simple fade transition */
+.page-fade-out {
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transform: translateY(10px);
 }
 
-.fade-in {
-    opacity: 0;
-    animation: fadeIn 0.5s ease forwards;
+.page-fade-in {
+    animation: simpleFadeIn 0.3s ease forwards;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Slide transition effect */
-.slide-out {
-    transform: translateX(-20px);
-    opacity: 0;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.slide-in {
-    transform: translateX(20px);
-    opacity: 0;
-    animation: slideIn 0.5s ease forwards;
-}
-
-@keyframes slideIn {
+@keyframes simpleFadeIn {
     from { 
-        transform: translateX(20px);
         opacity: 0; 
+        transform: translateY(10px);
     }
     to { 
-        transform: translateX(0);
         opacity: 1; 
+        transform: translateY(0);
     }
 }

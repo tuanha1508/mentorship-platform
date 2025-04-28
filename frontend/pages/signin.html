@@ -1,7 +1,9 @@
+<div id="navbar-placeholder"></div>
+
 <div class="auth-container">
     <div class="auth-form-container">
         <h1>Login</h1>
-        <form class="auth-form" id="signin-form">
+        <form class="auth-form" id="signin-form" onsubmit="event.preventDefault(); handleSignIn(event);">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" class="form-control" placeholder="m@example.com" required>
@@ -23,3 +25,62 @@
         </form>
     </div>
 </div>
+
+<script>
+function handleSignIn(event) {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    // Get mock users (this would normally be an API call)
+    const users = [
+        {
+            id: '1001',
+            fullName: 'Sarah Johnson',
+            email: 'sarah@example.com',
+            password: 'password123',
+            role: 'MENTOR'
+        },
+        {
+            id: '1002',
+            fullName: 'John Smith',
+            email: 'john@example.com',
+            password: 'password123',
+            role: 'MENTEE'
+        }
+    ];
+    
+    // Find user
+    const user = users.find(u => u.email === email);
+    
+    if (!user || user.password !== password) {
+        alert('Invalid email or password');
+        return;
+    }
+    
+    // Create session token
+    const token = `token_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
+    
+    // Store user data and token in localStorage
+    localStorage.setItem('userData', JSON.stringify(user));
+    localStorage.setItem('authToken', token);
+    
+    // Redirect directly to standalone dashboard page
+    window.location.href = '/dashboard.html';
+}
+</script>
+
+<!-- Load navbar component -->
+<script>
+// Load navbar into placeholder
+document.addEventListener('DOMContentLoaded', function() {
+    const navbarPlaceholder = document.getElementById('navbar-placeholder');
+    if (navbarPlaceholder) {
+        fetch('/components/navbar.html')
+            .then(response => response.text())
+            .then(html => {
+                navbarPlaceholder.innerHTML = html;
+            })
+            .catch(error => console.error('Error loading navbar:', error));
+    }
+});
+</script>

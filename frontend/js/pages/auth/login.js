@@ -92,133 +92,19 @@ const LoginPage = {
     },
     
     /**
-     * Hardcoded mock user data
-     * This replaces the localStorage approach with direct hardcoded data
+     * Get mock users from localStorage
+     * Uses the users stored by mock-data.js
      */
     getMockUsers() {
-        return [
-            // Mentors
-            {
-                id: '1001',
-                fullName: 'Sarah Johnson',
-                email: 'sarah@example.com', // Simplified email for easier testing
-                password: 'password123',
-                role: 'MENTOR',
-                profileComplete: true,
-                skills: ['JavaScript', 'React', 'Node.js'],
-                experience: 8,
-                company: 'TechCorp Inc.',
-                title: 'Senior Frontend Developer',
-                bio: 'Frontend specialist with 8 years of experience building enterprise web applications.',
-                availability: ['Monday evenings', 'Wednesday afternoons'],
-                imageUrl: 'https://randomuser.me/api/portraits/women/32.jpg'
-            },
-            {
-                id: '1002',
-                fullName: 'Michael Chen',
-                email: 'michael@example.com',
-                password: 'password123',
-                role: 'MENTOR',
-                profileComplete: true,
-                skills: ['Python', 'Machine Learning', 'Data Analysis'],
-                experience: 6,
-                company: 'DataSense AI',
-                title: 'Data Scientist'
-            },
-            {
-                id: '1003',
-                fullName: 'Elena Rodriguez',
-                email: 'elena@example.com',
-                password: 'password123',
-                role: 'MENTOR',
-                profileComplete: true,
-                skills: ['UX/UI Design', 'Figma', 'User Research'],
-                experience: 7,
-                company: 'DesignWorks Studio',
-                title: 'Senior UX Designer'
-            },
-            {
-                id: '1004',
-                fullName: 'James Wilson',
-                email: 'james@example.com',
-                password: 'password123',
-                role: 'MENTOR',
-                profileComplete: true,
-                skills: ['DevOps', 'AWS', 'Docker', 'Kubernetes'],
-                experience: 9,
-                company: 'CloudScale Solutions',
-                title: 'DevOps Engineer'
-            },
-            {
-                id: '1005',
-                fullName: 'Priya Patel',
-                email: 'priya@example.com',
-                password: 'password123',
-                role: 'MENTOR',
-                profileComplete: true,
-                skills: ['Product Management', 'Agile', 'Market Research'],
-                experience: 10,
-                company: 'ProductHub',
-                title: 'Senior Product Manager'
-            },
-            
-            // Mentees
-            {
-                id: '2001',
-                fullName: 'Alex Turner',
-                email: 'alex@example.com',
-                password: 'password123',
-                role: 'MENTEE',
-                profileComplete: true,
-                skills: ['JavaScript', 'HTML/CSS', 'React Basics'],
-                experience: 1,
-                education: 'Computer Science Bootcamp Graduate'
-            },
-            {
-                id: '2002',
-                fullName: 'Maya Johnson',
-                email: 'maya@example.com',
-                password: 'password123',
-                role: 'MENTEE',
-                profileComplete: true,
-                skills: ['Python Basics', 'SQL', 'Data Visualization'],
-                experience: 0,
-                education: 'Bachelor\'s in Statistics'
-            },
-            {
-                id: '2003',
-                fullName: 'David Kim',
-                email: 'david@example.com',
-                password: 'password123',
-                role: 'MENTEE',
-                profileComplete: true,
-                skills: ['Sketch', 'Photoshop', 'Basic UX Principles'],
-                experience: 2,
-                education: 'Self-taught Designer'
-            },
-            {
-                id: '2004',
-                fullName: 'Taylor Reid',
-                email: 'taylor@example.com',
-                password: 'password123',
-                role: 'MENTEE',
-                profileComplete: true,
-                skills: ['Basic Cloud Concepts', 'Linux', 'Networking'],
-                experience: 1,
-                education: 'Associate\'s in Computer Networking'
-            },
-            {
-                id: '2005',
-                fullName: 'Jordan Santos',
-                email: 'jordan@example.com',
-                password: 'password123',
-                role: 'MENTEE',
-                profileComplete: true,
-                skills: ['Market Analysis', 'Business Strategy', 'Communication'],
-                experience: 3,
-                education: 'MBA Student'
-            }
-        ];
+        try {
+            const usersJson = localStorage.getItem('users');
+            const users = usersJson ? JSON.parse(usersJson) : [];
+            console.log(`Using ${users.length} mock users from localStorage`);
+            return users;
+        } catch (e) {
+            console.error('Error getting users from localStorage:', e);
+            return [];
+        }
     },
     
     /**
@@ -231,31 +117,19 @@ const LoginPage = {
             setTimeout(() => {
                 console.log('Attempting login with:', credentials.email);
                 
-                // Get hardcoded mock users
+                // Get users from localStorage
                 const users = this.getMockUsers();
-                console.log(`Using ${users.length} hardcoded mock users`);
+                console.log(`Using ${users.length} mock users from localStorage`);
                 
-                // Get users from localStorage (for custom registered users)
-                try {
-                    const localUsers = JSON.parse(localStorage.getItem('users') || '[]');
-                    if (localUsers.length > 0) {
-                        console.log(`Found ${localUsers.length} locally registered users, merging with mock data`);
-                        // Combine hardcoded users with any locally registered users
-                        users.push(...localUsers);
-                    }
-                } catch (e) {
-                    console.error('Error parsing locally registered users:', e);
-                }
-                
-                // Find user with matching email
+                // Get user by email
                 const user = users.find(u => u.email === credentials.email);
-                console.log('User found:', user ? 'Yes' : 'No');
                 
+                console.log('User found:', user ? 'Yes' : 'No');
                 if (!user) {
                     return reject({
                         success: false,
                         message: 'User not found',
-                        errors: { email: 'No account found with this email' }
+                        errors: { email: 'User with this email does not exist' }
                     });
                 }
                 
@@ -329,8 +203,12 @@ const LoginPage = {
             if (result.success) {
                 console.log('Login successful:', result.user);
                 
-                // Redirect to home page after successful login
-                window.router.navigateTo('/');
+                // Store user data in localStorage for dashboard
+                localStorage.setItem('userData', JSON.stringify(result.user));
+                localStorage.setItem('authToken', result.token);
+                
+                // Redirect to dashboard after successful login
+                window.router.navigateTo('/dashboard');
             }
         } catch (error) {
             console.error('Login error:', error);

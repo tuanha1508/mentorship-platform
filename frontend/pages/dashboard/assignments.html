@@ -1,0 +1,811 @@
+<div class="dashboard-section">
+    <h2>Assignments</h2>
+    <div class="assignments-container">
+        <div class="assignments-header">
+            <div class="assignments-filter">
+                <select id="assignment-status-filter">
+                    <option value="all">All Assignments</option>
+                    <option value="pending">Pending</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="overdue">Overdue</option>
+                </select>
+            </div>
+            <div class="mentor-only-controls" style="display: none;">
+                <button id="create-assignment-btn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create Assignment
+                </button>
+            </div>
+        </div>
+
+        <div class="no-assignments-message">
+            <i class="fas fa-tasks fa-3x"></i>
+            <p>No assignments found.</p>
+            <p class="mentee-message">Your mentor will assign tasks to help you reach your goals.</p>
+            <p class="mentor-message" style="display: none;">Create assignments for your mentees to help them progress.</p>
+        </div>
+        
+        <div id="assignments-list" class="assignments-list" style="display: none;">
+            <!-- Assignments will be dynamically loaded here -->
+            <!--
+            <div class="assignment-card">
+                <div class="assignment-header">
+                    <h3 class="assignment-title">Build a Simple Website</h3>
+                    <span class="assignment-status pending">Pending</span>
+                </div>
+                <div class="assignment-details">
+                    <p class="assignment-description">Create a personal portfolio website using HTML and CSS.</p>
+                    <div class="assignment-meta">
+                        <span><i class="far fa-calendar-alt"></i> Due: Jan 15, 2025</span>
+                        <span><i class="fas fa-user-tie"></i> From: John Mentor</span>
+                    </div>
+                </div>
+                <div class="assignment-actions">
+                    <button class="btn btn-primary view-assignment-btn">View Details</button>
+                    <button class="btn btn-success submit-assignment-btn">Submit</button>
+                </div>
+            </div>
+            -->
+        </div>
+    </div>
+</div>
+
+<!-- Assignment creation modal - hidden by default -->
+<div id="assignment-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 id="modal-title">Create New Assignment</h2>
+        <form id="assignment-form">
+            <div class="form-group">
+                <label for="assignment-title">Title</label>
+                <input type="text" id="assignment-title" required>
+            </div>
+            <div class="form-group">
+                <label for="assignment-description">Description</label>
+                <textarea id="assignment-description" rows="4" required></textarea>
+            </div>
+            <div class="form-group mentee-selector">
+                <label for="assignment-mentee">Assign To</label>
+                <select id="assignment-mentee" required>
+                    <option value="" disabled selected>Select a mentee</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="assignment-due-date">Due Date</label>
+                <input type="date" id="assignment-due-date" required>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Assignment</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Assignment details modal - hidden by default -->
+<div id="assignment-details-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 id="details-modal-title">Assignment Details</h2>
+        <div id="assignment-details-content">
+            <!-- Will be populated dynamically -->
+        </div>
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary close-details-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize the Assignments page functionality
+    if (!window.Dashboard) window.Dashboard = {};
+    
+    window.Dashboard.initAssignmentsPage = function() {
+        console.log('Initializing Assignments page');
+        
+        // Get user data
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        const userId = userData.id;
+        const userRole = userData.role?.toLowerCase();
+        const isMentor = userRole === 'mentor';
+        
+        if (!userId) {
+            console.error('User ID not found');
+            return;
+        }
+        
+        // Show/hide role-specific elements
+        const mentorControls = document.querySelector('.mentor-only-controls');
+        const menteeMessage = document.querySelector('.mentee-message');
+        const mentorMessage = document.querySelector('.mentor-message');
+        
+        if (isMentor) {
+            mentorControls.style.display = 'block';
+            menteeMessage.style.display = 'none';
+            mentorMessage.style.display = 'block';
+        } else {
+            mentorControls.style.display = 'none';
+            menteeMessage.style.display = 'block';
+            mentorMessage.style.display = 'none';
+        }
+        
+        // Set up filter functionality
+        const statusFilter = document.getElementById('assignment-status-filter');
+        statusFilter.addEventListener('change', function() {
+            filterAssignments(this.value);
+        });
+        
+        // Set up create assignment button for mentors
+        const createBtn = document.getElementById('create-assignment-btn');
+        if (createBtn) {
+            createBtn.addEventListener('click', function() {
+                showAssignmentModal();
+            });
+        }
+        
+        // Set up modal close buttons
+        document.querySelectorAll('.close-modal, .cancel-btn, .close-details-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                hideModals();
+            });
+        });
+        
+        // Set up assignment form submission
+        const assignmentForm = document.getElementById('assignment-form');
+        if (assignmentForm) {
+            assignmentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                createAssignment();
+            });
+        }
+        
+        // Simulate fetching assignments (replace with actual API call)
+        setTimeout(() => {
+            // If you have an API client:
+            // const endpoint = isMentor 
+            //     ? `/api/mentors/${userId}/assignments` 
+            //     : `/api/mentees/${userId}/assignments`;
+            // apiClient.get(endpoint)
+            //    .then(response => displayAssignments(response.data))
+            //    .catch(error => {
+            //        console.error('Error fetching assignments:', error);
+            //        document.querySelector('.no-assignments-message').style.display = 'flex';
+            //    });
+            
+            // For demo, show the no assignments message
+            document.querySelector('.no-assignments-message').style.display = 'flex';
+            document.getElementById('assignments-list').style.display = 'none';
+        }, 500);
+        
+        // If mentor, load mentees for assignment creation
+        if (isMentor) {
+            loadMentees();
+        }
+    };
+    
+    function loadMentees() {
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        const userId = userData.id;
+        
+        // In a real app, you would make an API call:
+        // apiClient.get(`/api/mentors/${userId}/mentees`)
+        //    .then(response => {
+        //        populateMenteeDropdown(response.data);
+        //    })
+        //    .catch(error => {
+        //        console.error('Error loading mentees:', error);
+        //    });
+        
+        // For demo, add some dummy mentees
+        const dummyMentees = [
+            { id: 'm1', name: 'Alex Johnson' },
+            { id: 'm2', name: 'Taylor Smith' }
+        ];
+        populateMenteeDropdown(dummyMentees);
+    }
+    
+    function populateMenteeDropdown(mentees) {
+        const dropdown = document.getElementById('assignment-mentee');
+        if (!dropdown) return;
+        
+        // Clear existing options except the placeholder
+        while (dropdown.options.length > 1) {
+            dropdown.remove(1);
+        }
+        
+        // Add mentees to dropdown
+        mentees.forEach(mentee => {
+            const option = document.createElement('option');
+            option.value = mentee.id;
+            option.textContent = mentee.name;
+            dropdown.appendChild(option);
+        });
+    }
+    
+    function displayAssignments(assignments) {
+        const assignmentsList = document.getElementById('assignments-list');
+        
+        if (!assignments || assignments.length === 0) {
+            document.querySelector('.no-assignments-message').style.display = 'flex';
+            assignmentsList.style.display = 'none';
+            return;
+        }
+        
+        document.querySelector('.no-assignments-message').style.display = 'none';
+        assignmentsList.style.display = 'block';
+        assignmentsList.innerHTML = '';
+        
+        assignments.forEach(assignment => {
+            const card = createAssignmentCard(assignment);
+            assignmentsList.appendChild(card);
+        });
+    }
+    
+    function createAssignmentCard(assignment) {
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        const isMentor = userData.role?.toLowerCase() === 'mentor';
+        
+        const card = document.createElement('div');
+        card.className = 'assignment-card';
+        card.dataset.status = assignment.status;
+        card.dataset.id = assignment.id;
+        
+        const dueDate = new Date(assignment.dueDate);
+        const formattedDate = dueDate.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        
+        card.innerHTML = `
+            <div class="assignment-header">
+                <h3 class="assignment-title">${assignment.title}</h3>
+                <span class="assignment-status ${assignment.status}">${assignment.status.replace('-', ' ')}</span>
+            </div>
+            <div class="assignment-details">
+                <p class="assignment-description">${assignment.description}</p>
+                <div class="assignment-meta">
+                    <span><i class="far fa-calendar-alt"></i> Due: ${formattedDate}</span>
+                    <span><i class="fas fa-${isMentor ? 'user' : 'user-tie'}"></i> ${isMentor ? 'To: ' + assignment.menteeName : 'From: ' + assignment.mentorName}</span>
+                </div>
+            </div>
+            <div class="assignment-actions">
+                <button class="btn btn-primary view-assignment-btn" data-id="${assignment.id}">View Details</button>
+                ${!isMentor && assignment.status !== 'completed' ? 
+                    `<button class="btn btn-success submit-assignment-btn" data-id="${assignment.id}">Submit</button>` : ''}
+                ${isMentor ? 
+                    `<button class="btn btn-secondary edit-assignment-btn" data-id="${assignment.id}">Edit</button>` : ''}
+            </div>
+        `;
+        
+        // Add event listeners
+        card.querySelector('.view-assignment-btn').addEventListener('click', function() {
+            viewAssignmentDetails(assignment.id);
+        });
+        
+        const submitBtn = card.querySelector('.submit-assignment-btn');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', function() {
+                submitAssignment(assignment.id);
+            });
+        }
+        
+        const editBtn = card.querySelector('.edit-assignment-btn');
+        if (editBtn) {
+            editBtn.addEventListener('click', function() {
+                editAssignment(assignment.id);
+            });
+        }
+        
+        return card;
+    }
+    
+    function filterAssignments(status) {
+        const cards = document.querySelectorAll('.assignment-card');
+        
+        cards.forEach(card => {
+            if (status === 'all' || card.dataset.status === status) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Show no assignments message if no visible cards
+        let visibleCards = 0;
+        cards.forEach(card => {
+            if (card.style.display !== 'none') {
+                visibleCards++;
+            }
+        });
+        
+        if (visibleCards === 0) {
+            document.querySelector('.no-assignments-message').style.display = 'flex';
+        } else {
+            document.querySelector('.no-assignments-message').style.display = 'none';
+        }
+    }
+    
+    function showAssignmentModal() {
+        const modal = document.getElementById('assignment-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            
+            // Set minimum date for due date to today
+            const dueDateInput = document.getElementById('assignment-due-date');
+            if (dueDateInput) {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                dueDateInput.min = `${yyyy}-${mm}-${dd}`;
+            }
+        }
+    }
+    
+    function hideModals() {
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.style.display = 'none';
+        });
+    }
+    
+    function createAssignment() {
+        const title = document.getElementById('assignment-title').value;
+        const description = document.getElementById('assignment-description').value;
+        const menteeId = document.getElementById('assignment-mentee').value;
+        const dueDate = document.getElementById('assignment-due-date').value;
+        
+        if (!title || !description || !menteeId || !dueDate) {
+            alert('Please fill out all fields');
+            return;
+        }
+        
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        
+        const newAssignment = {
+            id: 'a' + Date.now(),
+            title,
+            description,
+            menteeId,
+            mentorId: userData.id,
+            mentorName: userData.name,
+            status: 'pending',
+            dueDate,
+            createdAt: new Date().toISOString()
+        };
+        
+        // In a real app, you would make an API call:
+        // apiClient.post('/api/assignments', newAssignment)
+        //    .then(response => {
+        //        hideModals();
+        //        // Refresh assignments list
+        //        loadAssignments();
+        //    })
+        //    .catch(error => {
+        //        console.error('Error creating assignment:', error);
+        //        alert('Failed to create assignment');
+        //    });
+        
+        console.log('Creating new assignment:', newAssignment);
+        
+        // For demo, just hide the modal and reset form
+        hideModals();
+        document.getElementById('assignment-form').reset();
+        
+        // Show success message
+        alert('Assignment created successfully!');
+    }
+    
+    function viewAssignmentDetails(assignmentId) {
+        // In a real app, you would fetch the assignment details:
+        // apiClient.get(`/api/assignments/${assignmentId}`)
+        //    .then(response => {
+        //        displayAssignmentDetails(response.data);
+        //    })
+        //    .catch(error => {
+        //        console.error('Error fetching assignment details:', error);
+        //    });
+        
+        // For demo, create dummy assignment details
+        const dummyAssignment = {
+            id: assignmentId,
+            title: 'Build a Simple Website',
+            description: 'Create a personal portfolio website using HTML and CSS. The website should have a home page, about page, and contact form.',
+            status: 'pending',
+            dueDate: '2025-01-15',
+            createdAt: '2024-12-01',
+            mentorName: 'John Smith',
+            feedbacks: [
+                {
+                    id: 'f1',
+                    text: 'Great progress! Consider adding more projects to your portfolio.',
+                    createdAt: '2024-12-10',
+                    from: 'John Smith (Mentor)'
+                }
+            ]
+        };
+        
+        displayAssignmentDetails(dummyAssignment);
+    }
+    
+    function displayAssignmentDetails(assignment) {
+        const modal = document.getElementById('assignment-details-modal');
+        const contentDiv = document.getElementById('assignment-details-content');
+        const titleElement = document.getElementById('details-modal-title');
+        
+        if (!modal || !contentDiv || !titleElement) return;
+        
+        titleElement.textContent = assignment.title;
+        
+        const dueDate = new Date(assignment.dueDate);
+        const createdDate = new Date(assignment.createdAt);
+        
+        const formattedDueDate = dueDate.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        
+        const formattedCreatedDate = createdDate.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        
+        contentDiv.innerHTML = `
+            <div class="assignment-info">
+                <p class="status"><strong>Status:</strong> <span class="${assignment.status}">${assignment.status.replace('-', ' ')}</span></p>
+                <p><strong>Due Date:</strong> ${formattedDueDate}</p>
+                <p><strong>Created:</strong> ${formattedCreatedDate}</p>
+                <p><strong>From:</strong> ${assignment.mentorName}</p>
+            </div>
+            
+            <div class="assignment-description-full">
+                <h3>Description</h3>
+                <p>${assignment.description}</p>
+            </div>
+            
+            <div class="assignment-feedbacks">
+                <h3>Feedback</h3>
+                ${assignment.feedbacks && assignment.feedbacks.length > 0 ? 
+                    `<div class="feedbacks-list">
+                        ${assignment.feedbacks.map(feedback => `
+                            <div class="feedback-item">
+                                <p class="feedback-text">${feedback.text}</p>
+                                <div class="feedback-meta">
+                                    <span class="feedback-from">${feedback.from}</span>
+                                    <span class="feedback-date">${new Date(feedback.createdAt).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>` : 
+                    '<p class="no-feedback">No feedback yet.</p>'
+                }
+            </div>
+            
+            ${assignment.status !== 'completed' ? `
+                <div class="assignment-submission">
+                    <h3>Submit Your Work</h3>
+                    <textarea placeholder="Describe what you've done and include any relevant links to your work"></textarea>
+                    <button class="btn btn-success submit-work-btn" data-id="${assignment.id}">Submit Work</button>
+                </div>
+            ` : ''}
+        `;
+        
+        const submitWorkBtn = contentDiv.querySelector('.submit-work-btn');
+        if (submitWorkBtn) {
+            submitWorkBtn.addEventListener('click', function() {
+                const submissionText = contentDiv.querySelector('textarea').value;
+                if (!submissionText) {
+                    alert('Please enter a description of your work');
+                    return;
+                }
+                
+                submitAssignmentWork(assignment.id, submissionText);
+            });
+        }
+        
+        modal.style.display = 'flex';
+    }
+    
+    function submitAssignmentWork(assignmentId, submissionText) {
+        // In a real app, you would make an API call:
+        // apiClient.post(`/api/assignments/${assignmentId}/submissions`, { text: submissionText })
+        //    .then(response => {
+        //        hideModals();
+        //        alert('Your work has been submitted successfully!');
+        //        // Refresh assignments list
+        //        loadAssignments();
+        //    })
+        //    .catch(error => {
+        //        console.error('Error submitting work:', error);
+        //        alert('Failed to submit your work');
+        //    });
+        
+        console.log('Submitting work for assignment:', assignmentId, submissionText);
+        
+        // For demo, just show a success message
+        hideModals();
+        alert('Your work has been submitted successfully!');
+    }
+    
+    function submitAssignment(assignmentId) {
+        viewAssignmentDetails(assignmentId);
+    }
+    
+    function editAssignment(assignmentId) {
+        // Implement assignment editing functionality
+        alert('Edit assignment functionality would go here');
+    }
+</script>
+
+<style>
+    .assignments-container {
+        margin-top: 20px;
+    }
+    
+    .assignments-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .assignments-filter select {
+        padding: 8px 15px;
+        border-radius: 4px;
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+    }
+    
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0069d9;
+    }
+    
+    .btn-secondary {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+    
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background-color: #218838;
+    }
+    
+    .no-assignments-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 50px 20px;
+        text-align: center;
+        color: var(--secondary-color);
+    }
+    
+    .no-assignments-message i {
+        margin-bottom: 20px;
+    }
+    
+    .no-assignments-message p {
+        margin: 5px 0;
+    }
+    
+    .assignments-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .assignment-card {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .assignment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .assignment-title {
+        margin: 0;
+        font-size: 18px;
+    }
+    
+    .assignment-status {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .pending {
+        background-color: #ffc107;
+        color: #212529;
+    }
+    
+    .in-progress {
+        background-color: #17a2b8;
+        color: white;
+    }
+    
+    .completed {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .overdue {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .assignment-details {
+        padding: 15px;
+    }
+    
+    .assignment-description {
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+    
+    .assignment-meta {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        color: var(--secondary-color);
+    }
+    
+    .assignment-meta i {
+        margin-right: 5px;
+    }
+    
+    .assignment-actions {
+        display: flex;
+        gap: 10px;
+        padding: 15px;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .modal-content {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        padding: 20px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+    }
+    
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+        background-color: var(--content-bg);
+        color: var(--text-color);
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    
+    /* Assignment Details Modal */
+    .assignment-info {
+        margin-bottom: 20px;
+    }
+    
+    .assignment-description-full {
+        margin-bottom: 20px;
+    }
+    
+    .assignment-feedbacks {
+        margin-bottom: 20px;
+    }
+    
+    .feedbacks-list {
+        margin-top: 10px;
+    }
+    
+    .feedback-item {
+        background-color: var(--content-bg);
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+    
+    .feedback-text {
+        margin: 0 0 10px 0;
+    }
+    
+    .feedback-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--secondary-color);
+    }
+    
+    .no-feedback {
+        color: var(--secondary-color);
+    }
+    
+    .assignment-submission {
+        margin-top: 20px;
+    }
+    
+    .assignment-submission textarea {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+        background-color: var(--content-bg);
+        color: var(--text-color);
+    }
+</style>

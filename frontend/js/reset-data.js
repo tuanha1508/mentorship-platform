@@ -3,10 +3,28 @@
  */
 
 window.resetLocalStorage = function() {
+  /**
+   * Reset functionality for test data
+   * Allows users to reset the platform to its initial state
+   */
+
+  // Save current user to preserve login session
+  const authToken = localStorage.getItem('authToken');
+  const currentUserData = localStorage.getItem('userData');
+  
   // Clear all localStorage
   localStorage.clear();
   
-  // Reinitialize mock data - try different methods
+  // Restore auth token and user data if they existed
+  if (authToken) {
+      localStorage.setItem('authToken', authToken);
+  }
+  
+  if (currentUserData) {
+      localStorage.setItem('userData', currentUserData);
+  }
+  
+  // Reinitialize mock user data
   if (window.forceMockDataInitialization && typeof window.forceMockDataInitialization === 'function') {
     window.forceMockDataInitialization();
     console.log('Mock data reinitialized using forceMockDataInitialization.');

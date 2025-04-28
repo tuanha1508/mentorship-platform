@@ -30,7 +30,7 @@
             --background-color: #000000;
             --text-color: #ffffff;
             --sidebar-bg: #0a1929;
-            --content-bg: #121212;
+            --content-bg: #000000;
             --card-bg: #1a1a1a;
             --border-color: #333;
         }
@@ -66,6 +66,7 @@
     <div class="dashboard-container">
         <!-- Dashboard Sidebar -->
         <aside class="dashboard-sidebar">
+
             <div class="sidebar-header">
                 <img src="images/profile-placeholder.jpg" alt="Profile" class="profile-image" id="sidebar-profile-image">
                 <h3 class="user-name" id="sidebar-user-name">User Name</h3>
@@ -76,47 +77,43 @@
                 <ul>
                     <li class="mentee-element">
                         <a href="#main-dashboard" class="nav-item active" data-page="main-dashboard">
-                            <i class="fas fa-chart-line"></i> Dashboard
+                            <i class="fas fa-chart-line"></i> <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="mentee-element mentor-assigned" style="display: none;">
                         <a href="#my-mentor" class="nav-item" data-page="my-mentor">
-                            <i class="fas fa-user-tie"></i> My Mentor
+                            <i class="fas fa-user-tie"></i> <span>My Mentor</span>
                         </a>
                     </li>
                     <li class="mentee-element no-mentor" style="display: none;">
                         <a href="#search-mentor" class="nav-item" data-page="search-mentor">
-                            <i class="fas fa-search"></i> Search Mentor
+                            <i class="fas fa-search"></i> <span>Search Mentor</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="#chat" class="nav-item" data-page="chat">
-                            <i class="fas fa-comments"></i> Chat
-                        </a>
-                    </li>
+
                     <li>
                         <a href="#profile" class="nav-item" data-page="profile">
-                            <i class="fas fa-user-cog"></i> Profile
+                            <i class="fas fa-user-cog"></i> <span>Profile</span>
                         </a>
                     </li>
                     <li class="mentor-element" style="display: none;">
                         <a href="#my-mentees" class="nav-item" data-page="my-mentees">
-                            <i class="fas fa-users"></i> My Mentees
+                            <i class="fas fa-users"></i> <span>My Mentees</span>
                         </a>
                     </li>
                     <li class="mentor-element" style="display: none;">
                         <a href="#assignments" class="nav-item" data-page="assignments">
-                            <i class="fas fa-tasks"></i> Assignments
+                            <i class="fas fa-tasks"></i> <span>Assignments</span>
                         </a>
                     </li>
                     <li>
                         <a href="/" class="nav-item" id="logout-button">
-                            <i class="fas fa-sign-out-alt"></i> Logout
+                            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
                         </a>
                     </li>
                     <li>
                         <a href="#" class="nav-item" id="reset-data-button">
-                            <i class="fas fa-sync-alt"></i> Reset Test Data
+                            <i class="fas fa-sync-alt"></i> <span>Reset Test Data</span>
                         </a>
                     </li>
                 </ul>
@@ -124,7 +121,7 @@
         </aside>
 
         <!-- Dashboard Content -->
-        <main class="dashboard-content">
+        <main class="dashboard-content" id="dashboard-content">
             <header class="content-header">
                 <h2 id="page-title">Dashboard</h2>
                 <div class="header-actions">
@@ -319,6 +316,30 @@
                 console.error('Error parsing user data:', error);
                 alert('An error occurred. Please sign in again.');
                 window.location.href = '/signin';
+            }
+        });
+        
+        // Sidebar auto-hide functionality
+        const sidebar = document.querySelector('.dashboard-sidebar');
+        const content = document.getElementById('dashboard-content');
+        
+        // Function to toggle sidebar
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+            content.classList.toggle('expanded');
+        }
+        
+        // Show sidebar on hover when collapsed
+        sidebar.addEventListener('mouseenter', function() {
+            if (sidebar.classList.contains('collapsed')) {
+                toggleSidebar();
+            }
+        });
+        
+        // Auto-hide sidebar immediately when mouse leaves
+        sidebar.addEventListener('mouseleave', function() {
+            if (!sidebar.classList.contains('collapsed')) {
+                toggleSidebar();
             }
         });
         

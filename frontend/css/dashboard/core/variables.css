@@ -1,0 +1,22 @@
+:root {
+    --sidebar-width: 280px;
+    --header-height: 70px;
+    --sidebar-bg: #000000;
+    --content-bg: #000000;
+    --card-bg: #1c1e22;
+    --accent-color: #007bff;
+    --text-light: #e0e0e0;
+    --text-muted: #9e9e9e;
+    --border-color: #2a2d31;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --card-radius: 12px;
+    --github-color: #6e5494;
+    --adobe-color: #ff0000;
+    --intercom-color: #39af91;
+    --pharmacy-color: #ff7043;
+    --music-color: #673ab7;
+    --fitness-color: #4caf50;
+    --web-color: #2196f3;
+}

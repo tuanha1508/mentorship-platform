@@ -1,0 +1,86 @@
+/* Card Styles */
+.card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Stats Cards */
+.stats-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+.stats-icon {
+    background-color: rgba(0, 123, 255, 0.1);
+    color: var(--accent-color);
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 1.5rem;
+}
+
+.stats-info {
+    flex: 1;
+}
+
+.stats-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.stats-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Progress Card */
+.progress-container {
+    margin-bottom: 15px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+/* Chart Card */
+.chart-container {
+    height: 300px;
+    position: relative;
+}

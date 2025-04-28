@@ -1,0 +1,25 @@
+/* Responsive styles */
+@media (max-width: 768px) {
+    .dashboard-sidebar {
+        width: 0;
+        transform: translateX(-100%);
+    }
+    
+    .sidebar-open .dashboard-sidebar {
+        width: var(--sidebar-width);
+        transform: translateX(0);
+    }
+    
+    .dashboard-content {
+        margin-left: 0;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

@@ -29,7 +29,7 @@ class Router {
                 bodyClass: 'auth-page'
             },
             '/dashboard': {
-                page: 'pages/dashboard.html',
+                page: 'dashboard.html',
                 title: 'Dashboard - Mentorship Platform',
                 css: 'css/dashboard.css',
                 bodyClass: 'dashboard-page',
@@ -37,7 +37,7 @@ class Router {
                 js: 'js/pages/dashboard.js'
             },
             '/dashboard/my-mentor': {
-                page: 'pages/dashboard.html',
+                page: 'dashboard.html',
                 title: 'My Mentor - Mentorship Platform',
                 css: 'css/dashboard.css',
                 bodyClass: 'dashboard-page',
@@ -45,7 +45,7 @@ class Router {
                 js: 'js/pages/dashboard.js'
             },
             '/dashboard/search-mentor': {
-                page: 'pages/dashboard.html',
+                page: 'dashboard.html',
                 title: 'Find a Mentor - Mentorship Platform',
                 css: 'css/dashboard.css',
                 bodyClass: 'dashboard-page',
@@ -53,7 +53,7 @@ class Router {
                 js: 'js/pages/dashboard.js'
             },
             '/dashboard/chat': {
-                page: 'pages/dashboard.html',
+                page: 'dashboard.html',
                 title: 'Messages - Mentorship Platform',
                 css: 'css/dashboard.css',
                 bodyClass: 'dashboard-page',
@@ -61,7 +61,7 @@ class Router {
                 js: 'js/pages/dashboard.js'
             },
             '/dashboard/profile': {
-                page: 'pages/dashboard.html',
+                page: 'dashboard.html',
                 title: 'Profile - Mentorship Platform',
                 css: 'css/dashboard.css',
                 bodyClass: 'dashboard-page',

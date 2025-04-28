@@ -1,0 +1,127 @@
+/* My Mentor/Mentee Profile Card */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.profile-card .profile-image {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 15px;
+}
+
+.profile-card .user-name {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.profile-card .user-title {
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
+
+.profile-actions {
+    margin-top: 20px;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Profile Page */
+.profile-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-light);
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.profile-picture-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-picture-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 3px solid var(--accent-color);
+}
+
+.btn-upload {
+    background-color: transparent;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-upload:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn-save {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-save:hover {
+    background-color: #0069d9;
+}

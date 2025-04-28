@@ -1,0 +1,62 @@
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--content-bg);
+    color: var(--text-light);
+}
+
+/* Main Content Styles */
+.dashboard-content {
+    flex: 1;
+    padding: 20px;
+    margin-left: var(--sidebar-width);
+    transition: all 0.3s ease;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: var(--content-bg);
+}
+
+/* Expanded content when sidebar is collapsed */
+.dashboard-content.expanded {
+    margin-left: 70px; /* Adjusted for the visible part of collapsed sidebar */
+    width: calc(100% - 70px);
+}
+
+#dashboard-page-content {
+    padding: 20px;
+    overflow-y: auto;
+    height: calc(100vh - var(--header-height));
+}
+
+/* Loading animation */
+.loading-spinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(0, 123, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--accent-color);
+    animation: spin 1s ease-in-out infinite;
+    margin: 30px auto;
+    display: block;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.error-message {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(220, 53, 69, 0.1);
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}

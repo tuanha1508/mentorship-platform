@@ -1,8 +1,116 @@
 /* Responsive styles */
+/* Global scaling for all screen sizes */
+html {
+    font-size: 16px; /* Base font size */
+}
+
+/* Extra large screens */
+@media (min-width: 1600px) {
+    html {
+        font-size: 18px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
+}
+
+/* Large screens */
+@media (max-width: 1440px) {
+    :root {
+        --sidebar-width: 250px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    
+    .profile-image {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+/* Medium screens */
+@media (max-width: 1200px) {
+    html {
+        font-size: 15px;
+    }
+    
+    :root {
+        --sidebar-width: 220px;
+    }
+    
+    .dashboard-content {
+        padding: 15px;
+    }
+    
+    .content-header {
+        padding: 10px 15px;
+    }
+    
+    .profile-image {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .dashboard-grid {
+        gap: 15px;
+    }
+}
+
+/* Tablets and small laptops */
+@media (max-width: 992px) {
+    html {
+        font-size: 14px;
+    }
+    
+    :root {
+        --sidebar-width: 200px;
+        --header-height: 50px;
+    }
+    
+    .dashboard-content {
+        padding: 12px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 12px;
+    }
+    
+    .nav-item {
+        padding: 10px 15px;
+    }
+    
+    .form-row {
+        column-gap: 10px;
+    }
+    
+    .card-body {
+        padding: 12px;
+    }
+    
+    /* Adjust notification dropdown width */
+    .dropdown-menu {
+        width: 300px;
+    }
+}
+
+/* Mobile devices (landscape) and small tablets */
 @media (max-width: 768px) {
+    html {
+        font-size: 13px;
+    }
+    
     .dashboard-sidebar {
         width: 0;
         transform: translateX(-100%);
+        z-index: 1000;
     }
     
     .sidebar-open .dashboard-sidebar {
@@ -12,6 +120,13 @@
     
     .dashboard-content {
         margin-left: 0;
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .dashboard-content.expanded {
+        margin-left: 0;
+        width: 100%;
     }
     
     .dashboard-grid {
@@ -20,6 +135,110 @@
     
     .form-row {
         flex-direction: column;
-        gap: 0;
+        gap: 8px;
+    }
+    
+    .card-body {
+        padding: 10px;
+    }
+    
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    /* Add a mobile menu toggle button */
+    .mobile-menu-toggle {
+        display: block;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1001;
+        background-color: var(--card-bg);
+        color: var(--text-light);
+        border: none;
+        border-radius: 4px;
+        padding: 6px 10px;
+        cursor: pointer;
+    }
+    
+    /* Adjust notification dropdown */
+    .dropdown-menu {
+        width: 100%;
+        left: 0 !important;
+        right: 0 !important;
+        position: fixed;
+        top: var(--header-height) !important;
+    }
+}
+
+/* Mobile devices (portrait) */
+@media (max-width: 576px) {
+    html {
+        font-size: 12px;
+    }
+    
+    :root {
+        --header-height: 45px;
+    }
+    
+    .dashboard-content {
+        padding: 8px;
+    }
+    
+    .card-body {
+        padding: 8px;
+    }
+    
+    .section-title h3 {
+        font-size: 1.2rem;
+    }
+    
+    /* Adjust for forms */
+    .form-group label {
+        font-size: 0.9rem;
+    }
+    
+    .form-control {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+    
+    .btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+    
+    /* Fix table display on small screens */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    /* Fix profile layout */
+    .profile-settings-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Very small devices */
+@media (max-width: 375px) {
+    html {
+        font-size: 11px;
+    }
+    
+    .dashboard-content {
+        padding: 6px;
+    }
+    
+    .card {
+        border-radius: 8px;
     }
 }

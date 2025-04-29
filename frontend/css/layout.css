@@ -176,6 +176,57 @@ main {
 .col-12 { width: 100%; }
 
 /* Responsive layout classes */
+/* XL (Extra-large) devices */
+@media (min-width: 1600px) {
+    .container {
+        max-width: 1400px;
+    }
+
+    /* Adjust navbar for larger screens */
+    .navbar {
+        height: clamp(60px, 9vh, 80px);
+    }
+
+    /* Adjust main content for larger screens */
+    main {
+        padding: clamp(1rem, 3vw, 2rem);
+        margin-bottom: clamp(80px, 12vh, 100px);
+    }
+}
+
+/* Desktop devices (Large screens) */
+@media (max-width: 1400px) {
+    .container {
+        max-width: 1140px;
+    }
+    
+    /* Ensure navbar is sized appropriately */
+    .navbar {
+        height: clamp(55px, 8vh, 70px);
+    }
+}
+
+/* Desktop devices (Medium-large screens) */
+@media (max-width: 1200px) {
+    .container {
+        max-width: 1000px;
+    }
+    
+    /* Adjust spacing for slightly smaller screens */
+    main {
+        padding: clamp(0.7rem, 2.5vw, 1.3rem);
+    }
+    
+    .row {
+        margin: 0 -0.8rem;
+    }
+    
+    .col {
+        padding: 0 0.8rem;
+    }
+}
+
+/* Medium devices (small desktop and tablets) */
 @media (max-width: 992px) {
     .container {
         max-width: 960px;
@@ -185,6 +236,13 @@ main {
     .navbar {
         width: calc(100% - 10px);
         padding: 0 1rem;
+        height: clamp(50px, 7vh, 65px);
+    }
+    
+    /* Adjust main content padding */
+    main {
+        padding: clamp(0.6rem, 2vw, 1.2rem);
+        margin-bottom: clamp(65px, 9vh, 85px);
     }
 }
 

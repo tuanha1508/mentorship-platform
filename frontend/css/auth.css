@@ -46,9 +46,36 @@ html, body {
     justify-content: flex-start; /* Align content to top */
 }
 
+/* Responsive Styles */
+/* XL devices */
+@media (min-width: 1600px) {
+    .auth-form-container {
+        max-width: 550px;
+        padding: 2rem 2.5rem;
+    }
+}
+
+/* Large devices */
+@media (max-width: 1200px) {
+    .auth-form-container {
+        max-width: 480px;
+    }
+}
+
+/* Medium devices */
+@media (max-width: 992px) {
+    .auth-form-container {
+        max-width: 450px;
+        padding: 1.8rem;
+    }
+}
+
+/* Small devices (tablets) */
 @media (max-width: 768px) {
     .auth-form-container {
         padding: 1.5rem;
+        width: 90%;
+        max-width: 430px;
     }
     
     #signin-form {
@@ -67,13 +94,20 @@ html, body {
         flex-direction: column;
         gap: 0.5rem;
     }
+    
+    .form-control {
+        padding: 0.6rem 0.9rem;
+    }
 }
 
+/* Mobile devices */
 @media (max-width: 576px) {
     .auth-form-container {
         border: none;
         padding: 1rem;
         box-shadow: none;
+        width: 95%;
+        max-width: 100%;
     }
     
     #signin-form {
@@ -86,6 +120,12 @@ html, body {
     
     .auth-form-container h1 {
         margin-bottom: 1.2rem;
+        font-size: 1.1rem;
+    }
+    
+    .auth-subtitle {
+        font-size: 0.55rem;
+        margin-bottom: 1.2rem;
     }
     
     .form-group {
@@ -94,6 +134,79 @@ html, body {
     
     .form-control {
         padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .form-group label {
+        font-size: 0.65rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .btn-primary {
+        padding: 0.55rem;
+        font-size: 0.75rem;
+        margin: 0.8rem 0 0.6rem;
+    }
+    
+    .btn-google {
+        padding: 0.55rem;
+        font-size: 0.75rem;
+    }
+    
+    .auth-footer {
+        font-size: 0.75rem;
+    }
+    
+    .forgot-password {
+        font-size: 0.7rem;
+    }
+}
+
+/* Very small devices */
+@media (max-width: 375px) {
+    .auth-form-container {
+        padding: 0.8rem;
+        width: 100%;
+    }
+    
+    #signin-form {
+        padding-top: 50px; 
+    }
+    
+    #signup-form {
+        padding-top: 25px;
+    }
+    
+    .auth-form-container h1 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .auth-subtitle {
+        font-size: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 0.6rem;
+    }
+    
+    .form-control {
+        padding: 0.45rem 0.7rem;
+        font-size: 0.7rem;
+        border-radius: 10px;
+    }
+    
+    .btn-primary, .btn-google {
+        padding: 0.5rem;
+        font-size: 0.7rem;
+        border-radius: 18px;
+    }
+    
+    .role-label {
+        padding: 0.55rem;
+        font-size: 0.75rem;
+        border-radius: 10px;
     }
 }
 

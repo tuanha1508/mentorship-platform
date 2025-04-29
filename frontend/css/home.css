@@ -140,10 +140,85 @@ body.home-page {
 }
 
 /* ====== RESPONSIVE STYLES ====== */
+/* Extra large screens */
+@media (min-width: 1600px) {
+    .hero-content {
+        max-width: 1400px;
+    }
+    
+    .hero-title {
+        font-size: 5.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 2.5rem;
+        max-width: 800px;
+    }
+    
+    .btn-try {
+        padding: 0.4rem 1.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Large screens */
+@media (max-width: 1400px) {
+    .hero-content {
+        max-width: 1200px;
+    }
+    
+    .hero-title {
+        font-size: clamp(3rem, 7vw, 5rem);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+        max-width: 700px;
+    }
+}
+
+/* Medium-large screens */
+@media (max-width: 1200px) {
+    .hero-content {
+        max-width: 1000px;
+    }
+    
+    .hero-title {
+        font-size: clamp(2.8rem, 6vw, 4.5rem);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(1rem, 2.2vw, 1.3rem);
+        max-width: 650px;
+        margin-bottom: 2rem;
+    }
+}
+
 /* Large devices (desktops) */
 @media (max-width: 992px) {
     .hero {
         min-height: 100vh;
+    }
+    
+    .hero-content {
+        max-width: 90%;
+    }
+    
+    .hero-title {
+        font-size: clamp(2.5rem, 5.5vw, 4rem);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(0.95rem, 2vw, 1.2rem);
+        max-width: 600px;
+        margin-bottom: 1.8rem;
+    }
+    
+    .btn-try {
+        padding: 0.35rem 1.5rem;
+        font-size: 0.85rem;
     }
 }
 
@@ -151,17 +226,40 @@ body.home-page {
 @media (max-width: 768px) {
     .hero {
         align-items: center;
+        min-height: 95vh;
+    }
+    
+    .hero-content {
+        padding: clamp(8px, 2.5vh, 15px) clamp(8px, 3vw, 20px);
+    }
+    
+    .hero-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        margin-bottom: clamp(0.6rem, 2vh, 1.2rem);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+        max-width: 500px;
+        margin-bottom: clamp(1.3rem, 4vh, 2rem);
     }
     
     .hero-actions {
         flex-direction: column;
         align-items: center;
         gap: clamp(0.8rem, 2vh, 1.5rem);
+        width: 90%;
     }
     
     .btn-primary, .btn-secondary {
         width: 100%;
         max-width: min(250px, 80vw);
+    }
+    
+    .btn-try {
+        padding: 0.32rem 1.3rem;
+        font-size: 0.82rem;
+        min-width: clamp(90px, 18vw, 110px);
     }
 }
 
@@ -169,6 +267,28 @@ body.home-page {
 @media (max-width: 576px) {
     .hero {
         min-height: 90vh;
+    }
+    
+    .hero-content {
+        padding: clamp(6px, 2vh, 12px) clamp(6px, 2.5vw, 15px);
+        max-width: 95%;
+    }
+    
+    .hero-title {
+        font-size: clamp(1.8rem, 4.5vw, 3rem);
+        margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(0.85rem, 1.6vw, 1rem);
+        max-width: 450px;
+        margin-bottom: clamp(1.2rem, 3.5vh, 1.8rem);
+    }
+    
+    .btn-try {
+        padding: 0.3rem 1.2rem;
+        font-size: 0.8rem;
+        min-width: clamp(80px, 16vw, 100px);
     }
 }
 
@@ -178,14 +298,52 @@ body.home-page {
         min-height: 85vh;
     }
     
+    .hero-content {
+        max-width: 98%;
+    }
+    
+    .hero-title {
+        font-size: clamp(1.6rem, 4vw, 2.5rem);
+        margin-bottom: clamp(0.4rem, 1.2vh, 0.8rem);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+        max-width: 400px;
+        margin-bottom: clamp(1rem, 3vh, 1.5rem);
+    }
+    
     .hero-actions {
         gap: clamp(0.5rem, 2vh, 0.8rem);
+        width: 100%;
+    }
+    
+    .btn-try {
+        padding: 0.28rem 1.1rem;
+        font-size: 0.78rem;
+        border-radius: 40px;
     }
 }
 
 /* Very small devices */
 @media (max-width: 375px) {
-    /* The clamp functions now handle most of these adjustments */
+    .hero-title {
+        font-size: clamp(1.4rem, 3.8vw, 2.2rem);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(0.75rem, 1.4vw, 0.9rem);
+        max-width: 350px;
+    }
+    
+    .btn-try {
+        padding: 0.25rem 1rem;
+        font-size: 0.75rem;
+    }
+    
+    .hero-actions {
+        gap: clamp(0.4rem, 1.5vh, 0.6rem);
+    }
 }
 
 /* Height-based media queries */

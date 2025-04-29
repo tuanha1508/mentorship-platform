@@ -113,6 +113,37 @@ const UIManager = {
     
     // Initialize event listeners
     initEventListeners() {
+        // Mobile menu toggle functionality
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const sidebar = document.querySelector('.dashboard-sidebar');
+        
+        if (mobileMenuToggle && sidebar) {
+            mobileMenuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('sidebar-open');
+                this.classList.toggle('active');
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile && 
+                    !sidebar.contains(e.target) && 
+                    !mobileMenuToggle.contains(e.target) && 
+                    sidebar.classList.contains('sidebar-open')) {
+                    sidebar.classList.remove('sidebar-open');
+                    mobileMenuToggle.classList.remove('active');
+                }
+            });
+            
+            // Update sidebar state on window resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('sidebar-open');
+                    mobileMenuToggle.classList.remove('active');
+                }
+            });
+        }
+        
         const notificationElements = {
             icon: document.getElementById('notification-icon'),
             count: document.getElementById('notification-count'),

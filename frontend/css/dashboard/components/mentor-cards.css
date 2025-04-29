@@ -392,10 +392,288 @@
   }
   
   /* Responsive layout */
+  /* Extra large screens */
+  @media (min-width: 1600px) {
+    .dashboard-columns {
+      gap: 30px;
+    }
+    
+    .card {
+      padding: 20px;
+    }
+    
+    .card-title {
+      font-size: 1.2rem;
+    }
+    
+    .card-subtitle {
+      font-size: 0.95rem;
+    }
+    
+    .chart-row {
+      height: 240px;
+    }
+    
+    .simple-chart {
+      height: 240px;
+    }
+  }
+  
+  /* Large screens */
+  @media (max-width: 1400px) {
+    .dashboard-column-left { 
+      width: calc(60% - 10px); 
+      flex: 0 0 calc(60% - 10px); 
+    }
+    
+    .dashboard-column-right { 
+      width: calc(40% - 10px); 
+      flex: 0 0 calc(40% - 10px); 
+    }
+    
+    .card {
+      padding: 14px;
+    }
+    
+    .card-title {
+      font-size: 0.95rem;
+    }
+    
+    .card-subtitle {
+      font-size: 0.8rem;
+      margin: 4px 0 12px;
+    }
+  }
+  
+  /* Medium screens */
   @media (max-width: 1200px) {
-    .dashboard-columns { flex-direction: column; }
+    .dashboard-columns { 
+      flex-direction: column; 
+    }
+    
     .dashboard-column-left, .dashboard-column-right { 
       width: 100%; 
       flex: 0 0 100%; 
+    }
+    
+    .card-header {
+      margin-bottom: 12px;
+    }
+    
+    .chart-row, .simple-chart {
+      height: 180px;
+    }
+    
+    .calendar-header {
+      margin-bottom: 12px;
+    }
+    
+    .calendar-title {
+      font-size: 1rem;
+    }
+  }
+  
+  /* Tablets and small laptops */
+  @media (max-width: 992px) {
+    :root {
+      --spacing: 15px;
+      --spacing-sm: 8px;
+    }
+    
+    .dashboard-columns {
+      gap: 15px;
+    }
+    
+    .card {
+      padding: 12px;
+      min-height: 50px;
+    }
+    
+    .card-title {
+      font-size: 0.9rem;
+    }
+    
+    .card-subtitle {
+      font-size: 0.75rem;
+      margin: 3px 0 10px;
+    }
+    
+    .welcome-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .calendar-grid {
+      margin-top: 10px;
+    }
+    
+    .day {
+      padding: 6px 0;
+      font-size: 0.85rem;
+    }
+    
+    .event-item {
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .event-heading {
+      font-size: 0.85rem;
+    }
+    
+    .event-schedule {
+      font-size: 0.75rem;
+    }
+    
+    .chart-row, .simple-chart {
+      height: 160px;
+    }
+  }
+  
+  /* Mobile devices */
+  @media (max-width: 768px) {
+    :root {
+      --spacing: 12px;
+      --spacing-sm: 6px;
+    }
+    
+    .dashboard-columns {
+      gap: 12px;
+    }
+    
+    .card {
+      padding: 10px;
+      min-height: 45px;
+    }
+    
+    .card-header {
+      margin-bottom: 10px;
+    }
+    
+    .student-table-container {
+      overflow-x: auto;
+    }
+    
+    .student-table {
+      min-width: 500px;
+    }
+    
+    .chart-row, .simple-chart {
+      height: 140px;
+      margin: 10px 0 20px;
+    }
+    
+    .bar {
+      width: 14px;
+    }
+    
+    .y-label {
+      height: 30px;
+      font-size: 0.7rem;
+    }
+    
+    .month {
+      font-size: 0.7rem;
+    }
+    
+    .chart-legend {
+      flex-wrap: wrap;
+    }
+    
+    .calendar-weekdays, .calendar-days {
+      gap: 3px;
+    }
+    
+    .weekday {
+      font-size: 0.75rem;
+    }
+    
+    .day {
+      padding: 5px 0;
+      font-size: 0.8rem;
+    }
+  }
+  
+  /* Small mobile devices */
+  @media (max-width: 576px) {
+    :root {
+      --spacing: 10px;
+      --radius: 8px;
+    }
+    
+    .dashboard-columns {
+      gap: 10px;
+    }
+    
+    .card {
+      padding: 8px;
+    }
+    
+    .card-title {
+      font-size: 0.85rem;
+    }
+    
+    .card-subtitle {
+      font-size: 0.7rem;
+      margin: 2px 0 8px;
+    }
+    
+    .card-header {
+      margin-bottom: 8px;
+    }
+    
+    .chart-row, .simple-chart {
+      height: 120px;
+      margin: 8px 0 15px;
+      padding-left: 30px;
+    }
+    
+    .bar {
+      width: 10px;
+    }
+    
+    .y-labels {
+      width: 30px;
+    }
+    
+    .y-label {
+      padding-right: 5px;
+      font-size: 0.65rem;
+    }
+    
+    .event-item {
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .event-heading {
+      font-size: 0.8rem;
+      margin-bottom: 3px;
+    }
+    
+    .event-schedule {
+      font-size: 0.7rem;
+    }
+    
+    .calendar-weekdays, .calendar-days {
+      gap: 2px;
+    }
+    
+    .day {
+      padding: 4px 0;
+      font-size: 0.75rem;
+    }
+    
+    .legend-item {
+      gap: 3px;
+    }
+    
+    .legend-color {
+      width: 10px;
+      height: 10px;
+    }
+    
+    .legend-label {
+      font-size: 0.7rem;
     }
   }

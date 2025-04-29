@@ -1,4 +1,4 @@
-<!-- Profile Page for User Settings and Information -->
+<!-- Profile Page -->
 <div class="profile-page">
     <div class="row">
         <form class="profile-form" id="profile-form">
@@ -14,59 +14,49 @@
             </div>
                 
             <div class="form-columns">
-                <!-- Left Column -->
+                <!-- Personal Information -->
                 <div class="form-column">
                     <div class="section-container">
                         <h4 class="section-title">Personal Information</h4>
-                            
                         <div class="form-row">
                             <div class="form-group">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <input type="text" id="firstName" class="form-control" placeholder="Your first name">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" id="firstName" class="form-control" placeholder="Your first name">
                             </div>
-                                
                             <div class="form-group">
-                            <label for="lastName" class="form-label">Last Name</label>
-                            <input type="text" id="lastName" class="form-control" placeholder="Your last name">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" id="lastName" class="form-control" placeholder="Your last name">
                             </div>
                         </div>
-                            
                         <div class="form-group">
                             <label for="email" class="form-label">Email Address</label>
                             <input type="email" id="email" class="form-control" placeholder="Your email address">
                         </div>
-                            
                         <div class="form-row">
                             <div class="form-group">
-                            <label for="title" class="form-label">Title/Position</label>
-                            <input type="text" id="title" class="form-control" placeholder="e.g., Software Developer, Student, etc.">
+                                <label for="title" class="form-label">Title/Position</label>
+                                <input type="text" id="title" class="form-control" placeholder="e.g., Software Developer, Student, etc.">
                             </div>
-                                
                             <div class="form-group">
-                            <label for="location" class="form-label">Location</label>
-                            <input type="text" id="location" class="form-control" placeholder="City, Country">
+                                <label for="location" class="form-label">Location</label>
+                                <input type="text" id="location" class="form-control" placeholder="City, Country">
                             </div>
                         </div>
-                            
                         <div class="form-group">
                             <label for="bio" class="form-label">Bio</label>
                             <textarea id="bio" class="form-control" placeholder="Tell us about yourself..." rows="4"></textarea>
                         </div>
                     </div>
-                        
-
                 </div>
                     
-                <!-- Middle Column -->
+                <!-- Skills and Learning -->
                 <div class="form-column">
                     <div class="section-container">
                         <h4 class="section-title">Skills</h4>
                         <div class="form-group">
                             <label class="form-label">Your Skills</label>
                             <div class="skills-input-container">
-                                <div class="skills-tags" id="skills-container">
-                                    <!-- Skills will be added here dynamically -->
-                                </div>
+                                <div class="skills-tags" id="skills-container"></div>
                                 <div class="skills-input-wrap">
                                     <input type="text" id="skills-input" class="form-control" placeholder="Add a skill and press Enter">
                                 </div>
@@ -76,7 +66,6 @@
                         
                     <div class="section-container">
                         <h4 class="section-title">Learning Preferences</h4>
-                            
                         <div class="form-group">
                             <label class="form-label">Areas of Interest</label>
                             <div id="interests-container" class="interests-checkbox-container">
@@ -114,42 +103,38 @@
                                 </div>
                             </div>
                         </div>
-                            
                         <div class="form-group">
                             <label for="learning-goal" class="form-label">Learning Goals</label>
                             <textarea id="learning-goal" class="form-control" placeholder="What do you want to achieve through mentorship?" rows="3"></textarea>
                         </div>
-                            
                         <div class="form-row">
                             <div class="form-group">
-                            <label for="availability" class="form-label">Preferred Availability</label>
-                            <select id="availability" class="form-control">
-                                <option value="">Select availability</option>
-                                <option value="weekdays">Weekdays</option>
-                                <option value="evenings">Evenings</option>
-                                <option value="weekends">Weekends</option>
-                                <option value="flexible">Flexible</option>
+                                <label for="availability" class="form-label">Preferred Availability</label>
+                                <select id="availability" class="form-control">
+                                    <option value="">Select availability</option>
+                                    <option value="weekdays">Weekdays</option>
+                                    <option value="evenings">Evenings</option>
+                                    <option value="weekends">Weekends</option>
+                                    <option value="flexible">Flexible</option>
                                 </select>
                             </div>
-                                
                             <div class="form-group">
-                            <label for="session-preference" class="form-label">Session Preference</label>
-                            <select id="session-preference" class="form-control">
-                                <option value="">Select preference</option>
-                                <option value="one-on-one">One-on-One</option>
-                                <option value="group">Group Sessions</option>
-                                <option value="both">Both</option>
+                                <label for="session-preference" class="form-label">Session Preference</label>
+                                <select id="session-preference" class="form-control">
+                                    <option value="">Select preference</option>
+                                    <option value="one-on-one">One-on-One</option>
+                                    <option value="group">Group Sessions</option>
+                                    <option value="both">Both</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
                     
-                <!-- Right Column (Account Settings) -->
+                <!-- Social and Account -->
                 <div class="form-column">
                     <div class="section-container">
                         <h4 class="section-title">Social Profiles</h4>
-                            
                         <div class="form-group">
                             <label for="linkedin" class="form-label">LinkedIn</label>
                             <div class="input-group">
@@ -159,7 +144,6 @@
                                 <input type="text" id="linkedin" class="form-control" placeholder="LinkedIn profile URL">
                             </div>
                         </div>
-                            
                         <div class="form-group">
                             <label for="github" class="form-label">GitHub</label>
                             <div class="input-group">
@@ -169,7 +153,6 @@
                                 <input type="text" id="github" class="form-control" placeholder="GitHub profile URL">
                             </div>
                         </div>
-                            
                         <div class="form-group">
                             <label for="portfolio" class="form-label">Portfolio Website</label>
                             <div class="input-group">
@@ -183,48 +166,46 @@
 
                     <div class="section-container">
                         <h4 class="section-title">Account Settings</h4>
-                            
                         <div class="form-group">
                             <label for="current-password" class="form-label">Current Password</label>
                             <input type="password" id="current-password" class="form-control" placeholder="Enter your current password">
                         </div>
-                            
                         <div class="form-row">
                             <div class="form-group">
-                            <label for="new-password" class="form-label">New Password</label>
-                            <input type="password" id="new-password" class="form-control" placeholder="Enter new password">
+                                <label for="new-password" class="form-label">New Password</label>
+                                <input type="password" id="new-password" class="form-control" placeholder="Enter new password">
                             </div>
-                                
                             <div class="form-group">
-                            <label for="confirm-password" class="form-label">Confirm New Password</label>
-                            <input type="password" id="confirm-password" class="form-control" placeholder="Confirm new password">
+                                <label for="confirm-password" class="form-label">Confirm New Password</label>
+                                <input type="password" id="confirm-password" class="form-control" placeholder="Confirm new password">
                             </div>
                         </div>
                     </div>
                 </div>
-                </div>
+            </div>
                 
+            <!-- Action Buttons -->
             <div class="form-actions">
-                    <a href="#delete-modal" type="button" id="btn-delete-profile" class="btn-delete">Delete Profile</a>
-                    <button type="submit" class="btn-save">Save Changes</button>
-                </div>
+                <a href="#delete-modal" type="button" id="btn-delete-profile" class="btn-delete">Delete Profile</a>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </div>
                 
-                <!-- Delete Confirmation Modal - Pure CSS -->
-                <div id="delete-modal" class="modal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4>Delete Profile</h4>
-                            <a href="#" class="modal-close">&times;</a>
-                        </div>
-                        <div class="modal-body">
-                            <p>Are you sure you want to delete your profile? This action cannot be undone.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <a href="#" class="btn-cancel">Cancel</a>
-                            <button type="button" id="confirm-delete" class="btn-delete">Delete</button>
-                        </div>
+            <!-- Delete Modal -->
+            <div id="delete-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>Delete Profile</h4>
+                        <a href="#" class="modal-close">&times;</a>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete your profile? This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn-cancel">Cancel</a>
+                        <button type="button" id="confirm-delete" class="btn-delete">Delete</button>
                     </div>
                 </div>
+            </div>
         </form>
     </div>
 </div>

@@ -1,4 +1,4 @@
-/* My Mentor/Mentee Profile Card */
+/* Profile Card */
 .profile-card {
     display: flex;
     flex-direction: column;
@@ -51,7 +51,7 @@
 /* Profile Page */
 .profile-page {
     padding: 15px 0;
-    height: calc(100vh - 150px); /* Reduced height */
+    height: calc(100vh - 150px);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -65,7 +65,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 180px); /* Reduced max-height */
+    max-height: calc(100vh - 180px);
 }
 
 /* Profile Header */
@@ -277,7 +277,6 @@
     transform: translateX(3px);
 }
 
-
 .interest-checkbox input[type="checkbox"] {
     appearance: none;
     -webkit-appearance: none;
@@ -474,7 +473,7 @@
     }
 }
 
-/* Highlight active section */
+/* Active Section Highlight */
 .section-container:focus-within {
     box-shadow: 0 0 15px rgba(247, 248, 249, 0.679);
     border-color: rgba(240, 243, 247, 0.73);

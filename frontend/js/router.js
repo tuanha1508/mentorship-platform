@@ -34,7 +34,7 @@ class Router {
                 css: 'css/dashboard.css',
                 bodyClass: 'dashboard-page',
                 requiresAuth: true,
-                js: 'js/pages/dashboard.js'
+                js: 'js/pages/dashboard/index.js'
             },
             '/dashboard/my-mentor': {
                 page: 'dashboard.html',
@@ -42,7 +42,7 @@ class Router {
                 css: 'css/dashboard.css',
                 bodyClass: 'dashboard-page',
                 requiresAuth: true,
-                js: 'js/pages/dashboard.js'
+                js: 'js/pages/dashboard/index.js'
             },
             '/dashboard/search-mentor': {
                 page: 'dashboard.html',
@@ -50,7 +50,7 @@ class Router {
                 css: 'css/dashboard.css',
                 bodyClass: 'dashboard-page',
                 requiresAuth: true,
-                js: 'js/pages/dashboard.js'
+                js: 'js/pages/dashboard/index.js'
             },
             '/dashboard/chat': {
                 page: 'dashboard.html',
@@ -58,7 +58,7 @@ class Router {
                 css: 'css/dashboard.css',
                 bodyClass: 'dashboard-page',
                 requiresAuth: true,
-                js: 'js/pages/dashboard.js'
+                js: 'js/pages/dashboard/index.js'
             },
             '/dashboard/profile': {
                 page: 'dashboard.html',
@@ -66,7 +66,7 @@ class Router {
                 css: 'css/dashboard.css',
                 bodyClass: 'dashboard-page',
                 requiresAuth: true,
-                js: 'js/pages/dashboard.js'
+                js: 'js/pages/dashboard/index.js'
             }
         };
         
@@ -358,6 +358,11 @@ class Router {
             // Create script element and load it
             const script = document.createElement('script');
             script.src = jsFile;
+            
+            // Add type="module" for dashboard module script
+            if (jsFile.includes('dashboard/index.js')) {
+                script.type = 'module';
+            }
             script.setAttribute('data-page-script', 'true'); // Mark as page script for easy cleanup
             
             // Handle script load event
@@ -365,9 +370,8 @@ class Router {
                 console.log('Script loaded successfully:', jsFile);
                 
                 // Initialize dashboard if it's the dashboard script
-                if (jsFile.includes('dashboard.js') && typeof Dashboard !== 'undefined') {
-                    Dashboard.init();
-                }
+                // Dashboard initialization is handled inside the module
+                // Module scripts can't expose global variables directly
             };
             
             // Handle script loading error

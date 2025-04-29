@@ -44,7 +44,6 @@
                             <i class="fas fa-search"></i> <span>Search Mentor</span>
                         </a>
                     </li>
-
                     <li>
                         <a href="#profile" class="nav-item" data-page="profile">
                             <i class="fas fa-user-cog"></i> <span>Profile</span>
@@ -114,7 +113,7 @@
     <!-- Connection service using localStorage -->
     <script src="js/services/connectionService.js"></script>
     <script src="js/reset-data.js"></script>
-    <script src="js/pages/dashboard.js"></script>
+    <script src="js/pages/dashboard/index.js" type="module"></script>
     
     <script>
         // Remove any navbar elements that might be injected by other scripts
@@ -215,7 +214,8 @@
                                 'chat': 'Messages',
                                 'profile': 'Edit Profile',
                                 'my-mentees': 'My Mentees',
-                                'assignments': 'Assignments'
+                                'assignments': 'Assignments',
+                                'connection-requests': 'Connection Requests'
                             };
                             pageTitle.textContent = titles[page] || 'Dashboard';
                         }

@@ -1,0 +1,26 @@
+<!-- Connection Requests Page -->
+<div class="dashboard-page connection-requests-page active">
+    <div class="page-header">
+        <h2>Connection Requests</h2>
+    </div>
+    
+    <div class="requests-container">
+        <!-- Connection requests will be dynamically inserted here by ConnectionManager.renderConnectionRequests() -->
+        <div class="empty-state">Loading connection requests...</div>
+    </div>
+</div>
+
+<script>
+    // This script will run when the page is loaded
+    if (window.Dashboard && typeof window.Dashboard.syncMentorshipStatus === 'function') {
+        window.Dashboard.syncMentorshipStatus();
+    }
+    
+    if (window.Dashboard && window.Dashboard.currentPage === 'connection-requests') {
+        import('../../js/pages/dashboard/connectionManager.js').then(module => {
+            const ConnectionManager = module.default;
+            // Render connection requests
+            setTimeout(() => ConnectionManager.renderConnectionRequests(), 100);
+        });
+    }
+</script>

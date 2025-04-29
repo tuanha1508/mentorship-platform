@@ -1,86 +1,655 @@
-/* Card Styles */
+/* Dashboard Cards Styling */
+
+/* General Card Styles */
 .card {
-    background-color: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    overflow: hidden;
+    background-color: #161918;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    transition: transform 0.2s ease;
+    min-height: 60px; /* Reduced height */
+    max-height: 100px; /* Max height for compact cards */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.card-header {
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--border-color);
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    color: #ffffff;
+    font-size: 1rem;
+    margin-bottom: 8px;
     font-weight: 600;
     display: flex;
+    align-items: center;
+}
+
+.card-text {
+    color: #a1a5b7;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+}
+
+/* Dashboard Grid Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+/* Dashboard Two Column Layout */
+.dashboard-columns {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+
+.dashboard-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dashboard-column-left {
+    width: calc(65% - 10px); /* 65% minus half the gap */
+    flex: 0 0 calc(65% - 10px); /* Fixed width, accounting for gap */
+}
+
+.dashboard-column-right {
+    width: calc(35% - 10px); /* 35% minus half the gap */
+    flex: 0 0 calc(35% - 10px); /* Fixed width, accounting for gap */
+    min-width: calc(35% - 10px); /* Ensure minimum width */
+}
+
+.dashboard-column .card {
+    width: 100%;
+    margin-bottom: 0;
+    max-height: none;
+}
+
+/* Dashboard Cards Row Layout */
+.dashboard-cards-row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    margin-bottom: 0; /* Removed bottom margin to rely on parent gap */
+}
+
+.dashboard-cards-row .welcome-card {
+    flex: 0.65; /* 65% width */
+}
+
+.dashboard-cards-row .streak-card {
+    flex: 0.35; /* 35% width */
+}
+
+/* Welcome Card Styles */
+.welcome-card {
+    display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
 }
 
-.card-body {
-    padding: 20px;
-}
-
-/* Stats Cards */
-.stats-card {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-}
-
-.stats-icon {
-    background-color: rgba(0, 123, 255, 0.1);
-    color: var(--accent-color);
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 15px;
-    font-size: 1.5rem;
-}
-
-.stats-info {
+.welcome-card .card-content {
     flex: 1;
 }
 
-.stats-value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 5px;
+.wave-emoji {
+    margin-left: 5px;
+    font-size: 1.2rem;
 }
 
-.stats-label {
-    color: var(--text-muted);
-    font-size: 0.9rem;
+.card-action {
+    margin-left: 10px;
 }
 
-/* Progress Card */
-.progress-container {
-    margin-bottom: 15px;
+.view-profile-btn {
+    background-color: #212333;
+    color: #a1a5b7;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.progress-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
+.view-profile-btn:hover {
+    background-color: #282c40;
 }
 
-.progress-bar {
-    height: 8px;
-    background-color: var(--border-color);
-    border-radius: 4px;
+/* Streak Card Styles */
+.streak-card {
+    position: relative;
     overflow: hidden;
 }
 
-.progress-fill {
-    height: 100%;
-    background-color: var(--accent-color);
-    transition: width 0.3s ease;
+.streak-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #8e2de2, #4a00e0);
 }
 
-/* Chart Card */
-.chart-container {
-    height: 300px;
+.streak-card .card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.streak-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.streak-icon {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+.streak-details {
+    flex: 1;
+}
+
+.streak-number {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #8e2de2;
+    margin-left: 5px;
+}
+
+.streak-message {
+    color: #a1a5b7;
+    font-size: 0.85rem;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Card Layouts for Dashboard */
+
+/* Card Layouts in Dashboard Columns */
+/* Activity and Performance cards side by side in the left column */
+.dashboard-column-left .dashboard-cards-row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Make activity and performance cards each take 50% of the row */
+.dashboard-column-left .dashboard-cards-row .activity-card,
+.dashboard-column-left .dashboard-cards-row .performance-card {
+    flex: 1;
+    width: calc(50% - 10px); /* 50% minus half of the gap */
+    max-width: calc(50% - 10px);
+    max-height: none;
+}
+
+/* Make streak card and calendar card take full width of right column */
+.dashboard-column-right .card {
+    width: 100%;
+    max-height: none;
+}
+
+/* Activity Card Styles */
+.activity-card {
+    max-height: 250px;
+}
+
+.activity-chart {
+    height: 160px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 20px;
+}
+
+.bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    flex: 1;
+}
+
+.bar {
+    width: 15px;
+    background-color: #3b3f5c;
+    border-radius: 4px;
+}
+
+.bar.highlight {
+    background-color: #00e396;
+}
+
+.activity-card .bar-label {
+    color: #a1a5b7;
+    font-size: 0.7rem;
+    margin-top: 5px;
+}
+
+/* Performance Card Styles */
+.performance-card {
+    max-height: 250px;
+}
+
+.performance-chart {
+    height: 120px;
+    margin-top: 10px;
+}
+
+.line-chart {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.line-chart-svg {
+    height: 100px;
+    width: 100%;
+}
+
+.chart-line {
+    fill: none;
+    stroke: #00e396;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.chart-point {
+    fill: #1a1d2d;
+    stroke: #00e396;
+    stroke-width: 2;
+}
+
+.chart-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.chart-labels span {
+    color: #a1a5b7;
+    font-size: 0.7rem;
+}
+
+.performance-comparison {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 0.8rem;
+}
+
+.performance-comparison.down .percentage {
+    color: #ff5252;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.performance-comparison.up .percentage {
+    color: #00e396; 
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.comparison-text {
+    color: #a1a5b7;
+    font-size: 0.75rem;
+}
+
+/* Calendar Card Styles */
+.calendar-card {
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    min-height: 520px; /* Increased height to match recent sessions card */
+}
+
+.calendar-card .card-content {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
+/* Calendar Header */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #2a2e42;
+}
+
+.calendar-title {
+    color: #ffffff;
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 500;
+}
+
+.calendar-nav {
+    background: none;
+    border: none;
+    color: #a1a5b7;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 2px 5px;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    padding: 10px 15px;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.weekday {
+    color: #a1a5b7;
+    font-size: 0.7rem;
+    padding: 5px 0;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+}
+
+.day {
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding: 5px 0;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px auto;
+    cursor: pointer;
     position: relative;
+}
+
+.day.empty {
+    color: transparent;
+}
+
+.day.current {
+    background-color: #00e396;
+    color: #000;
+}
+
+.day.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: #00e396;
+    border-radius: 50%;
+}
+
+/* Recent Sessions Card Styles */
+.recent-sessions-card {
+    max-height: none;
+    height: auto;
+    margin-bottom: 0; /* Removed bottom margin to rely on parent gap */
+}
+
+.recent-sessions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px; /* Reduced bottom margin */
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    background-color: #1c1e1f;
+    color: #a1a5b7;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-toggle:hover {
+    background-color: #282c40;
+}
+
+.dropdown-arrow {
+    font-size: 0.6rem;
+    margin-left: 5px;
+}
+
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Reduced gap between session items */
+}
+
+.session-item {
+    display: flex;
+    background-color: #1c1e1f;
+    border-radius: 8px;
+    padding: 10px; /* Reduced padding */
+    gap: 10px; /* Reduced gap */
+}
+
+.session-profile {
+    flex-shrink: 0;
+}
+
+.session-avatar {
+    width: 36px; /* Reduced size */
+    height: 36px; /* Reduced size */
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.session-details {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.session-info {
+    flex: 1;
+}
+
+.session-title {
+    color: #a1a5b7;
+    font-size: 0.7rem; /* Reduced font size */
+    font-weight: 400;
+    margin: 0 0 1px 0; /* Reduced margin */
+}
+
+.mentor-name {
+    color: #21b28c;
+    font-size: 0.8rem; /* Reduced font size */
+    font-weight: 600;
+    margin: 0 0 3px 0; /* Reduced margin */
+}
+
+.session-time {
+    color: #a1a5b7;
+    font-size: 0.7rem; /* Reduced font size */
+}
+
+.date-icon, .time-icon {
+    margin-right: 2px;
+}
+
+.time-icon {
+    margin-left: 8px;
+}
+
+.session-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.join-session-btn {
+    background-color: #21b28c;
+    color: white;
+    border: none;
+    padding: 4px 8px; /* Reduced padding */
+    border-radius: 6px;
+    font-size: 0.7rem; /* Reduced font size */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.join-session-btn:hover {
+    background-color: #0069d9;
+}
+
+.message-btn {
+    background-color: #2e3144;
+    color: #a1a5b7;
+    border: none;
+    padding: 4px 8px; /* Reduced padding */
+    border-radius: 6px;
+    font-size: 0.7rem; /* Reduced font size */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.message-btn:hover {
+    background-color: #393d56;
+}
+
+.past-session .session-title {
+    color: #8a8d99;
+}
+
+/* Calendar Footer Styles */
+.calendar-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    border-top: 1px solid #2a2e42;
+    border-bottom: 1px solid #2a2e42;
+}
+
+.today-label {
+    color: #a1a5b7;
+    font-size: 0.8rem;
+}
+
+.today-date {
+    color: #ffffff;
+    font-size: 0.8rem;
+}
+
+/* Schedule */
+.schedule {
+    padding: 10px 0;
+    max-height: 200px;
+    overflow-y: auto;
+    /* Hide scrollbar but keep functionality */
+    -ms-overflow-style: none;  /* Internet Explorer and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide WebKit scrollbar (Chrome, Safari, Opera) */
+.schedule::-webkit-scrollbar {
+    display: none;
+}
+
+.time-slot {
+    display: flex;
+    position: relative;
+    padding: 0 15px;
+    min-height: 40px;
+}
+
+.time {
+    color: #a1a5b7;
+    font-size: 0.7rem;
+    width: 60px;
+    margin-right: 15px;
+}
+
+.event {
+    position: absolute;
+    left: 85px;
+    right: 15px;
+    padding: 10px 12px;
+    border-radius: 5px;
+    margin-top: -5px;
+    z-index: 1;
+    height: auto;
+    min-height: min-content;
+}
+
+.event.mentorship {
+    background-color: #6f42c1;
+}
+
+.event.english {
+    background-color: #9c27b0;
+}
+
+.event-title {
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.event-details {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.7rem;
+}
+
+.event-time {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.7rem;
 }

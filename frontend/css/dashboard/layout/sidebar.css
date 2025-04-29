@@ -1,7 +1,7 @@
 /* Sidebar Styles */
 .dashboard-sidebar {
     width: var(--sidebar-width);
-    background-color: #000000; /* Direct black background */
+    background-color: #101312; /* Direct black background */
     color: var(--text-light);
     height: 100vh;
     overflow-y: auto;
@@ -20,7 +20,7 @@
 /* Collapsed sidebar styles */
 .dashboard-sidebar.collapsed {
     width: 70px;
-    background-color: #000000;
+    background-color: #101312;
 }
 
 /* Hide profile elements when sidebar is collapsed */
@@ -81,7 +81,7 @@
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 15px;
-    border: 2px solid var(--accent-color);
+    border: 2px solid white;
 }
 
 .user-info {
@@ -163,8 +163,8 @@
 }
 
 .nav-item.active {
-    background-color: rgba(0, 123, 255, 0.15);
-    color: var(--accent-color);
+    background-color: rgba(255, 247, 255, 0.873);
+    color: black;
     font-weight: 500;
 }
 

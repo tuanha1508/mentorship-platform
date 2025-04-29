@@ -13,7 +13,7 @@
     margin-left: var(--sidebar-width);
     transition: all 0.3s ease;
     height: 100vh;
-    overflow-y: auto;
+    overflow-y: hidden;
     background-color: var(--content-bg);
 }
 
@@ -24,8 +24,8 @@
 }
 
 #dashboard-page-content {
-    padding: 20px;
-    overflow-y: auto;
+    padding-top: 10px;
+    overflow-y: hidden;
     height: calc(100vh - var(--header-height));
 }
 
@@ -59,4 +59,11 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
+}
+
+/* Dashboard Page */
+.dashboard-page {
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
 }

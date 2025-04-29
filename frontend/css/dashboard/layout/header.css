@@ -1,16 +1,24 @@
 .content-header {
     height: var(--header-height);
-    padding: 0 5px;
+    padding: 0 15px;
     display: flex;
-    align-items: center;
+    align-items: top;
     justify-content: space-between;
     background-color: var(--content-bg);
     border-bottom: 1px solid var(--border-color);
     position: sticky;
-    top: 0;
+    top: 0px;
     width: 100%;
     z-index: 10;
-    margin-bottom: 20px;
+}
+
+#page-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    position: absolute;
+    top: 5px;
+    left: 15px;
 }
 
 .header-left {
@@ -19,9 +27,9 @@
 }
 
 .header-left h2 {
-    font-size: 1.5rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    margin-right: 30px;
+    margin-right: 25px;
 }
 
 .user-stats {
@@ -35,7 +43,7 @@
 }
 
 .stat-value {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 600;
 }
 
@@ -47,7 +55,9 @@
 .header-actions {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 15px;
+    height: 100%;
 }
 
 .search-bar {
@@ -57,12 +67,12 @@
 
 .search-bar input {
     width: 100%;
-    padding: 10px 15px 10px 40px;
+    padding: 8px 15px 8px 40px;
     border-radius: 6px;
     border: none;
     background-color: rgba(255, 255, 255, 0.05);
     color: var(--text-light);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .search-bar i {

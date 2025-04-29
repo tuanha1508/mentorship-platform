@@ -1,8 +1,8 @@
 :root {
     --sidebar-width: 280px;
-    --header-height: 70px;
-    --sidebar-bg: #000000;
-    --content-bg: #000000;
+    --header-height: 55px;
+    --sidebar-bg: #101312;
+    --content-bg: #101312;
     --card-bg: #1c1e22;
     --accent-color: #007bff;
     --text-light: #e0e0e0;

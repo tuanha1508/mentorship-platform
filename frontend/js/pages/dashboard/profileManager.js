@@ -156,7 +156,7 @@ const ProfileManager = {
         }
         
         setTimeout(() => {
-          window.location.href = '/signin';
+          window.location.href = '/signin.html';
         }, 2000);
       });
     }

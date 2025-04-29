@@ -123,52 +123,64 @@ class Router {
             route = '/' + route;
         }
         
+        // Add exit animation to current content if possible
+        if (this.appContainer.children.length) {
+            this.appContainer.classList.add('slide-exit');
+            
+            // Force a reflow to ensure animation works properly
+            void this.appContainer.offsetWidth;
+            
+            this.appContainer.classList.add('slide-exit-active');
+        }
+        
         // Update browser history
         window.history.pushState({}, '', route);
         
         // Update current route
         this.currentRoute = route;
         
-        // Render the page
-        this.handleRouteChange();
+        // Short delay to allow exit animation to start
+        setTimeout(() => {
+            // Remove exit animation classes
+            this.appContainer.classList.remove('slide-exit');
+            this.appContainer.classList.remove('slide-exit-active');
+            
+            // Render the page
+            this.handleRouteChange();
+        }, 100);
     }
     
     createTransitionOverlay() {
         // Create transition overlay if it doesn't exist
         let overlay = document.getElementById('page-transition-overlay');
         if (!overlay) {
+            // Load the transitions CSS if not already loaded
+            if (!document.querySelector('link[href="css/transitions.css"]')) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = 'css/transitions.css';
+                link.id = 'transitions-css';
+                document.head.appendChild(link);
+            }
+            
+            // Create the overlay element
             overlay = document.createElement('div');
             overlay.id = 'page-transition-overlay';
             overlay.classList.add('page-transition-overlay');
-            document.body.appendChild(overlay);
             
-            // Add the style for the overlay if it doesn't exist
-            if (!document.getElementById('transition-overlay-style')) {
-                const style = document.createElement('style');
-                style.id = 'transition-overlay-style';
-                style.textContent = `
-                    .page-transition-overlay {
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background-color: #121212;
-                        z-index: 9999;
-                        opacity: 0;
-                        pointer-events: none;
-                        transition: opacity 0.6s ease;
-                    }
-                    .page-transition-overlay.visible {
-                        opacity: 1;
-                        pointer-events: all;
-                    }
-                    .page-transition-overlay.fade-out {
-                        opacity: 0;
-                    }
-                `;
-                document.head.appendChild(style);
+            // Create loader element
+            const loader = document.createElement('div');
+            loader.className = 'page-loader';
+            
+            // Add loader circles
+            for (let i = 0; i < 3; i++) {
+                const circle = document.createElement('div');
+                circle.className = 'loader-circle';
+                loader.appendChild(circle);
             }
+            
+            overlay.appendChild(loader);
+            document.body.appendChild(overlay);
         }
         this.transitionOverlay = overlay;
     }
@@ -212,48 +224,183 @@ class Router {
         this.appContainer.style.opacity = '0';
         this.appContainer.style.transform = 'translateY(10px)';
         
-        // Load CSS first, then content
-        this.updatePageCSS(route.css)
+        // Show loading animation in the overlay
+        this.showLoadingAnimation();
+        
+        // Preload CSS to ensure it's in the browser cache
+        this.preloadCSS(route.css)
             .then(() => {
-                // Clear the container immediately
+                // Clear the container immediately before loading the page
                 this.appContainer.innerHTML = '';
                 
-                // Load new page content
-                this.loadPage(route.page, false, route.js);
+                // Add slide-enter class to prepare for animation
+                this.appContainer.classList.add('slide-enter');
+                
+                // Start loading content and CSS in parallel
+                return Promise.all([
+                    this.updatePageCSS(route.css),
+                    this.fetchPageContent(route.page)
+                ]);
+            })
+            .then(([_, html]) => {
+                // Insert the HTML content
+                this.appContainer.innerHTML = html;
+                
+                // Load page-specific JavaScript
+                if (route.js) {
+                    this.loadPageScript(route.js);
+                } else {
+                    this.initPageScripts();
+                }
+                
+                // Force a reflow to ensure animation works properly
+                void this.appContainer.offsetWidth;
+                
+                // Start entrance animation
+                this.appContainer.classList.add('slide-enter-active');
+                this.appContainer.classList.remove('slide-enter');
+                
+                // Short delay to ensure all CSS is properly applied
+                setTimeout(() => {
+                    // Hide the loading animation
+                    this.hideLoadingAnimation();
+                    
+                    // Apply smooth transition to make content fully visible
+                    this.appContainer.style.opacity = '1';
+                    this.appContainer.style.transform = 'translateY(0)';
+                    
+                    // Hide the transition overlay with a nice fade
+                    setTimeout(() => {
+                        this.transitionOverlay.classList.add('fade-out');
+                        setTimeout(() => {
+                            this.transitionOverlay.classList.remove('visible');
+                            this.transitionOverlay.classList.remove('fade-out');
+                            // Clean up animation classes
+                            this.appContainer.classList.remove('slide-enter-active');
+                        }, 500); // Match the CSS transition duration
+                    }, 200);
+                    
+                    // Dispatch event after page load
+                    document.dispatchEvent(new CustomEvent('route:after'));
+                }, 150);
             });
     }
     
+    /**
+     * Preload a CSS file to ensure it's in the browser cache
+     * @param {string} cssFile - Path to the CSS file
+     * @returns {Promise} - Resolves when the CSS is preloaded
+     */
+    preloadCSS(cssFile) {
+        return new Promise((resolve) => {
+            // Skip preloading if no CSS file specified
+            if (!cssFile || cssFile === 'css/global.css' || cssFile === 'css/layout.css') {
+                resolve();
+                return;
+            }
+            
+            // Check if this CSS is already loaded
+            const existingLink = document.querySelector(`link[href='${cssFile}']`);
+            if (existingLink) {
+                resolve();
+                return;
+            }
+            
+            // Create a preload link
+            const preloadLink = document.createElement('link');
+            preloadLink.rel = 'preload';
+            preloadLink.as = 'style';
+            preloadLink.href = cssFile;
+            
+            preloadLink.onload = () => {
+                resolve();
+            };
+            
+            preloadLink.onerror = () => {
+                console.warn(`Failed to preload CSS: ${cssFile}`);
+                resolve(); // Resolve anyway to not block navigation
+            };
+            
+            document.head.appendChild(preloadLink);
+        });
+    }
+    
+    /**
+     * Update the page-specific CSS
+     * @param {string} cssFile - Path to the CSS file
+     * @returns {Promise} - Resolves when the CSS is loaded and applied
+     */
     updatePageCSS(cssFile) {
         return new Promise((resolve) => {
             // Remove previous page-specific CSS if it exists
             const oldPageCSS = document.querySelector('link[data-page-css]');
-            if (oldPageCSS) {
-                oldPageCSS.remove();
+            
+            // Create and add the new CSS link if needed
+            if (cssFile && cssFile !== 'css/global.css' && cssFile !== 'css/layout.css') {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = cssFile;
+                link.setAttribute('data-page-css', '');
+                
+                // Wait for the CSS to load before removing old CSS and resolving
+                link.onload = () => {
+                    // Remove old CSS only after new CSS is loaded
+                    if (oldPageCSS) {
+                        oldPageCSS.remove();
+                    }
+                    
+                    // Add a small delay to ensure browser has applied styles
+                    setTimeout(() => resolve(), 100);
+                };
+                
+                link.onerror = () => {
+                    console.error(`Failed to load CSS: ${cssFile}`);
+                    if (oldPageCSS) {
+                        oldPageCSS.remove();
+                    }
+                    // Still resolve to not block navigation, but with a shorter delay
+                    setTimeout(() => resolve(), 50);
+                };
+                
+                document.head.appendChild(link);
+            } else {
+                // If no new CSS needed, just remove old CSS and resolve
+                if (oldPageCSS) {
+                    oldPageCSS.remove();
+                }
+                resolve();
             }
-            
-            // If no page-specific CSS needed, resolve immediately
-            if (!cssFile || cssFile === 'css/global.css' || cssFile === 'css/layout.css') {
-                // Add a small delay even if no new CSS to load
-                setTimeout(() => resolve(), 200);
-                return;
-            }
-            
-            // Create and add the new CSS link
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = cssFile;
-            link.setAttribute('data-page-css', '');
-            
-            // Wait for the CSS to load before resolving
-            link.onload = () => {
-                // Add additional delay after CSS loads to ensure browser applies it
-                setTimeout(() => resolve(), 300);
-            };
-            
-            document.head.appendChild(link);
         });
     }
     
+    /**
+     * Fetch page content without rendering it
+     * @param {string} pageUrl - URL of the page to fetch
+     * @returns {Promise<string>} - Resolves with the HTML content
+     */
+    fetchPageContent(pageUrl) {
+        // Dispatch event before page load
+        document.dispatchEvent(new CustomEvent('route:before'));
+        
+        // Completely unload any existing page content and scripts 
+        this.unloadCurrentPage();
+        
+        // Fetch the HTML for the page
+        return fetch(pageUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load page');
+                }
+                return response.text();
+            });
+    }
+    
+    /**
+     * Load a page (legacy method - now uses fetchPageContent and updatePageCSS)
+     * @param {string} pageUrl - URL of the page to load
+     * @param {boolean} applyTransition - Whether to apply a transition
+     * @param {string} jsFile - Optional JavaScript file to load
+     */
     loadPage(pageUrl, applyTransition = true, jsFile = null) {
         // Dispatch event before page load
         document.dispatchEvent(new CustomEvent('route:before'));
@@ -262,13 +409,7 @@ class Router {
         this.unloadCurrentPage();
         
         // Fetch the HTML for the page
-        fetch(pageUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to load page');
-                }
-                return response.text();
-            })
+        this.fetchPageContent(pageUrl)
             .then(html => {
                 // Render the HTML into the container
                 this.appContainer.innerHTML = html;
@@ -378,6 +519,35 @@ class Router {
     /**
      * Load the navbar component for all pages to standardize layout
      */
+    /**
+     * Show loading animation in the overlay
+     */
+    showLoadingAnimation() {
+        // Show the overlay
+        this.transitionOverlay.classList.add('visible');
+        
+        // Get the loader element
+        const loader = this.transitionOverlay.querySelector('.page-loader');
+        if (loader) {
+            loader.style.display = 'flex';
+            loader.style.opacity = '1';
+        }
+    }
+    
+    /**
+     * Hide loading animation
+     */
+    hideLoadingAnimation() {
+        // Get the loader element
+        const loader = this.transitionOverlay.querySelector('.page-loader');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 300);
+        }
+    }
+    
     loadNavbarComponent() {
         // Skip navbar loading on dashboard pages
         if (window.location.pathname.startsWith('/dashboard')) {

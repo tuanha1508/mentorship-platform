@@ -53,6 +53,14 @@ const NavigationManager = {
         console.log('Loading dashboard page:', pageName);
         const originalPageName = pageName;
         
+        // Handle modal pages specially
+        if (pageName === 'delete-modal' || pageName?.endsWith('-modal')) {
+            console.log('Modal detected, not loading as a page:', pageName);
+            // For modals, we don't need to load a page, just update the navigation
+            this.updateActiveNavItem(pageName);
+            return;
+        }
+        
         if (pageName === 'main-dashboard') {
             const userRole = this.dashboard.userRole?.toLowerCase();
             const roleDashboard = userRole === 'mentor' ? 'mentor-dashboard' : 'mentee-dashboard';
@@ -344,6 +352,13 @@ const NavigationManager = {
     
     // Load generic page (for other page types)
     loadGenericPage(pageName, dashboardContent) {
+        // Skip loading for modal pages to prevent "Page not found" errors
+        if (pageName === 'delete-modal' || pageName?.endsWith('-modal')) {
+            // Modals should be handled by their own code, not through page loading
+            dashboardContent.innerHTML = '';
+            return;
+        }
+        
         let targetPage = document.getElementById(`${pageName}-page`);
         if (!targetPage) {
             targetPage = document.querySelector(`.${pageName}-page`);
@@ -830,6 +845,12 @@ const NavigationManager = {
         document.querySelectorAll('.nav-item').forEach(item => {
             item.classList.remove('active');
         });
+        
+        // Skip updating active nav item for modal pages
+        if (pageName === 'delete-modal' || pageName?.endsWith('-modal')) {
+            // Modal dialogs don't need navigation highlighting
+            return;
+        }
         
         // Special handling for main-dashboard to handle role-specific dashboard items
         if (pageName === 'main-dashboard' || pageName === 'mentor-dashboard' || pageName === 'mentee-dashboard') {

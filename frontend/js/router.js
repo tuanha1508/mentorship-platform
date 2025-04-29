@@ -205,11 +205,18 @@ class Router {
             }
         }
         
-        // If it's a dashboard route, redirect to the dashboard without showing .html
+        // If it's a dashboard route, redirect to the dashboard with proper extension
         if (path.startsWith('/dashboard')) {
             // Extract the specific dashboard page from the path if any
             const dashboardPath = path.replace('/dashboard', '');
-            window.location.href = '/dashboard' + (dashboardPath ? dashboardPath : '');
+            
+            // On Vercel and other static hosts, we need to include the .html extension
+            // Check if we're in production (deployed) environment
+            const isProduction = window.location.hostname !== 'localhost' && 
+                               !window.location.hostname.includes('127.0.0.1');
+            
+            const extension = isProduction ? '.html' : '';
+            window.location.href = '/dashboard' + extension + (dashboardPath ? dashboardPath : '');
             return;
         }
         

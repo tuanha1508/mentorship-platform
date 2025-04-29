@@ -4,6 +4,21 @@ html {
     font-size: 16px; /* Base font size */
 }
 
+/* Hide mobile menu toggle by default on all screens */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    background-color: var(--card-bg);
+    color: var(--text-light);
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
 /* Extra large screens */
 @media (min-width: 1600px) {
     html {
@@ -153,19 +168,9 @@ html {
         justify-content: space-between;
     }
     
-    /* Add a mobile menu toggle button */
+    /* Show mobile menu toggle button only on mobile screens */
     .mobile-menu-toggle {
-        display: block;
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        z-index: 1001;
-        background-color: var(--card-bg);
-        color: var(--text-light);
-        border: none;
-        border-radius: 4px;
-        padding: 6px 10px;
-        cursor: pointer;
+        display: block; /* Show on mobile screens */
     }
     
     /* Adjust notification dropdown */

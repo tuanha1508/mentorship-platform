@@ -1,13 +1,47 @@
-<nav class="navbar">
-    <div class="navbar-brand">
-        <a href="/">Virtual Internship</a>
-    </div>
-    <div class="navbar-menu">
+<div class="navbar-container">
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="/">Virtual Internship</a>
+        </div>
+        
+        <!-- Hamburger toggle for mobile -->
+        <div class="navbar-toggle" id="navbar-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <div class="navbar-menu" id="navbar-menu">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+        </div>
+        
+        <div class="navbar-auth" id="navbar-auth">
+            <a href="/signin" class="btn">Sign In</a>
+            <a href="/signup" class="btn btn-outline">Sign Up</a>
+        </div>
+    </nav>
+    
+    <!-- Mobile menu that appears when toggle is clicked -->
+    <div class="navbar-mobile-menu" id="navbar-mobile-menu">
         <a href="/">Home</a>
         <a href="/about">About</a>
+        <a href="/signin">Sign In</a>
+        <a href="/signup">Sign Up</a>
     </div>
-    <div class="navbar-auth">
-        <a href="/signin" class="btn">Sign In</a>
-        <a href="/signup" class="btn btn-outline">Sign Up</a>
-    </div>
-</nav>
+</div>
+
+<!-- JavaScript for navbar toggle -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('navbar-toggle');
+        const mobileMenu = document.getElementById('navbar-mobile-menu');
+        
+        if (toggle && mobileMenu) {
+            toggle.addEventListener('click', function() {
+                toggle.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+            });
+        }
+    });
+</script>

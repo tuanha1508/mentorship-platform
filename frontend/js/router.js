@@ -16,6 +16,12 @@ class Router {
                 css: 'css/home.css',
                 bodyClass: 'home-page'
             },
+            '/about': { 
+                page: 'pages/about.html',
+                title: 'About Us - Mentorship Platform',
+                css: 'css/about.css',
+                bodyClass: 'about-page'
+            },
             '/signin': { 
                 page: 'pages/signin.html',
                 title: 'Sign In - Mentorship Platform',

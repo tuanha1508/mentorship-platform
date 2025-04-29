@@ -21,7 +21,6 @@ const Dashboard = {
         
         UserManager.init(this);
         UIManager.init(this);
-        NavigationManager.init(this);
         ProfileManager.init(this);
         ConnectionManager.init(this);
         NotificationManager.init(this);
@@ -43,7 +42,12 @@ const Dashboard = {
             ConnectionManager.loadConnectionRequestsFromLocalStorage();
         }
         
-        NavigationManager.loadDashboardPage('main-dashboard');
+        // We'll now use a purely hash-based navigation system
+        // Initialize NavigationManager which will handle loading the appropriate page
+        // based on the URL hash or the user's role
+        NavigationManager.init(this);
+        
+        // No need to manually load a page here - NavigationManager will handle it
         
         if (this.currentUser) {
             UIManager.updateWelcomeMessage(this.currentUser);
@@ -93,6 +97,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Expose Dashboard and its components to the global scope
 window.Dashboard = Dashboard;
+
+// Expose NavigationManager to Dashboard for external access
+Promise.all([
+    import('./navigationManager.js')
+]).then(([navModule]) => {
+    Dashboard.NavigationManager = navModule.default;
+    window.Dashboard.NavigationManager = navModule.default;
+    console.log('NavigationManager exposed to window.Dashboard');
+});
 
 export default Dashboard;

@@ -206,24 +206,13 @@
                         // Get the page to load
                         const page = this.getAttribute('data-page');
                         
-                        // Update page title
-                        const pageTitle = document.getElementById('page-title');
-                        if (pageTitle) {
-                            const titles = {
-                                'main-dashboard': 'Dashboard',
-                                'my-mentor': 'My Mentor',
-                                'search-mentor': 'Find a Mentor',
-                                'chat': 'Messages',
-                                'profile': 'Edit Profile',
-                                'my-mentees': 'My Mentees',
-                                'assignments': 'Assignments',
-                                'connection-requests': 'Connection Requests'
-                            };
-                            pageTitle.textContent = titles[page] || 'Dashboard';
-                        }
+                        // Update URL hash to trigger navigation
+                        window.location.hash = page;
                         
-                        // Load the page content
-                        loadDashboardPage(page);
+                        // If Dashboard module is loaded, use its NavigationManager
+                        if (window.Dashboard && window.Dashboard.NavigationManager) {
+                            window.Dashboard.NavigationManager.loadDashboardPage(page);
+                        }
                     });
                 });
                 
@@ -256,27 +245,18 @@
                     });
                 }
                 
-                // Initial page load - get from hash or use role-specific dashboard
-                const hash = window.location.hash.substring(1);
+                // We'll let the Dashboard module handle the initial page load based on hash or localStorage
+                // This ensures we're using the same navigation system consistently
                 
-                // Determine initial page based on role if no specific hash is provided
-                let initialPage;
-                if (hash) {
-                    initialPage = hash;
-                } else {
-                    // Load role-specific dashboard instead of main-dashboard
-                    const isMentor = userData.role?.toLowerCase() === 'mentor';
-                    initialPage = isMentor ? 'mentor-dashboard' : 'mentee-dashboard';
-                }
-                
-                loadDashboardPage(initialPage);
-                
-                // Update active nav item based on hash
-                const activeNav = document.querySelector(`.nav-item[data-page="${initialPage}"]`);
-                if (activeNav) {
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    activeNav.classList.add('active');
-                }
+                // Set up a listener for hash changes to synchronize with dashboard navigation
+                window.addEventListener('hashchange', function() {
+                    const hash = window.location.hash.substring(1);
+                    if (hash && hash !== 'undefined') {
+                        console.log('Hash changed to:', hash);
+                        // Store in localStorage for the NavigationManager
+                        localStorage.setItem('currentDashboardPage', hash);
+                    }
+                });
                 
             } catch (error) {
                 console.error('Error parsing user data:', error);

@@ -5,6 +5,27 @@ const NavigationManager = {
     init(dashboardInstance) {
         this.dashboard = dashboardInstance;
         this.setupSidebarNav();
+        
+        // Set up hash change listener to handle page navigation
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash && hash !== 'undefined') {
+                console.log('Hash changed to:', hash);
+                this.loadDashboardPage(hash);
+            }
+        });
+        
+        // Load the initial page based on hash
+        const initialHash = window.location.hash.substring(1);
+        if (initialHash && initialHash !== 'undefined') {
+            console.log('Initial hash detected:', initialHash);
+            this.loadDashboardPage(initialHash);
+        } else {
+            // If no hash is present, use role-specific dashboard
+            const defaultPage = this.dashboard.userRole?.toLowerCase() === 'mentor' ? 'mentor-dashboard' : 'mentee-dashboard';
+            console.log('No hash, loading default page:', defaultPage);
+            window.location.hash = defaultPage;
+        }
     },
     
     // Setup sidebar navigation
@@ -29,6 +50,7 @@ const NavigationManager = {
     
     // Load dashboard page
     loadDashboardPage(pageName) {
+        console.log('Loading dashboard page:', pageName);
         const originalPageName = pageName;
         
         if (pageName === 'main-dashboard') {
@@ -41,14 +63,28 @@ const NavigationManager = {
         // Update page title in header
         this.updatePageTitle(pageName);
         
+        // Get the dashboard content container
         const dashboardContent = document.getElementById('dashboard-page-content');
-        if (dashboardContent) {
-            dashboardContent.innerHTML = '<div class="loading-spinner"></div>';
+        if (!dashboardContent) {
+            console.error('Dashboard content container not found');
+            return;
         }
         
+        // Clear any existing content to prevent duplicates
+        dashboardContent.innerHTML = '';
+        
+        // Add loading spinner
+        const loadingSpinner = document.createElement('div');
+        loadingSpinner.className = 'loading-spinner';
+        dashboardContent.appendChild(loadingSpinner);
+        
+        // Remove active class from all pages
         document.querySelectorAll('.dashboard-page, [class$="-page"]').forEach(page => {
             page.classList.remove('active');
         });
+        
+        // Update navigation menu - highlight the correct item
+        this.updateActiveNavItem(originalPageName === 'main-dashboard' ? originalPageName : pageName);
         
         if (pageName === 'mentor-dashboard' || pageName === 'mentee-dashboard') {
             this.loadRoleDashboard(pageName, dashboardContent);
@@ -89,17 +125,37 @@ const NavigationManager = {
         
         this.dashboard.currentPage = pageName;
         this.dashboard.lastLoadedPage = pageName;
+        
+        // Save current page to localStorage
+        localStorage.setItem('currentDashboardPage', pageName);
+        
+        // Update URL hash to match current page (without triggering another navigation)
+        const currentHash = window.location.hash.substring(1);
+        if (currentHash !== pageName) {
+            history.pushState(null, '', `#${pageName}`);
+        }
+        
+        // Update the active navigation item
+        this.updateActiveNavItem(pageName);
     },
     
     // Load role-specific dashboard (mentor/mentee)
     loadRoleDashboard(pageName, dashboardContent) {
+        console.log('Loading role dashboard:', pageName);
+        
+        // First, ensure the dashboard content is clear
+        dashboardContent.innerHTML = '';
+        
+        // Create container for the dashboard page
         const roleDashboardPage = document.createElement('div');
         roleDashboardPage.id = `${pageName}-page`;
         roleDashboardPage.className = `dashboard-page ${pageName}-page active`;
-        
-        dashboardContent.innerHTML = '';
         dashboardContent.appendChild(roleDashboardPage);
         
+        // Add temporary loading spinner
+        roleDashboardPage.innerHTML = '<div class="loading-spinner"></div>';
+        
+        // Fetch the page content
         fetch(`../pages/dashboard/${pageName}.html`)
             .then(response => {
                 if (!response.ok) {
@@ -108,6 +164,7 @@ const NavigationManager = {
                 return response.text();
             })
             .then(html => {
+                // Replace the content
                 roleDashboardPage.innerHTML = html;
                 this.updateWelcomeMessage();
             })
@@ -762,6 +819,44 @@ const NavigationManager = {
     applyMentorFilters() {
         if (window.UserDiscoveryPage) {
             window.UserDiscoveryPage.handleSearch();
+        }
+    },
+    
+    // Update active navigation item in sidebar
+    updateActiveNavItem(pageName) {
+        console.log('Updating active nav item for page:', pageName);
+        
+        // Remove active class from all nav items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Special handling for main-dashboard to handle role-specific dashboard items
+        if (pageName === 'main-dashboard' || pageName === 'mentor-dashboard' || pageName === 'mentee-dashboard') {
+            // Get the user role to determine which dashboard nav item to activate
+            const userRole = this.dashboard.userRole?.toLowerCase();
+            
+            // Find the correct dashboard link based on role
+            let dashboardSelector = '.nav-item[data-page="main-dashboard"]';
+            if (userRole === 'mentor') {
+                dashboardSelector = '.mentor-element .nav-item[data-page="main-dashboard"]';
+            } else if (userRole === 'mentee') {
+                dashboardSelector = '.mentee-element .nav-item[data-page="main-dashboard"]';
+            }
+            
+            // Add active class to the dashboard link
+            const dashboardLink = document.querySelector(dashboardSelector);
+            if (dashboardLink) {
+                dashboardLink.classList.add('active');
+            }
+        } else {
+            // For other pages, simply find by data-page attribute
+            const navItem = document.querySelector(`.nav-item[data-page="${pageName}"]`);
+            if (navItem) {
+                navItem.classList.add('active');
+            } else {
+                console.warn(`No navigation item found for page: ${pageName}`);
+            }
         }
     }
 };

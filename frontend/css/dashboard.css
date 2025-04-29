@@ -4,7 +4,8 @@
 @import './dashboard/layout/layout.css';
 @import './dashboard/layout/sidebar.css';
 @import './dashboard/layout/header.css';
-@import './dashboard/components/cards.css';
+@import './dashboard/components/mentee-cards.css';
+@import './dashboard/components/mentor-cards.css';
 @import './dashboard/components/notifications.css';
 @import './dashboard/components/profile.css';
 @import './dashboard/components/mentor.css';

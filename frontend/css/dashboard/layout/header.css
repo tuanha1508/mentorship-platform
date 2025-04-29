@@ -2,7 +2,7 @@
     height: var(--header-height);
     padding: 0 15px;
     display: flex;
-    align-items: top;
+    align-items: center;
     justify-content: space-between;
     background-color: var(--content-bg);
     border-bottom: 1px solid var(--border-color);
@@ -55,9 +55,10 @@
 .header-actions {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     gap: 15px;
     height: 100%;
+    margin-left: auto;
 }
 
 .search-bar {

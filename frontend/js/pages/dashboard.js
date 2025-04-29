@@ -209,6 +209,12 @@ const Dashboard = {
                 this.initConnectionRequestsPage();
             }
             
+            // Always update the welcome message when loading any dashboard page
+            if (this.currentUser) {
+                // Short delay to ensure DOM is fully loaded
+                setTimeout(() => this.updateWelcomeMessage(this.currentUser), 100);
+            }
+            
             this.lastLoadedPage = pageName;
         } else if (pageName === 'profile' && dashboardContent) {
             // Special case: profile is already loaded into the dashboard content
@@ -336,6 +342,11 @@ const Dashboard = {
         setTimeout(() => {
             console.log('Delayed dashboard page load to ensure data is ready');
             this.loadDashboardPage('main-dashboard');
+            
+            // Make sure welcome message is updated after dashboard loads
+            if (this.currentUser) {
+                setTimeout(() => this.updateWelcomeMessage(this.currentUser), 300);
+            }
         }, 100);
     },
     
@@ -426,6 +437,9 @@ const Dashboard = {
             // Always update sidebar profile after any user data update
             this.updateSidebarProfile(updatedData);
             
+            // Update welcome message with the user's name
+            this.updateWelcomeMessage(updatedData);
+            
             console.log('Profile data updated successfully:', updatedData);
             return updatedData;
         } catch (error) {
@@ -449,6 +463,9 @@ const Dashboard = {
                 
                 // Immediately update the sidebar profile
                 this.updateSidebarProfile(this.currentUser);
+                
+                // Update welcome message with the user's name
+                this.updateWelcomeMessage(this.currentUser);
                 
                 this.updateMenuVisibility();
                 this.loadConnectionRequestsFromLocalStorage();
@@ -485,6 +502,9 @@ const Dashboard = {
             
             this.updateSidebarProfile(this.currentUser);
             this.updateMenuVisibility();
+            
+            // Update welcome message with the user's name
+            this.updateWelcomeMessage(this.currentUser);
             
             localStorage.setItem('userData', JSON.stringify(this.currentUser));
             this.loadConnectionRequestsFromLocalStorage();
@@ -534,6 +554,32 @@ const Dashboard = {
         if (miniProfileEmail) {
             miniProfileEmail.textContent = user.email || '';
         }
+    },
+    
+    // Update the welcome message with user's name
+    updateWelcomeMessage(user) {
+        if (!user) return;
+        
+        console.log('Updating welcome message for user:', user.fullName || user.firstName || 'Unknown');
+        
+        // Try to find the welcome element - search more broadly in case it's in a different container
+        const welcomeNameElements = document.querySelectorAll('#user-name');
+        
+        if (welcomeNameElements.length === 0) {
+            console.log('Welcome name element not found, will try again later');
+            // Element might not be loaded yet, try again after a short delay
+            setTimeout(() => this.updateWelcomeMessage(user), 300);
+            return;
+        }
+        
+        // Use first name if available, otherwise use full name or default to 'User'
+        const displayName = user.firstName || (user.fullName ? user.fullName.split(' ')[0] : 'User');
+        console.log('Setting welcome name to:', displayName);
+        
+        // Update all instances of the welcome message that might exist
+        welcomeNameElements.forEach(element => {
+            element.textContent = displayName;
+        });
     },
     
     // Update menu visibility based on user role

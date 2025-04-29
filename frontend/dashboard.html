@@ -14,52 +14,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Dashboard Stylesheet only - NO OTHER CSS DEPENDENCIES -->
     <link rel="stylesheet" href="css/dashboard.css">
-    
-    <style>
-        /* Reset styles to prevent inheritance from other pages */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        /* Base styles that would normally come from global.css */
-        :root {
-            --primary-color: #007bff;
-            --secondary-color: #6c757d;
-            --background-color: #000000;
-            --text-color: #ffffff;
-            --sidebar-bg: #0a1929;
-            --content-bg: #000000;
-            --card-bg: #1a1a1a;
-            --border-color: #333;
-        }
-        
-        body {
-            font-family: 'Inter', Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--content-bg);
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden; /* Prevent scrolling on the main body */
-        }
-        
-        /* Ensure dashboard takes full width and height */
-        .dashboard-container {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-        }
-        
-        /* Hide any navbar elements that might be injected by other scripts */
-        .navbar, #navbar-placeholder, nav:not(.sidebar-nav) {
-            display: none !important;
-        }
-    </style>
 </head>
 <body>
     <!-- This is a standalone dashboard without the standard navbar -->
@@ -300,9 +254,19 @@
                     });
                 }
                 
-                // Initial page load - get from hash or default to main dashboard
+                // Initial page load - get from hash or use role-specific dashboard
                 const hash = window.location.hash.substring(1);
-                const initialPage = hash || 'main-dashboard';
+                
+                // Determine initial page based on role if no specific hash is provided
+                let initialPage;
+                if (hash) {
+                    initialPage = hash;
+                } else {
+                    // Load role-specific dashboard instead of main-dashboard
+                    const isMentor = userData.role?.toLowerCase() === 'mentor';
+                    initialPage = isMentor ? 'mentor-dashboard' : 'mentee-dashboard';
+                }
+                
                 loadDashboardPage(initialPage);
                 
                 // Update active nav item based on hash

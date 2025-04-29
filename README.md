@@ -14,7 +14,7 @@ A web application that connects mentors and mentees for effective mentorship rel
 
 ## 🚀 Live Demo
 
-[Live Demo Link](https://your-deployed-app-url.com)
+[Live Demo Link](https://mentorship-platform-sage.vercel.app)
 
 ## 🛠️ Technologies Used
 
@@ -33,7 +33,7 @@ A web application that connects mentors and mentees for effective mentorship rel
 
 1. Clone the repository
    ```
-   git clone https://github.com/your-username/mentorship-platform.git
+   git clone https://github.com/tuanha1508/mentorship-platform.git
    cd mentorship-platform
    ```
 
@@ -44,7 +44,7 @@ A web application that connects mentors and mentees for effective mentorship rel
 
 3. Start the development server
    ```
-   node server.js
+   npm start
    ```
 
 4. Open your browser and navigate to `http://localhost:3000`

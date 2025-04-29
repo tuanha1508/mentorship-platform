@@ -184,12 +184,57 @@ const ProfileManager = {
                 });
                 
                 // Also set onclick as a fallback
-                submitButton.onclick = function(e) {
-                    console.log('Submit button clicked via onclick');
+                submitButton.onclick = (e) => {
                     e.preventDefault();
                     saveProfileFormData(e);
+                    console.log('Save button clicked directly');
                     return false;
                 };
+            }
+            
+            // Set up confirm delete button for CSS-based modal
+            const confirmDeleteBtn = document.getElementById('confirm-delete');
+            
+            if (confirmDeleteBtn) {
+                console.log('Delete profile confirmation button found');
+                
+                confirmDeleteBtn.addEventListener('click', () => {
+                    console.log('Delete profile confirmed');
+                    
+                    // Get current user data for reference
+                    const userData = UserManager.getUserData();
+                    const userId = userData.id;
+                    
+                    // Create a visual fade-out effect for the form
+                    profileForm.style.transition = 'all 1.5s ease';
+                    profileForm.style.opacity = '0';
+                    profileForm.style.transform = 'translateY(20px)';
+                    
+                    // Clear user data from localStorage
+                    localStorage.removeItem('userData');
+                    localStorage.removeItem(`user_${userId}`);
+                    
+                    // Also remove user from the users array if it exists
+                    try {
+                        const usersJson = localStorage.getItem('users');
+                        if (usersJson) {
+                            const users = JSON.parse(usersJson);
+                            const updatedUsers = users.filter(user => user.id !== userId);
+                            localStorage.setItem('users', JSON.stringify(updatedUsers));
+                            console.log('User removed from users array in localStorage');
+                        }
+                    } catch (error) {
+                        console.error('Error removing user from users array:', error);
+                    }
+                    
+                    // Show success notification
+                    UIManager.showFeedback('success', 'Profile deleted successfully. Redirecting to login...');
+                    
+                    // Redirect to sign-in page after a delay
+                    setTimeout(() => {
+                        window.location.href = '/signin';
+                    }, 2000);
+                });
             }
             
             // Set form submission handlers
@@ -454,27 +499,29 @@ const ProfileManager = {
             console.error('Skills container not found');
         }
         
-        // Set interests
+        // Set interests in dropdown
         if (userData.interests && Array.isArray(userData.interests)) {
             console.log('Loading interests:', userData.interests);
-            // Uncheck all interest checkboxes first
-            document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(checkbox => {
-                checkbox.checked = false;
-            });
             
-            // Check the boxes that match user interests
-            userData.interests.forEach(interest => {
-                // Need to find checkbox input that has a label with this text
-                document.querySelectorAll('.checkbox-item label').forEach(label => {
-                    if (label.textContent.trim() === interest.trim()) {
-                        const checkbox = document.getElementById(label.getAttribute('for'));
-                        if (checkbox) {
-                            checkbox.checked = true;
-                            console.log(`Interest checkbox set for: ${interest}`);
-                        }
-                    }
+            const interestsDropdown = document.getElementById('interests');
+            if (interestsDropdown) {
+                // Clear all selections first
+                Array.from(interestsDropdown.options).forEach(option => {
+                    option.selected = false;
                 });
-            });
+                
+                // Select options that match user interests
+                userData.interests.forEach(interest => {
+                    Array.from(interestsDropdown.options).forEach(option => {
+                        if (option.textContent.trim() === interest.trim()) {
+                            option.selected = true;
+                            console.log(`Interest option selected for: ${interest}`);
+                        }
+                    });
+                });
+            } else {
+                console.error('Interests dropdown not found');
+            }
         } else {
             console.log('No interests found in user data or not an array:', userData.interests);
         }
@@ -536,17 +583,19 @@ const ProfileManager = {
             skills.push(skillText);
         });
         
-        // Get all checked interests
+        // Get all selected interests from dropdown
         const interests = [];
-        const checkedInterests = document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked');
-        console.log('Found checked interests:', checkedInterests.length);
+        const interestsDropdown = document.getElementById('interests');
+        console.log('Found interests dropdown:', interestsDropdown ? 'Yes' : 'No');
         
-        checkedInterests.forEach(checkbox => {
-            const label = document.querySelector(`label[for="${checkbox.id}"]`);
-            if (label) {
-                interests.push(label.textContent.trim());
-            }
-        });
+        if (interestsDropdown) {
+            const selectedOptions = Array.from(interestsDropdown.selectedOptions);
+            console.log('Found selected interests:', selectedOptions.length);
+            
+            selectedOptions.forEach(option => {
+                interests.push(option.textContent.trim());
+            });
+        }
         
         // Get form input values with detailed logging
         function getFieldValue(id) {

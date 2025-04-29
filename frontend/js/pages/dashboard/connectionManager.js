@@ -1,4 +1,3 @@
-// Connection and mentorship functionality
 import UserManager from './userManager.js';
 import UIManager from './uiManager.js';
 import NotificationManager from './notificationManager.js';
@@ -13,27 +12,34 @@ const ConnectionManager = {
     
     // Load connection requests from localStorage
     loadConnectionRequestsFromLocalStorage() {
-        try {
-            const requests = JSON.parse(localStorage.getItem('connectionRequests') || '[]');
-            this.pendingConnectionRequests = requests;
-            this.updateConnectionRequestsCount();
-        } catch (error) {
-            console.error('Error loading connection requests:', error);
+        const requests = JSON.parse(localStorage.getItem('connectionRequests') || '[]');
+        const userData = UserManager.getUserData();
+        if (userData && userData.role && userData.role.toLowerCase() === 'mentor') {
+            const mentorId = userData.id || userData.userId;
+            this.pendingConnectionRequests = requests.filter(request => 
+                request.mentorId === mentorId && 
+                request.status !== 'accepted' && 
+                request.status !== 'rejected');
+        } else {
+            this.pendingConnectionRequests = [];
         }
+        this.updateNotifications();
     },
     
-    // Handle new connection requests
+    // Handle new connection request
     onNewConnectionRequest(request) {
-        console.log('New connection request received:', request);
-        if (!this.pendingConnectionRequests.some(req => req.id === request.id)) {
-            this.pendingConnectionRequests.push(request);
-            
-            // Save the updated requests to localStorage
-            try {
-                localStorage.setItem('connectionRequests', JSON.stringify(this.pendingConnectionRequests));
-                console.log('Connection requests saved to localStorage');
-            } catch (error) {
-                console.error('Error saving connection requests to localStorage:', error);
+        let allRequests = JSON.parse(localStorage.getItem('connectionRequests') || '[]');
+        
+        if (!allRequests.some(req => req.id === request.id)) {
+            allRequests.push(request);
+            localStorage.setItem('connectionRequests', JSON.stringify(allRequests));
+        }
+        
+        const userData = UserManager.getUserData();
+        if (userData?.role?.toLowerCase() === 'mentor') {
+            const mentorId = userData.id || userData.userId;
+            if (request.mentorId === mentorId && !this.pendingConnectionRequests.some(req => req.id === request.id)) {
+                this.pendingConnectionRequests.push(request);
             }
         }
         
@@ -54,7 +60,6 @@ const ConnectionManager = {
     
     // Handle connection response confirmation
     onConnectionResponseConfirmed(request) {
-        console.log('Connection response confirmed:', request);
         const index = this.pendingConnectionRequests.findIndex(req => req.id === request.id);
         if (index !== -1) {
             this.pendingConnectionRequests.splice(index, 1);
@@ -63,17 +68,10 @@ const ConnectionManager = {
         this.updateNotifications();
     },
     
-    // Update connection requests count
-    updateConnectionRequestsCount() {
-        this.updateNotifications();
-    },
-    
     // Update notification UI
     updateNotifications() {
-        // Update notifications using the imported NotificationManager
         NotificationManager.updateNotifications(this.pendingConnectionRequests);
         
-        // Also update connection requests count in nav
         const countBadge = document.querySelector('.nav-item[data-page="connection-requests"] .badge');
         if (countBadge) {
             const count = this.pendingConnectionRequests.length;
@@ -85,10 +83,7 @@ const ConnectionManager = {
     // Render connection requests
     renderConnectionRequests() {
         const requestsContainer = document.querySelector('.connection-requests-page .requests-container');
-        if (!requestsContainer) {
-            console.error('Connection requests container not found');
-            return;
-        }
+        if (!requestsContainer) return;
         
         requestsContainer.innerHTML = '';
         
@@ -139,12 +134,16 @@ const ConnectionManager = {
     // Accept connection request
     acceptConnectionRequest(requestId) {
         const index = this.pendingConnectionRequests.findIndex(req => req.id === requestId);
-        if (index === -1) {
-            UIManager.showFeedback('error', 'Request not found');
-            return false;
-        }
+        if (index === -1) return false;
         
         const request = this.pendingConnectionRequests[index];
+        
+        const allRequests = JSON.parse(localStorage.getItem('connectionRequests') || '[]');
+        const requestIndex = allRequests.findIndex(req => req.id === requestId);
+        if (requestIndex !== -1) {
+            allRequests[requestIndex].status = 'accepted';
+            localStorage.setItem('connectionRequests', JSON.stringify(allRequests));
+        }
         
         if (request.source === 'direct_request') {
             const userData = UserManager.getUserData();
@@ -152,98 +151,87 @@ const ConnectionManager = {
             const mentorId = userData.id;
             
             if (mentorName) {
-                try {
-                    const mentorData = JSON.parse(localStorage.getItem(mentorName) || '{}');
-                    if (mentorData.requests && Array.isArray(mentorData.requests)) {
-                        const menteeRequestIndex = mentorData.requests.findIndex(req => 
-                            req.menteeName === request.menteeName && req.status === 'pending'
-                        );
-                        
-                        if (menteeRequestIndex !== -1) {
-                            mentorData.requests[menteeRequestIndex].status = 'accepted';
-                            localStorage.setItem(mentorName, JSON.stringify(mentorData));
-                            
-                            // Update mentor data
-                            UserManager.updateUserData({
-                                hasMentees: true,
-                                mentees: [...(userData.mentees || []), {
-                                    id: request.menteeId || request.id,
-                                    name: request.menteeName
-                                }]
-                            });
-                            this.dashboard.hasMentees = true;
-                            
-                            // Update mentee data
-                            if (request.menteeName) {
-                                UserManager.updateMenteeData(request.menteeName, mentorName, mentorId);
-                            }
-                            
-                            this.pendingConnectionRequests.splice(index, 1);
-                            this.updateNotifications();
-                            UIManager.showFeedback('success', `You accepted ${request.menteeName}'s request`);
-                            return true;
-                        }
+                const mentorData = JSON.parse(localStorage.getItem(mentorName) || '{}');
+                if (mentorData.requests?.some(req => req.menteeName === request.menteeName && req.status === 'pending')) {
+                    const menteeRequestIndex = mentorData.requests.findIndex(req => 
+                        req.menteeName === request.menteeName && req.status === 'pending'
+                    );
+                    
+                    mentorData.requests[menteeRequestIndex].status = 'accepted';
+                    localStorage.setItem(mentorName, JSON.stringify(mentorData));
+                    
+                    const updatedUserData = {
+                        ...userData,
+                        hasMentees: true,
+                        mentees: [...(userData.mentees || []), {
+                            id: request.menteeId || request.id,
+                            name: request.menteeName
+                        }]
+                    };
+                    UserManager.updateUserData(updatedUserData);
+                    this.dashboard.hasMentees = true;
+                    
+                    if (request.menteeName) {
+                        UserManager.updateMenteeData(request.menteeName, mentorName, mentorId);
                     }
-                } catch (error) {}
+                    
+                    this.pendingConnectionRequests.splice(index, 1);
+                    this.updateNotifications();
+                    return true;
+                }
             }
         }
         
         if (window.connectionService) {
             const success = window.connectionService.respondToConnectionRequest(requestId, true);
-            if (!success) {
-                UIManager.showFeedback('error', 'Failed to accept request. Please try again later.');
-                return false;
-            }
+            if (!success) return false;
             
-            try {
-                const userData = UserManager.getUserData();
-                const mentorName = userData.fullName || `${userData.firstName || ''} ${userData.lastName || ''}`.trim();
-                const mentorId = userData.id;
-                
-                // Update mentor data
-                UserManager.updateUserData({
-                    hasMentees: true,
-                    mentees: [...(userData.mentees || []), {
-                        id: request.menteeId || request.id,
-                        name: request.menteeName
-                    }]
-                });
-                this.dashboard.hasMentees = true;
-                
-                // Update mentee data to show My Mentor
-                if (request.menteeId && request.menteeName) {
-                    UserManager.updateMenteeData(request.menteeName, mentorName, mentorId);
-                }
-            } catch (error) {}
+            const userData = UserManager.getUserData();
+            const mentorName = userData.fullName || `${userData.firstName || ''} ${userData.lastName || ''}`.trim();
+            const mentorId = userData.id;
+            
+            const updatedUserData = {
+                ...userData,
+                hasMentees: true,
+                mentees: [...(userData.mentees || []), {
+                    id: request.menteeId || request.id,
+                    name: request.menteeName
+                }]
+            };
+            UserManager.updateUserData(updatedUserData);
+            this.dashboard.hasMentees = true;
+            
+            if (request.menteeId && request.menteeName) {
+                UserManager.updateMenteeData(request.menteeName, mentorName, mentorId);
+            }
             
             this.pendingConnectionRequests.splice(index, 1);
             this.updateNotifications();
-            UIManager.showFeedback('success', 'Request accepted');
             return true;
-        } else {
-            UIManager.showFeedback('error', 'Connection service unavailable');
-            return false;
         }
+        
+        return false;
     },
     
     // Reject connection request
     rejectConnectionRequest(requestId) {
         const index = this.pendingConnectionRequests.findIndex(req => req.id === requestId);
-        if (index === -1) {
-            UIManager.showFeedback('error', 'Request not found');
-            return false;
-        }
-        
-        const request = this.pendingConnectionRequests[index];
+        if (index === -1) return false;
         
         this.pendingConnectionRequests[index].status = 'rejected';
+        
+        const allRequests = JSON.parse(localStorage.getItem('connectionRequests') || '[]');
+        const requestIndex = allRequests.findIndex(req => req.id === requestId);
+        if (requestIndex !== -1) {
+            allRequests[requestIndex].status = 'rejected';
+            localStorage.setItem('connectionRequests', JSON.stringify(allRequests));
+        }
         
         setTimeout(() => {
             this.pendingConnectionRequests.splice(index, 1);
             this.updateNotifications();
         }, 2000);
         
-        UIManager.showFeedback('info', `You declined ${request.menteeName || 'the mentee'}'s request`);
         return true;
     }
 };

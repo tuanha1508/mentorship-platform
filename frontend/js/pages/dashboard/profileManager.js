@@ -18,11 +18,9 @@ const getElement = (id) => {
 const setFieldValue = (id, value) => {
   const element = getElement(id);
   if (element) {
-    try {
-      element.value = value || '';
-      const event = new Event('input', {bubbles: true});
-      element.dispatchEvent(event);
-    } catch (e) {}
+    element.value = value || '';
+    const event = new Event('input', {bubbles: true});
+    element.dispatchEvent(event);
   }
 };
 
@@ -94,26 +92,22 @@ const ProfileManager = {
         event.stopPropagation();
       }
       
-      try {
-        const formData = this.getProfileFormData();
+      const formData = this.getProfileFormData();
+      
+      if (!formData || typeof formData !== 'object') {
+        return false;
+      }
+      
+      const updateResult = UserManager.updateUserData(formData);
+      
+      if (updateResult) {
+        UIManager.updateSidebarProfile(updateResult);
         
-        if (!formData || typeof formData !== 'object') {
-          return false;
-        }
+        const profileEvent = new CustomEvent('profile-updated', { detail: updateResult });
+        document.dispatchEvent(profileEvent);
         
-        const beforeUpdate = localStorage.getItem('userData');
-        const updateResult = UserManager.updateUserData(formData);
-        const afterUpdate = localStorage.getItem('userData');
-        
-        if (updateResult) {
-          UIManager.updateSidebarProfile(updateResult);
-          
-          const profileEvent = new CustomEvent('profile-updated', { detail: updateResult });
-          document.dispatchEvent(profileEvent);
-          
-          window.location.reload();
-        }
-      } catch (formError) {}
+        window.location.reload();
+      }
       
       return false;
     };
@@ -154,14 +148,12 @@ const ProfileManager = {
         localStorage.removeItem('userData');
         localStorage.removeItem(`user_${userId}`);
         
-        try {
-          const usersJson = localStorage.getItem('users');
-          if (usersJson) {
-            const users = JSON.parse(usersJson);
-            const updatedUsers = users.filter(user => user.id !== userId);
-            localStorage.setItem('users', JSON.stringify(updatedUsers));
-          }
-        } catch (error) {}
+        const usersJson = localStorage.getItem('users');
+        if (usersJson) {
+          const users = JSON.parse(usersJson);
+          const updatedUsers = users.filter(user => user.id !== userId);
+          localStorage.setItem('users', JSON.stringify(updatedUsers));
+        }
         
         setTimeout(() => {
           window.location.href = '/signin';
@@ -190,6 +182,52 @@ const ProfileManager = {
     }
   },
   
+  // Save profile image to localStorage
+  saveProfileImage(imageDataUrl) {
+    if (!imageDataUrl) {
+      return false;
+    }
+    
+    // Get current user data
+    const userData = UserManager.getUserData() || {};
+    
+    if (!userData.id) {
+      return false;
+    }
+    
+    // Update only the profile image fields
+    const updatedData = {
+      ...userData,
+      profileImage: imageDataUrl,
+      imageUrl: imageDataUrl,
+      lastUpdated: new Date().toISOString()
+    };
+    
+    // Save updated data to localStorage using UserManager
+    const result = UserManager.updateUserData(updatedData);
+    
+    // Update the user in the 'users' collection
+    const usersJson = localStorage.getItem('users');
+    if (usersJson) {
+      const users = JSON.parse(usersJson);
+      
+      // Find the current user in the users array
+      const userIndex = users.findIndex(user => user.id === userData.id);
+      
+      if (userIndex !== -1) {
+        // Update the user's profile image
+        users[userIndex].profileImage = imageDataUrl;
+        users[userIndex].imageUrl = imageDataUrl;
+        users[userIndex].lastUpdated = new Date().toISOString();
+        
+        // Save the updated users array back to localStorage
+        localStorage.setItem('users', JSON.stringify(users));
+      }
+    }
+    
+    return result;
+  },
+  
   // Setup profile image upload
   setupProfileImageUpload() {
     const uploadTrigger = document.getElementById('upload-trigger');
@@ -197,7 +235,11 @@ const ProfileManager = {
     const profilePreview = document.getElementById('profile-preview');
     
     if (uploadTrigger && profileUpload && profilePreview) {
-      if (!profilePreview.src || profilePreview.src === 'undefined' || profilePreview.src === '') {
+      // Load existing profile image from user data if available
+      const userData = UserManager.getUserData() || {};
+      if (userData.profileImage) {
+        profilePreview.src = userData.profileImage;
+      } else if (!profilePreview.src || profilePreview.src === 'undefined' || profilePreview.src === '') {
         profilePreview.src = '../images/profile-placeholder.jpg';
       }
       
@@ -207,11 +249,26 @@ const ProfileManager = {
       
       profileUpload.addEventListener('change', (e) => {
         if (e.target.files && e.target.files[0]) {
+          const file = e.target.files[0];
+          
+          // Validate file is an image
+          if (!file.type.startsWith('image/')) {
+            return;
+          }
+          
           const reader = new FileReader();
+          
           reader.onload = (e) => {
-            profilePreview.src = e.target.result;
+            const imageDataUrl = e.target.result;
+            
+            // Update the preview image
+            profilePreview.src = imageDataUrl;
+            
+            // Auto-save the profile image to localStorage
+            this.saveProfileImage(imageDataUrl);
           };
-          reader.readAsDataURL(e.target.files[0]);
+          
+          reader.readAsDataURL(file);
         }
       });
     }

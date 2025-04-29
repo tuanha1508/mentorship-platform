@@ -9,8 +9,6 @@ const NavigationManager = {
     
     // Setup sidebar navigation
     setupSidebarNav() {
-        console.log('Setting up sidebar navigation...');
-        
         const navItems = document.querySelectorAll('.nav-item[data-page]');
         navItems.forEach(item => {
             const clone = item.cloneNode(true);
@@ -23,7 +21,6 @@ const NavigationManager = {
             item.addEventListener('click', () => {
                 const pageName = item.getAttribute('data-page');
                 if (pageName) {
-                    console.log(`Nav item clicked: ${pageName}`);
                     this.loadDashboardPage(pageName);
                 }
             });
@@ -32,14 +29,11 @@ const NavigationManager = {
     
     // Load dashboard page
     loadDashboardPage(pageName) {
-        console.log(`Loading dashboard page: ${pageName}`);
-        
         const originalPageName = pageName;
         
         if (pageName === 'main-dashboard') {
             const userRole = this.dashboard.userRole?.toLowerCase();
             const roleDashboard = userRole === 'mentor' ? 'mentor-dashboard' : 'mentee-dashboard';
-            console.log(`Redirecting main-dashboard to ${roleDashboard}`);
             pageName = roleDashboard;
             this.dashboard.currentPage = pageName;
         }
@@ -49,7 +43,6 @@ const NavigationManager = {
         
         const dashboardContent = document.getElementById('dashboard-page-content');
         if (dashboardContent) {
-            console.log('Clearing dashboard content and showing loading spinner');
             dashboardContent.innerHTML = '<div class="loading-spinner"></div>';
         }
         
@@ -80,7 +73,16 @@ const NavigationManager = {
         });
         
         if (originalPageName === 'main-dashboard') {
-            document.querySelector(`.nav-item[data-page="main-dashboard"]`)?.classList.add('active');
+            // Get the user role to determine which dashboard nav item to activate
+            const userRole = this.dashboard.userRole?.toLowerCase();
+            
+            if (userRole === 'mentor') {
+                document.querySelector(`.mentor-element .nav-item[data-page="main-dashboard"]`)?.classList.add('active');
+            } else if (userRole === 'mentee') {
+                document.querySelector(`.mentee-element .nav-item[data-page="main-dashboard"]`)?.classList.add('active');
+            } else {
+                document.querySelector(`.nav-item[data-page="main-dashboard"]`)?.classList.add('active');
+            }
         } else {
             document.querySelector(`.nav-item[data-page="${pageName}"]`)?.classList.add('active');
         }
@@ -91,8 +93,6 @@ const NavigationManager = {
     
     // Load role-specific dashboard (mentor/mentee)
     loadRoleDashboard(pageName, dashboardContent) {
-        console.log(`Loading role dashboard: ${pageName}`);
-        
         const roleDashboardPage = document.createElement('div');
         roleDashboardPage.id = `${pageName}-page`;
         roleDashboardPage.className = `dashboard-page ${pageName}-page active`;
@@ -100,7 +100,6 @@ const NavigationManager = {
         dashboardContent.innerHTML = '';
         dashboardContent.appendChild(roleDashboardPage);
         
-        console.log(`Fetching content for ${pageName}`);
         fetch(`../pages/dashboard/${pageName}.html`)
             .then(response => {
                 if (!response.ok) {
@@ -110,12 +109,9 @@ const NavigationManager = {
             })
             .then(html => {
                 roleDashboardPage.innerHTML = html;
-                console.log(`${pageName} content loaded successfully`);
-                
                 this.updateWelcomeMessage();
             })
             .catch(error => {
-                console.error(`Failed to load ${pageName} content:`, error);
                 roleDashboardPage.innerHTML = `
                     <div class="error-message">
                         Failed to load dashboard content: ${error.message}
@@ -128,8 +124,6 @@ const NavigationManager = {
     
     // Load profile page
     loadProfilePage(dashboardContent) {
-        console.log('Loading profile page');
-        
         const profilePage = document.createElement('div');
         profilePage.id = 'profile-page';
         profilePage.className = 'dashboard-page profile-page active';
@@ -146,7 +140,6 @@ const NavigationManager = {
             })
             .then(html => {
                 profilePage.innerHTML = html;
-                console.log('Profile page content loaded successfully');
                 
                 import('./profileManager.js').then(module => {
                     const ProfileManager = module.default;
@@ -154,7 +147,6 @@ const NavigationManager = {
                 });
             })
             .catch(error => {
-                console.error('Failed to load profile page content:', error);
                 profilePage.innerHTML = `
                     <div class="error-message">
                         Failed to load profile content: ${error.message}
@@ -167,8 +159,6 @@ const NavigationManager = {
     
     // Load search mentor page
     loadSearchMentorPage(dashboardContent) {
-        console.log('Loading search mentor page');
-        
         const searchMentorPage = document.createElement('div');
         searchMentorPage.id = 'search-mentor-page';
         searchMentorPage.className = 'dashboard-page search-mentor-page active';
@@ -185,11 +175,9 @@ const NavigationManager = {
             })
             .then(html => {
                 searchMentorPage.innerHTML = html;
-                console.log('Search mentor page content loaded successfully');
                 this.initSearchMentorPage();
             })
             .catch(error => {
-                console.error('Failed to load search mentor page content:', error);
                 searchMentorPage.innerHTML = `
                     <div class="error-message">
                         Failed to load search mentor content: ${error.message}
@@ -202,8 +190,6 @@ const NavigationManager = {
     
     // Load connection requests page
     loadConnectionRequestsPage(dashboardContent) {
-        console.log('Loading connection requests page');
-        
         const requestsPage = document.createElement('div');
         requestsPage.id = 'connection-requests-page';
         requestsPage.className = 'dashboard-page connection-requests-page active';
@@ -226,16 +212,13 @@ const NavigationManager = {
     
     // Load my mentees page
     loadMyMenteesPage(dashboardContent) {
-        console.log('Loading my mentees page');
-        
+        // Create a container for the mentees page
         const menteesPage = document.createElement('div');
-        menteesPage.id = 'my-mentees-page';
-        menteesPage.className = 'dashboard-page my-mentees-page active';
-        
+        menteesPage.className = 'dashboard-section mentees-page';
         menteesPage.innerHTML = `
-            <h2>My Mentees</h2>
-            <div class="mentees-container">
-                <div class="loading-spinner"></div>
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i> My Mentees</h2>
+                <p>View and manage your mentorship relationships.</p>
             </div>
         `;
         
@@ -251,11 +234,9 @@ const NavigationManager = {
             })
             .then(html => {
                 menteesPage.innerHTML = html;
-                console.log('My mentees page content loaded successfully');
                 this.initMyMenteesPage();
             })
             .catch(error => {
-                console.error('Failed to load my mentees page content:', error);
                 menteesPage.innerHTML = `
                     <div class="error-message">
                         Failed to load mentees content: ${error.message}
@@ -268,8 +249,6 @@ const NavigationManager = {
     
     // Load assignments page
     loadAssignmentsPage(dashboardContent) {
-        console.log('Loading assignments page');
-        
         const assignmentsPage = document.createElement('div');
         assignmentsPage.id = 'assignments-page';
         assignmentsPage.className = 'dashboard-page assignments-page active';
@@ -293,11 +272,9 @@ const NavigationManager = {
             })
             .then(html => {
                 assignmentsPage.innerHTML = html;
-                console.log('Assignments page content loaded successfully');
                 this.initAssignmentsPage();
             })
             .catch(error => {
-                console.error('Failed to load assignments page content:', error);
                 assignmentsPage.innerHTML = `
                     <div class="error-message">
                         Failed to load assignments content: ${error.message}
@@ -310,12 +287,9 @@ const NavigationManager = {
     
     // Load generic page (for other page types)
     loadGenericPage(pageName, dashboardContent) {
-        console.log(`Loading generic page: ${pageName}`);
-        
         let targetPage = document.getElementById(`${pageName}-page`);
         if (!targetPage) {
             targetPage = document.querySelector(`.${pageName}-page`);
-            console.log(`Found ${pageName} page by class:`, !!targetPage);
         }
         
         if (targetPage) {
@@ -325,11 +299,8 @@ const NavigationManager = {
             dashboardContent.innerHTML = '';
             dashboardContent.appendChild(freshPage);
             
-            console.log(`Activated ${pageName} page`);
-            
             this.initPageContent(pageName);
         } else {
-            console.error(`Target page for ${pageName} not found by ID or class`);
             dashboardContent.innerHTML = `
                 <div class="error-message">
                     Page "${pageName}" not found.
@@ -351,7 +322,6 @@ const NavigationManager = {
             
             const userData = UserManager.getUserData();
             if (userData) {
-                console.log('Updating welcome message with user data');
                 setTimeout(() => UIManager.updateWelcomeMessage(userData), 100);
             }
         });
@@ -359,20 +329,15 @@ const NavigationManager = {
     
     // Initialize search mentor page
     initSearchMentorPage() {
-        console.log('Initializing search mentor page');
-        
         const existingScript = document.querySelector('script[src="../js/pages/discovery/search.js"]');
         if (existingScript) {
-            console.log('Removing existing search script');
             existingScript.remove();
         }
         
-        console.log('Creating new search script element');
         const script = document.createElement('script');
         script.src = '../js/pages/discovery/search.js';
         
         script.onerror = (error) => {
-            console.error('Error loading search script:', error);
             import('./uiManager.js').then(module => {
                 const UIManager = module.default;
                 UIManager.showFeedback('error', 'Failed to load search functionality. Please try refreshing the page.');
@@ -380,13 +345,10 @@ const NavigationManager = {
         };
         
         script.onload = () => {
-            console.log('Search script loaded successfully');
             setTimeout(() => {
                 if (window.UserDiscoveryPage) {
-                    console.log('Initializing UserDiscoveryPage');
                     window.UserDiscoveryPage.init();
                 } else {
-                    console.error('UserDiscoveryPage not found after script load');
                     import('./uiManager.js').then(module => {
                         const UIManager = module.default;
                         UIManager.showFeedback('error', 'Search functionality is unavailable. Please try refreshing the page.');
@@ -396,7 +358,6 @@ const NavigationManager = {
         };
         
         document.body.appendChild(script);
-        console.log('Search script added to document');
     },
     
     // Update page title in header based on current page
@@ -438,24 +399,299 @@ const NavigationManager = {
                     title = pageName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             }
             pageTitle.textContent = title;
-            console.log(`Updated page title to: ${title}`);
         }
     },
     
-    // Initialize my mentees page
+    // Initialize my mentees page with direct implementation
     initMyMenteesPage() {
-        console.log('Initializing my mentees page');
+        // Get user data
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        const userId = userData.id;
+        
+        if (!userId) {
+            return;
+        }
+        
+        // Use fixed avatar URLs for guaranteed image loading
+        const fixedAvatars = [
+            'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop',
+            'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop',
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop'
+        ];
+        
+        // Simulate fetching mentees (replace with actual API call in production)
+        setTimeout(() => {
+            // Create mock mentee data with fixed avatars
+            const mockMentees = this.createMockMentees(fixedAvatars);
+            
+            // Display mentees or show no mentees message
+            if (mockMentees && mockMentees.length > 0) {
+                this.displayMentees(mockMentees);
+            } else {
+                document.querySelector('.no-mentees-message').style.display = 'flex';
+                document.getElementById('mentees-dashboard').style.display = 'none';
+            }
+        }, 500);
+    },
+    
+    // Create mock mentee data for testing
+    createMockMentees(avatars = []) {
+        // Fixed, guaranteed available fallback images
+        const defaultAvatars = [
+            'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop',
+            'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop',
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop'
+        ];
+        
+        return [
+            {
+                id: '1',
+                name: 'Alex Johnson',
+                profileImage: avatars[0] || defaultAvatars[0],
+                goal: 'Frontend Development',
+                progress: 45,
+                skills: ['HTML', 'CSS', 'JavaScript'],
+                interests: ['Web Design', 'UX/UI', 'Mobile Development'],
+                email: 'alex.j@example.com',
+                bio: 'Passionate about creating beautiful and functional interfaces.',
+                startDate: '2023-03-15',
+                nextMeeting: '2023-06-10T15:00:00'
+            },
+            {
+                id: '2',
+                name: 'Sarah Miller',
+                profileImage: avatars[1] || defaultAvatars[1],
+                goal: 'Full Stack Development',
+                progress: 65,
+                skills: ['JavaScript', 'React', 'Node.js'],
+                interests: ['Web Development', 'Database Design', 'APIs'],
+                email: 'sarah.m@example.com',
+                bio: 'Looking to become a full stack developer with focus on MERN stack.',
+                startDate: '2023-02-20',
+                nextMeeting: '2023-06-12T13:30:00'
+            },
+            {
+                id: '3',
+                name: 'Michael Chen',
+                profileImage: avatars[2] || defaultAvatars[2],
+                goal: 'Data Science',
+                progress: 30,
+                skills: ['Python', 'SQL', 'Statistics'],
+                interests: ['Machine Learning', 'Data Visualization', 'Big Data'],
+                email: 'michael.c@example.com',
+                bio: 'Aspiring data scientist with background in mathematics.',
+                startDate: '2023-04-05',
+                nextMeeting: '2023-06-08T10:00:00'
+            }
+        ];
+    },
+    
+    // Display mentees in the UI
+    displayMentees(mentees) {
+        document.querySelector('.no-mentees-message').style.display = 'none';
+        document.getElementById('mentees-dashboard').style.display = 'flex';
+        
+        const menteesList = document.getElementById('mentees-list');
+        menteesList.innerHTML = '';
+        
+        // Create list items for each mentee
+        mentees.forEach(mentee => {
+            const menteeItem = document.createElement('li');
+            menteeItem.className = 'mentee-item';
+            menteeItem.dataset.menteeId = mentee.id;
+            
+            // Calculate next meeting display text
+            let nextMeetingText = 'No meeting scheduled';
+            if (mentee.nextMeeting) {
+                const meetingDate = new Date(mentee.nextMeeting);
+                const now = new Date();
+                
+                // Format date and time for display
+                const dateOptions = { month: 'short', day: 'numeric' };
+                const timeOptions = { hour: '2-digit', minute: '2-digit' };
+                const dateStr = meetingDate.toLocaleDateString(undefined, dateOptions);
+                const timeStr = meetingDate.toLocaleTimeString(undefined, timeOptions);
+                
+                nextMeetingText = `${dateStr} at ${timeStr}`;
+            }
+            
+            menteeItem.innerHTML = `
+                <div class="mentee-preview-image">
+                    <img src="${mentee.profileImage}" alt="${mentee.name}">
+                </div>
+                <div class="mentee-preview-info">
+                    <h3>${mentee.name}</h3>
+                    <p class="mentee-goal">${mentee.goal || 'No goal specified'}</p>
+                    <div class="mentee-progress">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: ${mentee.progress || 0}%"></div>
+                        </div>
+                        <span>${mentee.progress || 0}%</span>
+                    </div>
+                    <p class="next-meeting">
+                        <i class="fas fa-calendar-alt"></i> ${nextMeetingText}
+                    </p>
+                </div>
+            `;
+            
+            // Add click event to show mentee details
+            menteeItem.addEventListener('click', () => {
+                // Remove selected class from all mentee items
+                document.querySelectorAll('.mentee-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                // Add selected class to the clicked item
+                menteeItem.classList.add('selected');
+                
+                // Show detailed information for the selected mentee
+                this.showMenteeDetails(mentee);
+            });
+            
+            menteesList.appendChild(menteeItem);
+        });
+        
+        // Automatically select the first mentee if available
+        if (mentees.length > 0) {
+            const firstMenteeItem = menteesList.querySelector('.mentee-item');
+            if (firstMenteeItem) {
+                firstMenteeItem.classList.add('selected');
+                this.showMenteeDetails(mentees[0]);
+            }
+        }
+    },
+    
+    // Show detailed information about a selected mentee
+    showMenteeDetails(mentee) {
+        const detailsPlaceholder = document.querySelector('.mentee-details-placeholder');
+        const detailsContent = document.getElementById('mentee-details-content');
+        
+        // Hide placeholder and show details content
+        if (detailsPlaceholder) detailsPlaceholder.style.display = 'none';
+        if (detailsContent) detailsContent.style.display = 'block';
+        
+        // Generate HTML for skills tags
+        let skillsHtml = '';
+        if (mentee.skills && mentee.skills.length > 0) {
+            skillsHtml = mentee.skills.map(skill => `<span class="tag">${skill}</span>`).join('');
+        }
+        
+        // Generate HTML for interests tags
+        let interestsHtml = '';
+        if (mentee.interests && mentee.interests.length > 0) {
+            interestsHtml = mentee.interests.map(interest => `<span class="tag">${interest}</span>`).join('');
+        }
+        
+        // Format next meeting date/time
+        let nextMeetingDisplay = 'Not scheduled';
+        if (mentee.nextMeeting) {
+            const nextMeeting = new Date(mentee.nextMeeting);
+            const dateOptions = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+            const timeOptions = { hour: '2-digit', minute: '2-digit' };
+            
+            nextMeetingDisplay = `${nextMeeting.toLocaleDateString(undefined, dateOptions)} at ${nextMeeting.toLocaleTimeString(undefined, timeOptions)}`;
+        }
+        
+        // Calculate mentorship duration
+        let durationText = 'Not started';
+        if (mentee.startDate) {
+            const startDate = new Date(mentee.startDate);
+            const now = new Date();
+            const diffTime = Math.abs(now - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays < 30) {
+                durationText = `${diffDays} days`;
+            } else {
+                const diffMonths = Math.floor(diffDays / 30);
+                durationText = `${diffMonths} month${diffMonths !== 1 ? 's' : ''}`;
+            }
+        }
+        
+        // Update the details content
+        detailsContent.innerHTML = `
+            <div class="mentee-profile-header">
+                <div class="mentee-profile-image">
+                    <img src="${mentee.profileImage}" alt="${mentee.name}">
+                </div>
+                <div class="mentee-profile-info">
+                    <h2>${mentee.name}</h2>
+                    <p class="mentee-email"><i class="fas fa-envelope"></i> ${mentee.email || 'No email provided'}</p>
+                    <div class="mentee-goal-display">
+                        <span>Goal:</span> ${mentee.goal || 'No goal specified'}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mentee-progress-section">
+                <h3>Progress</h3>
+                <div class="progress-bar">
+                    <div class="progress" style="width: ${mentee.progress || 0}%; --progress-width: ${mentee.progress || 0}%"></div>
+                </div>
+                <p>${mentee.progress || 0}% Complete</p>
+            </div>
+            
+            <div class="mentee-details-grid">
+                <div class="mentee-detail-card">
+                    <h3><i class="fas fa-info-circle"></i> Bio</h3>
+                    <p>${mentee.bio || 'No bio provided'}</p>
+                </div>
+                
+                <div class="mentee-detail-card">
+                    <h3><i class="fas fa-calendar-alt"></i> Mentorship</h3>
+                    <div class="mentee-detail-row">
+                        <span>Started:</span> 
+                        <span>${mentee.startDate ? new Date(mentee.startDate).toLocaleDateString() : 'Not started'}</span>
+                    </div>
+                    <div class="mentee-detail-row">
+                        <span>Duration:</span> 
+                        <span>${durationText}</span>
+                    </div>
+                    <div class="mentee-detail-row">
+                        <span>Next Meeting:</span> 
+                        <span>${nextMeetingDisplay}</span>
+                    </div>
+                </div>
+                
+                <div class="mentee-detail-card skills-section">
+                    <h3><i class="fas fa-cogs"></i> Skills</h3>
+                    <div class="tags-container">
+                        ${skillsHtml || '<p>No skills listed</p>'}
+                    </div>
+                </div>
+                
+                <div class="mentee-detail-card interests-section">
+                    <h3><i class="fas fa-star"></i> Interests</h3>
+                    <div class="tags-container">
+                        ${interestsHtml || '<p>No interests listed</p>'}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mentee-actions">
+                <button class="btn btn-primary" onclick="NavigationManager.scheduleMeeting('${mentee.id}')"><i class="fas fa-calendar-plus"></i> Schedule Meeting</button>
+                <button class="btn btn-secondary" onclick="NavigationManager.startChat('${mentee.id}')"><i class="fas fa-comments"></i> Start Chat</button>
+            </div>
+        `;
+    },
+    
+    // Helper functions for mentee actions
+    scheduleMeeting(menteeId) {
+        alert('Meeting scheduling will be implemented soon!');
+    },
+    
+    startChat(menteeId) {
+        window.location.hash = '#chat';
+        localStorage.setItem('activeChat', menteeId);
     },
     
     // Initialize assignments page
     initAssignmentsPage() {
-        console.log('Initializing assignments page');
+        // Implementation will be added later
     },
     
     // Load my mentor page
     loadMyMentorPage(dashboardContent) {
-        console.log('Loading my mentor page');
-        
         dashboardContent.innerHTML = '<div class="loading-spinner"></div>';
         
         fetch('../pages/dashboard/my-mentor.html')
@@ -467,12 +703,9 @@ const NavigationManager = {
             })
             .then(html => {
                 dashboardContent.innerHTML = html;
-                console.log('My mentor page loaded successfully');
-                
                 this.initMyMentorPage();
             })
             .catch(error => {
-                console.error('Error loading my mentor page:', error);
                 dashboardContent.innerHTML = `
                     <div class="error-message">
                         Failed to load My Mentor page. Please try again.
@@ -485,7 +718,6 @@ const NavigationManager = {
     
     // Initialize my mentor page
     initMyMentorPage() {
-        console.log('Initializing my mentor page');
         import('./userManager.js').then(userModule => {
             const UserManager = userModule.default;
             const userData = UserManager.getUserData();
@@ -495,23 +727,23 @@ const NavigationManager = {
                 
                 document.getElementById('mentor-name').textContent = mentorData.name || 'Mentor Name';
                 document.getElementById('mentor-title').textContent = mentorData.title || 'Mentor Title';
-            } else {
-                console.log('No mentor data available for this user');
             }
         });
     },
     
     // Initialize specific page content
     initPageContent(pageName) {
-        console.log(`Initializing page content for: ${pageName}`);
-        
         if (pageName === 'profile') {
             import('./profileManager.js').then(module => {
                 const ProfileManager = module.default;
                 ProfileManager.initProfilePage();
             });
         } else if (pageName === 'my-mentees') {
-            this.initMyMenteesPage();
+            if (typeof window.Dashboard.initMyMenteesPage === 'function') {
+                window.Dashboard.initMyMenteesPage();
+            } else {
+                this.initMyMenteesPage();
+            }
         } else if (pageName === 'my-mentor') {
             this.initMyMentorPage();
         } else if (pageName === 'assignments') {
@@ -530,8 +762,6 @@ const NavigationManager = {
     applyMentorFilters() {
         if (window.UserDiscoveryPage) {
             window.UserDiscoveryPage.handleSearch();
-        } else {
-            console.error('UserDiscoveryPage not available for filtering');
         }
     }
 };

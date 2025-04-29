@@ -5,16 +5,12 @@
 
 // Initialize mock users if they don't already exist
 const initializeMockUsers = function() {
-  console.log('Checking if mock data needs to be initialized...');
-  
   // Check if users already exist in localStorage
   let existingUsers = [];
   try {
     const usersJson = localStorage.getItem('users');
     existingUsers = usersJson ? JSON.parse(usersJson) : [];
-    console.log(`Found ${existingUsers.length} existing users in localStorage`);
   } catch (e) {
-    console.error('Error parsing users from localStorage:', e);
     // Reset users if there's a parsing error
     localStorage.removeItem('users');
     existingUsers = [];
@@ -22,8 +18,6 @@ const initializeMockUsers = function() {
   
   // Only create mock data if there are no users yet
   if (existingUsers.length === 0) {
-    console.log('No users found, initializing mock user data...');
-    
     const mockUsers = [
       // Mentors
       {
@@ -194,26 +188,19 @@ const initializeMockUsers = function() {
       // Store in localStorage
       const usersJson = JSON.stringify(mockUsers);
       localStorage.setItem('users', usersJson);
-      console.log('Mock user data initialized with 10 users (5 mentors, 5 mentees)');
-      console.log('Sample login - Email: sarah.johnson@example.com, Password: password123');
       
       // Check if data was properly stored
       const storedData = localStorage.getItem('users');
       const parsedData = JSON.parse(storedData);
       if (parsedData && parsedData.length === 10) {
-        console.log('Mock data successfully verified in localStorage');
+        return true;
       } else {
-        console.error('Mock data may not have been properly stored');
+        return false;
       }
-      
-      return true;
     } catch (e) {
-      console.error('Error storing mock data in localStorage:', e);
       return false;
     }
   } else {
-    console.log('Users already exist in localStorage, skipping mock data initialization');
-    console.log('Sample login credentials - Email: sarah.johnson@example.com, Password: password123');
     return false;
   }
 }
@@ -228,8 +215,6 @@ const forceMockDataInitialization = function() {
 document.addEventListener('DOMContentLoaded', function() {
   setTimeout(function() {
     initializeMockUsers();
-    // Log a sample user for convenience
-    console.log('You can log in with: sarah.johnson@example.com / password123');
   }, 500); // Small delay to ensure DOM is ready
 });
 

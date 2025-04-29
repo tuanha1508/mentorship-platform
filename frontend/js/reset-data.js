@@ -3,11 +3,6 @@
  */
 
 window.resetLocalStorage = function() {
-  /**
-   * Reset functionality for test data
-   * Allows users to reset the platform to its initial state
-   */
-
   // Save current user to preserve login session
   const authToken = localStorage.getItem('authToken');
   const currentUserData = localStorage.getItem('userData');
@@ -27,21 +22,15 @@ window.resetLocalStorage = function() {
   // Reinitialize mock user data
   if (window.forceMockDataInitialization && typeof window.forceMockDataInitialization === 'function') {
     window.forceMockDataInitialization();
-    console.log('Mock data reinitialized using forceMockDataInitialization.');
   } else if (window.initializeMockUsers && typeof window.initializeMockUsers === 'function') {
     window.initializeMockUsers();
-    console.log('Mock data reinitialized using initializeMockUsers.');
   } else if (window.MockDataService && typeof window.MockDataService.initMockData === 'function') {
     window.MockDataService.initMockData();
-    console.log('Mock data reinitialized using MockDataService.');
   } else {
-    console.warn('No mock data initialization method found. Loading mock-data.js script...');
-    
     // Try to load the mock-data.js script dynamically
     const script = document.createElement('script');
     script.src = '/js/mock-data.js';
     script.onload = function() {
-      console.log('mock-data.js loaded, initializing data...');
       if (window.forceMockDataInitialization) {
         window.forceMockDataInitialization();
       }

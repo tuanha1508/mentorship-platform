@@ -1,4 +1,6 @@
 // User data management
+import ConnectionManager from './connectionManager.js';
+
 const UserManager = {
     dashboard: null,
     currentUser: null,
@@ -44,17 +46,77 @@ const UserManager = {
     // Get user data from localStorage
     getUserData() {
         try {
-            // Always get fresh data from localStorage and never use cache
             const userDataRaw = localStorage.getItem('userData');
-            console.log('Raw userData from localStorage:', userDataRaw);
             const userData = JSON.parse(userDataRaw || '{}');
-            console.log('Parsed userData:', userData);
+            
+            // Check if user data has name information, if not try to find it
+            if (userData && userData.id && (!userData.firstName && !userData.fullName)) {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key === 'userData' || key === 'authToken' || 
+                        key === 'connectionRequests' || key === 'users' ||
+                        key === 'mentorRequestsNotificationShown') continue;
+                    
+                    try {
+                        const storedData = JSON.parse(localStorage.getItem(key) || '{}');
+                        if (storedData.id === userData.id) {
+                            if (storedData.firstName || storedData.lastName || storedData.fullName) {
+                                if (storedData.firstName) userData.firstName = storedData.firstName;
+                                if (storedData.lastName) userData.lastName = storedData.lastName;
+                                if (storedData.fullName) userData.fullName = storedData.fullName;
+                                localStorage.setItem('userData', JSON.stringify(userData));
+                                break;
+                            }
+                        }
+                    } catch (e) {}
+                }
+                
+                // If still can't find name and user is a mentor with mentees
+                if (!userData.firstName && !userData.fullName && 
+                    userData.role && userData.role.toUpperCase() === 'MENTOR' &&
+                    userData.hasMentees && userData.mentees && userData.mentees.length > 0) {
+                    
+                    // Try to find mentor entry by name
+                    const mentorsInStorage = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (!key || key === 'userData' || key === 'authToken' || 
+                            key === 'connectionRequests' || key === 'users' ||
+                            key === 'mentorRequestsNotificationShown') continue;
+                        
+                        // If this key looks like a name, check if it's our mentor
+                        if (key.includes(' ') || /^[A-Z]/.test(key)) {
+                            try {
+                                const mentorData = JSON.parse(localStorage.getItem(key) || '{}');
+                                if (mentorData.id === userData.id) {
+                                    mentorsInStorage.push({
+                                        name: key,
+                                        data: mentorData
+                                    });
+                                }
+                            } catch (e) {}
+                        }
+                    }
+                    
+                    if (mentorsInStorage.length > 0) {
+                        // Use the first matched mentor's name
+                        const mentorName = mentorsInStorage[0].name;
+                        const nameParts = mentorName.split(' ');
+                        
+                        userData.fullName = mentorName;
+                        userData.firstName = nameParts[0];
+                        userData.lastName = nameParts.slice(1).join(' ');
+                        
+                        // Update userData in localStorage
+                        localStorage.setItem('userData', JSON.stringify(userData));
+                    }
+                }
+            }
             
             // Deep clone the data to avoid reference issues
             this.currentUser = JSON.parse(JSON.stringify(userData));
             return this.currentUser;
         } catch (error) {
-            console.error('Error parsing user data from localStorage:', error);
             return null;
         }
     },
@@ -62,28 +124,13 @@ const UserManager = {
     // Update user data in localStorage
     updateUserData(updates) {
         try {
-            console.log('updateUserData called with:', updates);
-            
             // Get fresh data from localStorage
             const userData = this.getUserData();
-            console.log('Current userData before update:', userData);
-            
-            // Log any differences between current user data and updates
-            console.log('Changes detected in form submission:');
-            Object.keys(updates).forEach(key => {
-                if (JSON.stringify(updates[key]) !== JSON.stringify(userData[key])) {
-                    console.log(`Field '${key}' changed:`, {
-                        from: userData[key],
-                        to: updates[key]
-                    });
-                }
-            });
             
             // Preserve critical fields that should never be overwritten unless explicitly in updates
             const criticalFields = ['id', 'role', 'profileComplete', 'createdAt', 'hasMentor', 'mentorId', 'mentorName', 'education', 'experience'];
             
-            // Create a new object with updates as the base (important change!)
-            // This prioritizes the form data over the stored data
+            // Create a new object with updates as the base
             const updatedData = {...updates};
             
             // Ensure critical fields are preserved
@@ -108,37 +155,41 @@ const UserManager = {
                 }
             }
             
-            // Merge the data and store in localStorage
-            console.log('Merged data to be saved:', updatedData);
-            
             // Store the updated data
-            const dataToStore = JSON.stringify(updatedData);
-            localStorage.setItem('userData', dataToStore);
-            console.log('Saving to localStorage:', dataToStore);
-            
-            // Verify the data is stored correctly
-            const verifyData = localStorage.getItem('userData');
-            console.log('Verification - data in localStorage after save:', verifyData);
-            const parsedVerifyData = JSON.parse(verifyData);
-            console.log('Parsed saved data:', parsedVerifyData);
+            localStorage.setItem('userData', JSON.stringify(updatedData));
             
             // Update currentUser with the new data
             this.currentUser = updatedData;
+            
+            // Update the users array in localStorage if it exists
+            try {
+                const usersJson = localStorage.getItem('users');
+                if (usersJson) {
+                    const users = JSON.parse(usersJson);
+                    // Find the user by ID
+                    const userIndex = users.findIndex(user => user.id === updatedData.id);
+                    
+                    if (userIndex !== -1) {
+                        // Update the user's information
+                        users[userIndex] = { ...users[userIndex], ...updatedData };
+                    } else {
+                        // Add the user to the users array if they don't exist yet
+                        users.push(updatedData);
+                    }
+                    // Save the updated users array back to localStorage
+                    localStorage.setItem('users', JSON.stringify(users));
+                }
+            } catch (e) {}
             
             // Always update sidebar profile after any user data update
             import('./uiManager.js').then(module => {
                 const UIManager = module.default;
                 UIManager.updateSidebarProfile(updatedData);
-                
-                // Update welcome message with the user's name
                 UIManager.updateWelcomeMessage(updatedData);
             });
             
-            console.log('Profile data updated successfully:', updatedData);
             return updatedData;
         } catch (error) {
-            console.error('Error updating user data:', error);
-            console.error('Error details:', error.message, error.stack);
             import('./uiManager.js').then(module => {
                 const UIManager = module.default;
                 UIManager.showFeedback('error', 'Failed to save profile data');
@@ -151,7 +202,6 @@ const UserManager = {
     loadUserData() {
         try {
             const userData = this.getUserData();
-            console.log('Loading user data from localStorage:', userData);
             if (Object.keys(userData).length) {
                 this.currentUser = userData;
                 this.dashboard.userRole = this.currentUser.role;
@@ -168,8 +218,6 @@ const UserManager = {
                     
                     // Immediately update the sidebar profile
                     UIManager.updateSidebarProfile(this.currentUser);
-                    
-                    // Update welcome message with the user's name
                     UIManager.updateWelcomeMessage(this.currentUser);
                     
                     this.dashboard.updateMenuVisibility();
@@ -221,7 +269,7 @@ const UserManager = {
                 ConnectionManager.loadConnectionRequestsFromLocalStorage();
             });
         } catch (error) {
-            console.error('Error loading user data:', error);
+            // Error handling removed
         }
         
         this.dashboard.updateMenuVisibility();
@@ -315,7 +363,7 @@ const UserManager = {
                 }
             } catch (e) {}
         } catch (error) {
-            console.error('Error updating mentee data:', error);
+            // Error handling removed
         }
     }
 };

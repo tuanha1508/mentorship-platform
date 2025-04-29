@@ -117,8 +117,6 @@ class Router {
             route = '/' + route;
         }
         
-        console.log('Navigating to route:', route);
-        
         // Update browser history
         window.history.pushState({}, '', route);
         
@@ -172,25 +170,18 @@ class Router {
     handleRouteChange() {
         // Get current route (path)
         const path = window.location.pathname;
-        console.log('Router handling route change for path:', path);
         
         // Show transition overlay
         this.transitionOverlay.classList.add('visible');
         
         // Find the route configuration
         const route = this.routes[path] || this.routes['/'];
-        if (!route) {
-            console.error('No route configuration found for', path, 'defaulting to home');
-        }
-        
-        console.log('Using route config:', route);
         
         // Check for authentication requirement
         if (route.requiresAuth) {
             const token = localStorage.getItem('authToken');
             if (!token) {
                 // Redirect to signin page if user is not authenticated
-                console.log('Authentication required for route, redirecting to signin');
                 this.navigateTo('/signin');
                 return;
             }
@@ -223,11 +214,6 @@ class Router {
                 
                 // Load new page content
                 this.loadPage(route.page, false, route.js);
-            })
-            .catch(error => {
-                console.error('Error loading CSS:', error);
-                this.appContainer.innerHTML = '';
-                this.loadPage(route.page, true);
             });
     }
     
@@ -257,18 +243,12 @@ class Router {
                 // Add additional delay after CSS loads to ensure browser applies it
                 setTimeout(() => resolve(), 300);
             };
-            link.onerror = () => {
-                console.error('Failed to load CSS:', cssFile);
-                setTimeout(() => resolve(), 200); // Still resolve to continue loading the page
-            };
             
             document.head.appendChild(link);
         });
     }
     
     loadPage(pageUrl, applyTransition = true, jsFile = null) {
-        console.log('Loading page:', pageUrl, 'with transition:', applyTransition);
-        
         // Dispatch event before page load
         document.dispatchEvent(new CustomEvent('route:before'));
         
@@ -286,8 +266,6 @@ class Router {
             .then(html => {
                 // Render the HTML into the container
                 this.appContainer.innerHTML = html;
-                
-                console.log('Page HTML loaded successfully');
                 
                 // Load page-specific JavaScript
                 if (jsFile) {
@@ -312,17 +290,10 @@ class Router {
                             this.transitionOverlay.classList.remove('fade-out');
                         }, 600); // Match the CSS transition duration
                     }, 200); // Longer delay before starting overlay fade out
-                    
-                    console.log('Content made visible with transition');
                 }, 300); // Significantly increased timeout to ensure content is rendered
                 
                 // Dispatch event after page load
                 document.dispatchEvent(new CustomEvent('route:after'));
-            })
-            .catch(error => {
-                console.error('Error loading page:', error);
-                this.appContainer.innerHTML = '<p>Error loading page. Please try again.</p>';
-                this.transitionOverlay.classList.remove('visible');
             });
     }
     
@@ -345,45 +316,24 @@ class Router {
     }
     
     loadPageScript(jsFile) {
-        try {
-            console.log('Loading page script:', jsFile);
-            
-            // First, remove any previous instance of this script
-            const existingScript = document.querySelector(`script[src="${jsFile}"]`);
-            if (existingScript) {
-                existingScript.remove();
-                console.log('Removed previous script instance:', jsFile);
-            }
-            
-            // Create script element and load it
-            const script = document.createElement('script');
-            script.src = jsFile;
-            
-            // Add type="module" for dashboard module script
-            if (jsFile.includes('dashboard/index.js')) {
-                script.type = 'module';
-            }
-            script.setAttribute('data-page-script', 'true'); // Mark as page script for easy cleanup
-            
-            // Handle script load event
-            script.onload = () => {
-                console.log('Script loaded successfully:', jsFile);
-                
-                // Initialize dashboard if it's the dashboard script
-                // Dashboard initialization is handled inside the module
-                // Module scripts can't expose global variables directly
-            };
-            
-            // Handle script loading error
-            script.onerror = () => {
-                console.error('Error loading script:', jsFile);
-            };
-            
-            // Add script to the document
-            document.body.appendChild(script);
-        } catch (error) {
-            console.error('Error in loadPageScript:', error);
+        // First, remove any previous instance of this script
+        const existingScript = document.querySelector(`script[src="${jsFile}"]`);
+        if (existingScript) {
+            existingScript.remove();
         }
+        
+        // Create script element and load it
+        const script = document.createElement('script');
+        script.src = jsFile;
+        
+        // Add type="module" for dashboard module script
+        if (jsFile.includes('dashboard/index.js')) {
+            script.type = 'module';
+        }
+        script.setAttribute('data-page-script', 'true'); // Mark as page script for easy cleanup
+        
+        // Add script to the document
+        document.body.appendChild(script);
     }
     
     initPageScripts() {
@@ -397,63 +347,25 @@ class Router {
     
     initSigninForm() {
         // Initialize login page functionality
-        console.log('Initializing login page functionality');
-        try {
-            if (typeof LoginPage !== 'undefined') {
-                console.log('LoginPage found, initializing...');
-                LoginPage.init();
-            } else {
-                console.error('LoginPage component not found in global scope');
-                
-                // Load the script dynamically
-                const script = document.createElement('script');
-                script.src = 'js/pages/auth/login.js';
-                script.onload = function() {
-                    console.log('Login script loaded dynamically');
-                    if (typeof LoginPage !== 'undefined') {
-                        LoginPage.init();
-                    } else {
-                        console.error('LoginPage still not available after script load');
-                    }
-                };
-                script.onerror = function() {
-                    console.error('Error loading login script');
-                };
-                document.head.appendChild(script);
-            }
-        } catch (error) {
-            console.error('Error initializing login form:', error);
+        if (typeof LoginPage !== 'undefined') {
+            LoginPage.init();
+        } else {
+            // Load the script dynamically
+            const script = document.createElement('script');
+            script.src = 'js/pages/auth/login.js';
+            document.head.appendChild(script);
         }
     }
     
     initSignupForm() {
         // Initialize registration page functionality
-        console.log('Initializing signup page functionality');
-        try {
-            if (typeof RegisterPage !== 'undefined') {
-                console.log('RegisterPage found, initializing...');
-                RegisterPage.init();
-            } else {
-                console.error('RegisterPage component not found in global scope');
-                
-                // Load the script dynamically
-                const script = document.createElement('script');
-                script.src = 'js/pages/auth/register.js';
-                script.onload = function() {
-                    console.log('Register script loaded dynamically');
-                    if (typeof RegisterPage !== 'undefined') {
-                        RegisterPage.init();
-                    } else {
-                        console.error('RegisterPage still not available after script load');
-                    }
-                };
-                script.onerror = function() {
-                    console.error('Error loading register script');
-                };
-                document.head.appendChild(script);
-            }
-        } catch (error) {
-            console.error('Error initializing register form:', error);
+        if (typeof RegisterPage !== 'undefined') {
+            RegisterPage.init();
+        } else {
+            // Load the script dynamically
+            const script = document.createElement('script');
+            script.src = 'js/pages/auth/register.js';
+            document.head.appendChild(script);
         }
     }
     
@@ -463,57 +375,45 @@ class Router {
     loadNavbarComponent() {
         // Skip navbar loading on dashboard pages
         if (window.location.pathname.startsWith('/dashboard')) {
-            console.log('Skipping navbar for dashboard page');
             return;
         }
         
-        console.log('Loading navbar component');
-        try {
-            // Always remove existing navbar to avoid duplicates or stale content
-            const existingNavbar = document.querySelector('.navbar');
-            if (existingNavbar) {
-                console.log('Removing existing navbar');
-                existingNavbar.remove();
-            }
-            
-            // Check for navbar placeholder
-            let navbarPlaceholder = document.getElementById('navbar-placeholder');
-            
-            // If there's no placeholder for the navbar, create one at the top of app container
-            if (!navbarPlaceholder) {
-                console.log('Creating navbar placeholder');
-                navbarPlaceholder = document.createElement('div');
-                navbarPlaceholder.id = 'navbar-placeholder';
-                
-                // Insert at the beginning of the app container
-                if (this.appContainer.firstChild) {
-                    this.appContainer.insertBefore(navbarPlaceholder, this.appContainer.firstChild);
-                } else {
-                    this.appContainer.appendChild(navbarPlaceholder);
-                }
-            }
-            
-            // Load the navbar component - use absolute path to avoid path issues
-            fetch('/components/navbar.html')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to load navbar component');
-                    }
-                    return response.text();
-                })
-                .then(html => {
-                    navbarPlaceholder.innerHTML = html;
-                    console.log('Navbar component loaded successfully');
-                    
-                    // Make sure navbar is visible
-                    navbarPlaceholder.style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Error loading navbar component:', error);
-                });
-        } catch (error) {
-            console.error('Error in loadNavbarComponent:', error);
+        // Always remove existing navbar to avoid duplicates or stale content
+        const existingNavbar = document.querySelector('.navbar');
+        if (existingNavbar) {
+            existingNavbar.remove();
         }
+        
+        // Check for navbar placeholder
+        let navbarPlaceholder = document.getElementById('navbar-placeholder');
+        
+        // If there's no placeholder for the navbar, create one at the top of app container
+        if (!navbarPlaceholder) {
+            navbarPlaceholder = document.createElement('div');
+            navbarPlaceholder.id = 'navbar-placeholder';
+            
+            // Insert at the beginning of the app container
+            if (this.appContainer.firstChild) {
+                this.appContainer.insertBefore(navbarPlaceholder, this.appContainer.firstChild);
+            } else {
+                this.appContainer.appendChild(navbarPlaceholder);
+            }
+        }
+        
+        // Load the navbar component - use absolute path to avoid path issues
+        fetch('/components/navbar.html')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load navbar component');
+                }
+                return response.text();
+            })
+            .then(html => {
+                navbarPlaceholder.innerHTML = html;
+                
+                // Make sure navbar is visible
+                navbarPlaceholder.style.display = 'block';
+            });
     }
 }
 

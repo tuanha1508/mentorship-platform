@@ -17,16 +17,17 @@
     box-sizing: border-box;
 }
 
-/* Make scrollbars more subtle but still present */
+/* Hide scrollbars but keep scrolling functionality */
 * {
-    scrollbar-width: thin; /* Firefox */
-    -ms-overflow-style: auto; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
-/* WebKit scrollbar styling */
+/* Hide WebKit scrollbar */
 *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    display: none; /* Chrome, Safari, Opera */
+    width: 0;
+    height: 0;
 }
 
 *::-webkit-scrollbar-track {
@@ -34,8 +35,7 @@
 }
 
 *::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
+    background: transparent;
 }
 
 /* Enable proper scrolling behavior */

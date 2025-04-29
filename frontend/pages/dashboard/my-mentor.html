@@ -1,234 +1,39 @@
 <!-- My Mentor Page - Visible only when mentee has an assigned mentor -->
-<div class="my-mentor-page">
-    <div class="row">
-        <div class="card">
-            <div class="card-header">
-                <h3>My Mentor</h3>
-            </div>
-            <div class="card-body">
-                <div class="profile-card">
-                    <img src="../images/mentor-profile.jpg" alt="Mentor Profile" class="profile-image" id="mentor-profile-image">
-                    <h3 class="user-name" id="mentor-name">Dr. Jane Smith</h3>
-                    <p class="user-title" id="mentor-title">Senior Software Engineer<br>Tech Solutions Inc.</p>
-                    <div class="mentor-skills">
-                        <span class="skill-tag">JavaScript</span>
-                        <span class="skill-tag">React</span>
-                        <span class="skill-tag">Node.js</span>
-                        <span class="skill-tag">Database Design</span>
-                        <span class="skill-tag">System Architecture</span>
-                    </div>
-                    
-                    <div class="profile-stats">
-                        <div class="stat-item">
-                            <div class="stat-value">12</div>
-                            <div class="stat-label">Years Experience</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">24</div>
-                            <div class="stat-label">Mentees</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">4.9</div>
-                            <div class="stat-label">Rating</div>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-actions">
-                        <button class="btn-primary" id="schedule-meeting">
-                            <i class="fas fa-calendar-alt"></i> Schedule Meeting
-                        </button>
-                        <button class="btn-outline" id="send-message">
-                            <i class="fas fa-comment"></i> Send Message
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="card">
-            <div class="card-header">
-                <h3>Mentorship Plan</h3>
-            </div>
-            <div class="card-body">
-                <div class="mentorship-plan">
-                    <div class="plan-section">
-                        <h4>Goals</h4>
-                        <ul>
-                            <li>Master JavaScript fundamentals and advanced concepts</li>
-                            <li>Build a professional portfolio with 3 projects</li>
-                            <li>Prepare for technical interviews</li>
-                            <li>Develop soft skills for professional environments</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="plan-section">
-                        <h4>Timeline</h4>
-                        <div class="timeline">
-                            <div class="timeline-item">
-                                <div class="timeline-marker completed"></div>
-                                <div class="timeline-content">
-                                    <h5>Month 1: Fundamentals</h5>
-                                    <p>JavaScript basics, HTML/CSS review, Git workflow</p>
+<div class="dashboard-container">
+    <div class="dashboard-content">
+        <div class="my-mentor-page">
+            <h1 class="page-title">My Mentor</h1>
+            <div class="row">
+                <div class="col-md-4">
+                        <div class="card-body">
+                            <div class="profile-card">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Mentor Profile" class="profile-image" id="mentor-profile-image">
+                                <h3 class="user-name" id="mentor-name">Dr. Jane Smith</h3>
+                                <p class="user-title">Senior Software Engineer</p>
+                                <div class="mentor-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-briefcase"></i>
+                                        <span>10+ years experience</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-graduation-cap"></i>
+                                        <span>Computer Science, MIT</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>San Francisco, CA</span>
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="timeline-item">
-                                <div class="timeline-marker active"></div>
-                                <div class="timeline-content">
-                                    <h5>Month 2: Front-end Development</h5>
-                                    <p>React, state management, UI libraries</p>
-                                </div>
-                            </div>
-                            
-                            <div class="timeline-item">
-                                <div class="timeline-marker"></div>
-                                <div class="timeline-content">
-                                    <h5>Month 3: Back-end Development</h5>
-                                    <p>Node.js, Express, RESTful APIs, databases</p>
-                                </div>
-                            </div>
-                            
-                            <div class="timeline-item">
-                                <div class="timeline-marker"></div>
-                                <div class="timeline-content">
-                                    <h5>Month 4: Project Implementation</h5>
-                                    <p>Full-stack project development</p>
-                                </div>
-                            </div>
-                            
-                            <div class="timeline-item">
-                                <div class="timeline-marker"></div>
-                                <div class="timeline-content">
-                                    <h5>Month 5: Interview Preparation</h5>
-                                    <p>Data structures, algorithms, system design</p>
-                                </div>
-                            </div>
-                            
-                            <div class="timeline-item">
-                                <div class="timeline-marker"></div>
-                                <div class="timeline-content">
-                                    <h5>Month 6: Career Preparation</h5>
-                                    <p>Resume, portfolio review, mock interviews</p>
+                                <div class="social-links">
+                                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                                    <a href="#" class="social-link"><i class="fas fa-globe"></i></a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="card">
-            <div class="card-header">
-                <h3>Upcoming Sessions</h3>
-            </div>
-            <div class="card-body">
-                <div class="sessions-list">
-                    <div class="session-item">
-                        <div class="session-date">
-                            <div class="date-day">05</div>
-                            <div class="date-month">May</div>
-                        </div>
-                        <div class="session-details">
-                            <h4>React Components & State Management</h4>
-                            <div class="session-time">
-                                <i class="fas fa-clock"></i> 3:00 PM - 4:30 PM
-                            </div>
-                            <div class="session-location">
-                                <i class="fas fa-video"></i> Zoom Meeting
-                            </div>
-                        </div>
-                        <div class="session-actions">
-                            <button class="btn-outline btn-sm">Reschedule</button>
-                            <button class="btn-primary btn-sm">Join</button>
-                        </div>
-                    </div>
-                    
-                    <div class="session-item">
-                        <div class="session-date">
-                            <div class="date-day">12</div>
-                            <div class="date-month">May</div>
-                        </div>
-                        <div class="session-details">
-                            <h4>Code Review: Personal Portfolio</h4>
-                            <div class="session-time">
-                                <i class="fas fa-clock"></i> 4:00 PM - 5:00 PM
-                            </div>
-                            <div class="session-location">
-                                <i class="fas fa-video"></i> Google Meet
-                            </div>
-                        </div>
-                        <div class="session-actions">
-                            <button class="btn-outline btn-sm">Reschedule</button>
-                            <button class="btn-primary btn-sm">Join</button>
-                        </div>
-                    </div>
-                    
-                    <div class="session-item">
-                        <div class="session-date">
-                            <div class="date-day">19</div>
-                            <div class="date-month">May</div>
-                        </div>
-                        <div class="session-details">
-                            <h4>Introduction to Node.js & Express</h4>
-                            <div class="session-time">
-                                <i class="fas fa-clock"></i> 3:00 PM - 4:30 PM
-                            </div>
-                            <div class="session-location">
-                                <i class="fas fa-video"></i> Zoom Meeting
-                            </div>
-                        </div>
-                        <div class="session-actions">
-                            <button class="btn-outline btn-sm">Reschedule</button>
-                            <button class="btn-primary btn-sm">Join</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="card">
-            <div class="card-header">
-                <h3>Feedback & Notes</h3>
-            </div>
-            <div class="card-body">
-                <div class="feedback-list">
-                    <div class="feedback-item">
-                        <div class="feedback-header">
-                            <div class="feedback-title">JavaScript Assignment Review</div>
-                            <div class="feedback-date">April 23, 2025</div>
-                        </div>
-                        <div class="feedback-content">
-                            <p>Great job on the DOM manipulation exercises. Your code is clean and well-structured. Consider refactoring the event listeners to use delegation to improve performance. Looking forward to seeing your implementation of the suggested changes.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="feedback-item">
-                        <div class="feedback-header">
-                            <div class="feedback-title">Monthly Progress Assessment</div>
-                            <div class="feedback-date">April 15, 2025</div>
-                        </div>
-                        <div class="feedback-content">
-                            <p>You've made significant progress in understanding JavaScript fundamentals. Your exercise solutions show good problem-solving approaches. Areas to focus on: async programming concepts and error handling. Overall progress is excellent.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="feedback-item">
-                        <div class="feedback-header">
-                            <div class="feedback-title">HTML/CSS Project Feedback</div>
-                            <div class="feedback-date">April 5, 2025</div>
-                        </div>
-                        <div class="feedback-content">
-                            <p>Your portfolio design shows creativity and good understanding of layout principles. The responsive design works well across devices. Some suggestions: improve accessibility by adding proper aria attributes and focus states. Color contrast could be improved in some sections.</p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+

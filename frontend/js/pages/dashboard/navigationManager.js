@@ -44,6 +44,9 @@ const NavigationManager = {
             this.dashboard.currentPage = pageName;
         }
         
+        // Update page title in header
+        this.updatePageTitle(pageName);
+        
         const dashboardContent = document.getElementById('dashboard-page-content');
         if (dashboardContent) {
             console.log('Clearing dashboard content and showing loading spinner');
@@ -394,6 +397,49 @@ const NavigationManager = {
         
         document.body.appendChild(script);
         console.log('Search script added to document');
+    },
+    
+    // Update page title in header based on current page
+    updatePageTitle(pageName) {
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle) {
+            // Convert page name to a more readable format
+            let title;
+            switch(pageName) {
+                case 'main-dashboard':
+                    title = 'Dashboard';
+                    break;
+                case 'mentor-dashboard':
+                    title = 'Mentor Dashboard';
+                    break;
+                case 'mentee-dashboard':
+                    title = 'Mentee Dashboard';
+                    break;
+                case 'search-mentor':
+                    title = 'Find Your Mentor';
+                    break;
+                case 'my-mentor':
+                    title = 'My Mentor';
+                    break;
+                case 'my-mentees':
+                    title = 'My Mentees';
+                    break;
+                case 'profile':
+                    title = 'Profile';
+                    break;
+                case 'assignments':
+                    title = 'Assignments';
+                    break;
+                case 'connection-requests':
+                    title = 'Connection Requests';
+                    break;
+                default:
+                    // Capitalize and add spaces between words for better readability
+                    title = pageName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            }
+            pageTitle.textContent = title;
+            console.log(`Updated page title to: ${title}`);
+        }
     },
     
     // Initialize my mentees page

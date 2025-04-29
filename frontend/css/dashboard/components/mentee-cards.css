@@ -548,7 +548,8 @@
 }
 
 .join-session-btn:hover {
-    background-color: #0069d9;
+    background-color: rgba(230, 222, 230, 0.873);
+    color: black;
 }
 
 .message-btn {

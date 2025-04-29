@@ -1,48 +1,77 @@
 <!-- Search Mentor Page - Visible only when mentee has no assigned mentor -->
 <div class="search-mentor-page">
-    <div class="row">
-        <div class="card">
-            <div class="card-header">
-                <h3>Find Your Perfect Mentor</h3>
+    <!-- Row 1: Search Input -->
+    <div class="row search-row">
+        <div class="search-panel">
+            <div class="search-input-group">
+                <input type="text" class="search-input" placeholder="Search by name, skills, or expertise...">
+                <button class="btn-primary">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
-            <div class="card-body">
-                <div class="search-container">
-                    <div class="search-input-group">
-                        <input type="text" class="search-input" placeholder="Search by name, skills, or expertise...">
-                        <button class="btn-primary">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                    </div>
-                    
-                    <div class="filter-container">
-                        <div class="filter-item active">
-                            <i class="fas fa-globe"></i> All
-                        </div>
-                        <div class="filter-item">
-                            <i class="fas fa-code"></i> Web Development
-                        </div>
-                        <div class="filter-item">
-                            <i class="fas fa-mobile-alt"></i> Mobile Development
-                        </div>
-                        <div class="filter-item">
-                            <i class="fas fa-database"></i> Data Science
-                        </div>
-                        <div class="filter-item">
-                            <i class="fas fa-sitemap"></i> Machine Learning
-                        </div>
-                        <div class="filter-item">
-                            <i class="fas fa-laptop-code"></i> Software Engineering
-                        </div>
-                    </div>
+        </div>
+    </div>
+    
+    <!-- Row 2: Search Filter -->
+    <div class="row filter-row">
+        <div class="filter-panel">
+            <div class="filter-container">
+                <div class="filter-item active">
+                    <i class="fas fa-globe"></i> All
                 </div>
-                
-                <div class="mentor-grid">
+                <div class="filter-item">
+                    <i class="fas fa-code"></i> Web Development
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-mobile-alt"></i> Mobile Development
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-database"></i> Data Science
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-sitemap"></i> Machine Learning
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-laptop-code"></i> Software Engineering
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-paint-brush"></i> UI/UX Design
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-shield-alt"></i> Cybersecurity
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-cloud"></i> Cloud Computing
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-robot"></i> Artificial Intelligence
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-project-diagram"></i> DevOps
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-chart-line"></i> Product Management
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-bug"></i> QA Testing
+                </div>
+                <div class="filter-item">
+                    <i class="fas fa-gamepad"></i> Game Development
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Row 3: Mentor Cards -->
+    <div class="row mentor-row">
+        <div class="mentor-grid-container">
+            <div class="mentor-grid" id="mentor-results">
                     <!-- Mentor Card 1 -->
-                    <div class="mentor-card">
+                    <div class="mentor-profile-box">
                         <div class="mentor-header">
                             <img src="../images/mentor1.jpg" alt="Mentor" class="mentor-img">
                             <h4 class="mentor-name">Dr. Jane Smith</h4>
-                            <p class="mentor-title">Senior Software Engineer at Tech Solutions Inc.</p>
+                            <div class="mentor-title">Senior Software Engineer<br>Tech Solutions Inc.</div>
                             <div class="mentor-skills">
                                 <span class="skill-tag">JavaScript</span>
                                 <span class="skill-tag">React</span>
@@ -65,16 +94,17 @@
                             </div>
                         </div>
                         <div class="mentor-actions">
+                            <button class="btn-view-profile">View Profile</button>
                             <button class="btn-connect">Connect</button>
                         </div>
                     </div>
                     
                     <!-- Mentor Card 2 -->
-                    <div class="mentor-card">
+                    <div class="mentor-profile-box">
                         <div class="mentor-header">
                             <img src="../images/mentor2.jpg" alt="Mentor" class="mentor-img">
                             <h4 class="mentor-name">Michael Chen</h4>
-                            <p class="mentor-title">Frontend Lead at DevCorp</p>
+                            <div class="mentor-title">Frontend Lead<br>DevCorp</div>
                             <div class="mentor-skills">
                                 <span class="skill-tag">HTML/CSS</span>
                                 <span class="skill-tag">JavaScript</span>
@@ -97,16 +127,17 @@
                             </div>
                         </div>
                         <div class="mentor-actions">
+                            <button class="btn-view-profile">View Profile</button>
                             <button class="btn-connect">Connect</button>
                         </div>
                     </div>
                     
                     <!-- Mentor Card 3 -->
-                    <div class="mentor-card">
+                    <div class="mentor-profile-box">
                         <div class="mentor-header">
                             <img src="../images/mentor3.jpg" alt="Mentor" class="mentor-img">
                             <h4 class="mentor-name">Sarah Johnson</h4>
-                            <p class="mentor-title">Data Scientist at DataAnalytica</p>
+                            <div class="mentor-title">Data Scientist<br>DataAnalytica</div>
                             <div class="mentor-skills">
                                 <span class="skill-tag">Python</span>
                                 <span class="skill-tag">Machine Learning</span>
@@ -129,16 +160,17 @@
                             </div>
                         </div>
                         <div class="mentor-actions">
+                            <button class="btn-view-profile">View Profile</button>
                             <button class="btn-connect">Connect</button>
                         </div>
                     </div>
                     
                     <!-- Mentor Card 4 -->
-                    <div class="mentor-card">
+                    <div class="mentor-profile-box">
                         <div class="mentor-header">
                             <img src="../images/mentor4.jpg" alt="Mentor" class="mentor-img">
                             <h4 class="mentor-name">James Wilson</h4>
-                            <p class="mentor-title">Backend Engineer at CloudBase</p>
+                            <div class="mentor-title">Backend Engineer<br>CloudBase</div>
                             <div class="mentor-skills">
                                 <span class="skill-tag">Java</span>
                                 <span class="skill-tag">Spring</span>
@@ -161,16 +193,17 @@
                             </div>
                         </div>
                         <div class="mentor-actions">
+                            <button class="btn-view-profile">View Profile</button>
                             <button class="btn-connect">Connect</button>
                         </div>
                     </div>
                     
                     <!-- Mentor Card 5 -->
-                    <div class="mentor-card">
+                    <div class="mentor-profile-box">
                         <div class="mentor-header">
                             <img src="../images/mentor5.jpg" alt="Mentor" class="mentor-img">
                             <h4 class="mentor-name">Emily Rodriguez</h4>
-                            <p class="mentor-title">UX Designer at DesignHub</p>
+                            <div class="mentor-title">UX Designer<br>DesignHub</div>
                             <div class="mentor-skills">
                                 <span class="skill-tag">UI/UX</span>
                                 <span class="skill-tag">Figma</span>
@@ -193,12 +226,13 @@
                             </div>
                         </div>
                         <div class="mentor-actions">
+                            <button class="btn-view-profile">View Profile</button>
                             <button class="btn-connect">Connect</button>
                         </div>
                     </div>
                     
                     <!-- Mentor Card 6 -->
-                    <div class="mentor-card">
+                    <div class="mentor-profile-box">
                         <div class="mentor-header">
                             <img src="../images/mentor6.jpg" alt="Mentor" class="mentor-img">
                             <h4 class="mentor-name">David Taylor</h4>
@@ -225,13 +259,43 @@
                             </div>
                         </div>
                         <div class="mentor-actions">
+                            <button class="btn-view-profile">View Profile</button>
                             <button class="btn-connect">Connect</button>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
+    
+    <!-- Template for mentor card (hidden, used by JavaScript) -->
+    <template id="mentor-card-template">
+        <div class="mentor-profile-box">
+            <div class="mentor-header">
+                <img src="" alt="Mentor" class="mentor-img">
+                <h4 class="mentor-name"></h4>
+                <div class="mentor-title"></div>
+                <div class="mentor-skills"></div>
+            </div>
+            <div class="mentor-stats">
+                <div class="mentor-stat">
+                    <div class="stat-number"></div>
+                    <div class="stat-text">Years Exp.</div>
+                </div>
+                <div class="mentor-stat">
+                    <div class="stat-number"></div>
+                    <div class="stat-text">Mentees</div>
+                </div>
+                <div class="mentor-stat">
+                    <div class="stat-number"></div>
+                    <div class="stat-text">Rating</div>
+                </div>
+            </div>
+            <div class="mentor-actions">
+                <button class="btn-connect">Connect</button>
+                <button class="btn-view-profile">View Profile</button>
+            </div>
+        </div>
+    </template>
 </div>
 
 <script>
@@ -254,7 +318,7 @@
         // First check existing connection requests and update button states
         connectButtons.forEach(button => {
             // Find the mentor card that contains this button
-            const mentorCard = button.closest('.mentor-card');
+            const mentorCard = button.closest('.mentor-profile-box');
             if (!mentorCard) return;
             
             // Get mentor name from the card

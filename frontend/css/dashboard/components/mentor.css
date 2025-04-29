@@ -1,27 +1,111 @@
-/* Search Mentor Page */
-.search-container {
-    margin-bottom: 30px;
+.search-panel,
+.filter-panel,
+.mentor-grid-container {
+    background-color: transparent;
+    border-radius: 10px;
+    border: none;
+    padding: 15px;
+    box-shadow: none;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.search-panel:hover,
+.filter-panel:hover,
+.mentor-grid-container:hover {
+    box-shadow: none;
+}
+.search-mentor-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.search-row,
+.filter-row,
+.mentor-row {
+    margin-bottom: 10px;
 }
 
 .search-input-group {
     display: flex;
-    gap: 10px;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .search-input {
     flex: 1;
     padding: 12px 15px;
-    border-radius: 4px;
+    border-radius: 20px;
     border: 1px solid var(--border-color);
-    background-color: var(--card-bg);
+    background-color: transparent;
     color: var(--text-light);
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin-right: 10px;
+}
+
+.search-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(255, 247, 255, 0.5);
+}
+
+.search-input-group .btn-primary {
+    background-color: var(--accent-color);
+    color: black;
+    border: none;
+    height: 42px;
+    width: 42px;
+    padding: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    line-height: 1;
+    position: relative;
+}
+
+.search-input-group .btn-primary i {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-input-group .btn-primary:hover {
+    background-color: rgba(230, 222, 230, 0.873);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filter-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 15px;
     margin-top: 15px;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    width: 100%;
+    padding-bottom: 5px;
+}
+
+.filter-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 .filter-item {
@@ -32,58 +116,99 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .filter-item.active {
     background-color: var(--accent-color);
     border-color: var(--accent-color);
+    color: black;
 }
 
 .filter-item i {
     margin-right: 5px;
 }
 
-.mentor-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+.mentor-grid-container {
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
+    margin: 0 auto; /* Center the container */
 }
 
-.mentor-card {
-    background-color: var(--card-bg);
+.mentor-grid {
+    display: flex;
+    overflow-x: auto;
+    padding: 20px 15px;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* for Internet Explorer and Edge */
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 30px; /* Increased gap between cards */
+    /* Fix for potential parent element issues */
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.mentor-grid::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.mentor-profile-box {
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: calc((100% - 60px) / 3);
+    flex: 0 0 calc((100% - 60px) / 3);
+    border: 1px solid var(--border-color);
+    height: 450px; /* Increased height */
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    backdrop-filter: blur(0);
+    position: relative;
+    flex-shrink: 0;
+    /* Set to take exactly 1/3 of available width (minus gaps) */
 }
 
-.mentor-card:hover {
+.mentor-profile-box:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
+/* Removed special margin for last child as we're using gap property instead */
+
 .mentor-header {
-    padding: 20px;
+    padding: 15px 10px;
     text-align: center;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .mentor-img {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     border: 3px solid var(--accent-color);
 }
 
 .mentor-name {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
+    font-size: 1.1rem;
+    margin-bottom: 3px;
 }
 
 .mentor-title {
     color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 10px;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
 }
 
 .mentor-skills {
@@ -97,7 +222,7 @@
 .skill-tag {
     font-size: 0.7rem;
     padding: 3px 8px;
-    background-color: rgba(0, 123, 255, 0.1);
+    background-color: rgba(255, 247, 255, 0.3);
     color: var(--accent-color);
     border-radius: 10px;
 }
@@ -105,7 +230,7 @@
 .mentor-stats {
     display: flex;
     justify-content: space-around;
-    padding: 10px 0;
+    padding: 8px 0;
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
 }
@@ -124,13 +249,16 @@
 }
 
 .mentor-actions {
-    padding: 15px;
+    padding: 10px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.btn-connect {
+.btn-connect, .btn-view-profile {
     background-color: var(--accent-color);
-    color: white;
+    color: black;
     border: none;
     padding: 8px 15px;
     border-radius: 4px;
@@ -140,6 +268,6 @@
     transition: all 0.3s ease;
 }
 
-.btn-connect:hover {
-    background-color: #0069d9;
+.btn-connect:hover, .btn-view-profile:hover {
+    background-color: rgba(230, 222, 230, 0.873);
 }

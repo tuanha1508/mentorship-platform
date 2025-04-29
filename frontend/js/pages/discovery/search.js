@@ -1,13 +1,3 @@
-/**
- * User discovery page component
- * Allows users to search for and filter other users
- */
-
-// Reference the connection service from the global window object
-// This avoids using ES imports which require module configuration
-
-// Use window object to ensure we don't create duplicate instances
-// This allows the script to be loaded multiple times without errors
 window.UserDiscoveryPage = window.UserDiscoveryPage || {
     /**
      * Initialize the discovery page
@@ -182,11 +172,19 @@ window.UserDiscoveryPage = window.UserDiscoveryPage || {
         if (this.filters.category && this.filters.category !== 'all') {
             // Map UI categories to skills
             const categoryToSkills = {
-                'web development': ['javascript', 'html', 'css', 'react', 'angular', 'vue', 'node.js'],
-                'mobile development': ['flutter', 'react native', 'ios', 'android', 'swift', 'kotlin'],
-                'data science': ['python', 'r', 'data analysis', 'statistics', 'sql'],
-                'machine learning': ['python', 'tensorflow', 'machine learning', 'deep learning', 'ai'],
-                'software engineering': ['java', 'c++', 'c#', '.net', 'software architecture', 'microservices']
+                'web development': ['javascript', 'html', 'css', 'react', 'angular', 'vue', 'node.js', 'web', 'frontend', 'backend', 'php', 'ruby'],
+                'mobile development': ['flutter', 'react native', 'ios', 'android', 'swift', 'kotlin', 'mobile', 'xamarin', 'ionic'],
+                'data science': ['python', 'r', 'data analysis', 'statistics', 'sql', 'tableau', 'power bi', 'data visualization', 'pandas', 'numpy'],
+                'machine learning': ['python', 'tensorflow', 'machine learning', 'deep learning', 'ai', 'neural networks', 'computer vision', 'nlp'],
+                'software engineering': ['java', 'c++', 'c#', '.net', 'software architecture', 'microservices', 'design patterns', 'algorithms', 'data structures'],
+                'ui/ux design': ['figma', 'sketch', 'adobe xd', 'photoshop', 'illustrator', 'user research', 'wireframing', 'prototyping', 'ui', 'ux', 'user interface', 'user experience', 'usability testing'],
+                'cybersecurity': ['security', 'encryption', 'network security', 'penetration testing', 'ethical hacking', 'cyber', 'firewall', 'security audit', 'vulnerability assessment', 'owasp'],
+                'cloud computing': ['aws', 'azure', 'gcp', 'google cloud', 'cloud', 'serverless', 'docker', 'kubernetes', 'iaas', 'paas', 'saas', 'cloud architecture'],
+                'artificial intelligence': ['ai', 'artificial intelligence', 'machine learning', 'deep learning', 'nlp', 'natural language processing', 'computer vision', 'chatbots', 'ai ethics'],
+                'devops': ['docker', 'kubernetes', 'ci/cd', 'jenkins', 'github actions', 'terraform', 'ansible', 'puppet', 'chef', 'infrastructure as code', 'monitoring', 'devops'],
+                'product management': ['product', 'product management', 'agile', 'scrum', 'jira', 'product roadmap', 'user stories', 'backlog management', 'product strategy', 'market research'],
+                'qa testing': ['qa', 'testing', 'test automation', 'selenium', 'cypress', 'jest', 'unit testing', 'integration testing', 'tdd', 'bdd', 'quality assurance', 'manual testing'],
+                'game development': ['unity', 'unreal engine', 'c#', 'c++', 'game development', 'game design', '3d modeling', 'animation', 'game physics', 'level design', 'game ai']
             };
             
             const relevantSkills = categoryToSkills[this.filters.category] || [];
@@ -230,45 +228,60 @@ window.UserDiscoveryPage = window.UserDiscoveryPage || {
             return;
         }
         
-        // Render each mentor card
+        // Get the template from the HTML
+        const template = document.getElementById('mentor-card-template');
+        if (!template) {
+            console.error('Mentor card template not found');
+            return;
+        }
+        
+        // Render each mentor card using the template from search-mentor.html
         results.forEach(mentor => {
-            const mentorCard = document.createElement('div');
-            mentorCard.className = 'mentor-card';
+            // Clone the template content
+            const mentorCard = template.content.cloneNode(true).firstElementChild;
             
-            // Format skills as tags
-            const skillsHtml = mentor.skills
-                ? mentor.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')
-                : '';
+            // Set mentor data
+            const img = mentorCard.querySelector('.mentor-img');
+            img.src = mentor.imageUrl || '../images/default-avatar.jpg';
+            img.alt = mentor.fullName;
             
-            mentorCard.innerHTML = `
-                <div class="mentor-header">
-                    <img src="${mentor.imageUrl || '../images/default-avatar.jpg'}" alt="${mentor.fullName}" class="mentor-img">
-                    <h4 class="mentor-name">${mentor.fullName}</h4>
-                    <p class="mentor-title">${mentor.title || ''} ${mentor.company ? 'at ' + mentor.company : ''}</p>
-                    <div class="mentor-skills">
-                        ${skillsHtml}
-                    </div>
-                </div>
-                <div class="mentor-stats">
-                    <div class="mentor-stat">
-                        <div class="stat-number">${mentor.experience || 0}</div>
-                        <div class="stat-text">Years Exp.</div>
-                    </div>
-                    <div class="mentor-stat">
-                        <div class="stat-number">--</div>
-                        <div class="stat-text">Mentees</div>
-                    </div>
-                    <div class="mentor-stat">
-                        <div class="stat-number">--</div>
-                        <div class="stat-text">Rating</div>
-                    </div>
-                </div>
-                <div class="mentor-actions">
-                    <button class="btn-connect" data-mentor-id="${mentor.id}">Connect</button>
-                    <button class="btn-view-profile" data-mentor-id="${mentor.id}">View Profile</button>
-                </div>
-            `;
+            mentorCard.querySelector('.mentor-name').textContent = mentor.fullName;
             
+            // Format title and company
+            const titleElement = mentorCard.querySelector('.mentor-title');
+            const titleLine = [];
+            if (mentor.title) titleLine.push(mentor.title);
+            if (mentor.company) titleLine.push(mentor.company);
+            if (titleLine.length > 0) {
+                titleElement.innerHTML = titleLine.join('<br>');
+            } else {
+                titleElement.textContent = '';
+            }
+            
+            // Add skills
+            const skillsContainer = mentorCard.querySelector('.mentor-skills');
+            if (mentor.skills && mentor.skills.length > 0) {
+                mentor.skills.forEach(skill => {
+                    const skillTag = document.createElement('span');
+                    skillTag.className = 'skill-tag';
+                    skillTag.textContent = skill;
+                    skillsContainer.appendChild(skillTag);
+                });
+            }
+            
+            // Set statistics
+            const statNumbers = mentorCard.querySelectorAll('.stat-number');
+            statNumbers[0].textContent = mentor.experience || 0;
+            statNumbers[1].textContent = '--'; // Mentees count placeholder
+            statNumbers[2].textContent = '--'; // Rating placeholder
+            
+            // Set button data attributes
+            const connectButton = mentorCard.querySelector('.btn-connect');
+            const viewProfileButton = mentorCard.querySelector('.btn-view-profile');
+            connectButton.setAttribute('data-mentor-id', mentor.id);
+            viewProfileButton.setAttribute('data-mentor-id', mentor.id);
+            
+            // Append to mentor grid
             mentorGrid.appendChild(mentorCard);
         });
         

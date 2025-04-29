@@ -68,7 +68,8 @@ div, section, article, aside, nav, header, footer, main,
 
 :root {
     /* Color variables will be defined here */
-    --primary-color: #007bff;
+    --primary-color: rgba(255, 247, 255, 0.873);
+    --primary-text-color: #000000;
     --secondary-color: #6c757d;
     --background-color: #000000;
     --text-color: #ffffff;
@@ -195,7 +196,7 @@ input, select, textarea, button {
 
 .btn-primary {
     background-color: var(--primary-color);
-    color: white;
+    color: black;
 }
 
 .btn-outline {

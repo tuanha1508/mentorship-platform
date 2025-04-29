@@ -4,8 +4,9 @@
     --sidebar-bg: #101312;
     --content-bg: #101312;
     --card-bg: #1c1e22;
-    --accent-color: #007bff;
+    --accent-color: rgba(255, 247, 255, 0.873);
     --text-light: #e0e0e0;
+    --accent-text: #000000;
     --text-muted: #9e9e9e;
     --border-color: #2a2d31;
     --success-color: #28a745;
@@ -18,5 +19,5 @@
     --pharmacy-color: #ff7043;
     --music-color: #673ab7;
     --fitness-color: #4caf50;
-    --web-color: #2196f3;
+    --web-color: rgba(255, 247, 255, 0.873);
 }

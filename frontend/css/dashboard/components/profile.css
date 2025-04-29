@@ -108,12 +108,12 @@
 
 .btn-upload:hover {
     background-color: var(--accent-color);
-    color: white;
+    color: black;
 }
 
 .btn-save {
     background-color: var(--accent-color);
-    color: white;
+    color: black;
     border: none;
     padding: 12px 20px;
     border-radius: 4px;
@@ -123,5 +123,5 @@
 }
 
 .btn-save:hover {
-    background-color: #0069d9;
+    background-color: rgba(230, 222, 230, 0.873);
 }

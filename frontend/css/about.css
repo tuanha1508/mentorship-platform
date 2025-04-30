@@ -92,6 +92,7 @@
     color: var(--space-text);
     text-shadow: 0 0 15px var(--neon-glow);
     letter-spacing: 1px;
+    font-family: 'Researcher', sans-serif;
 }
 
 .about-header .subtitle {
@@ -115,6 +116,7 @@
     border-bottom: 2px solid var(--space-primary);
     padding-bottom: 0.5rem;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    font-family: 'Researcher', sans-serif;
 }
 
 .features-grid {
@@ -170,6 +172,7 @@
     margin-bottom: 1rem;
     color: var(--space-text);
     letter-spacing: 0.5px;
+    font-family: 'Researcher', sans-serif;
 }
 
 .steps-container {
@@ -207,6 +210,7 @@
     font-size: 1.3rem;
     margin-bottom: 0.8rem;
     color: var(--space-primary);
+    font-family: 'Researcher', sans-serif;
 }
 
 .feature-list {

@@ -203,6 +203,7 @@ html {
     
     .section-title h3 {
         font-size: 1.2rem;
+        font-family: var(--heading-font);
     }
     
     /* Adjust for forms */

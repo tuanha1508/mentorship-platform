@@ -20,4 +20,8 @@
     --music-color: #673ab7;
     --fitness-color: #4caf50;
     --web-color: rgba(255, 247, 255, 0.873);
+    
+    /* Typography */
+    --heading-font: 'Researcher', sans-serif;
+    --body-font: 'Inter', Arial, sans-serif;
 }

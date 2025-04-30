@@ -329,6 +329,7 @@
     margin-bottom: 10px;
     font-weight: 500;
     text-align: left;
+    font-family: var(--heading-font);
   }
   .events-list { display: block; width: 100%; text-align: left; }
   .event-item {

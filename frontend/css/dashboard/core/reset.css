@@ -1,7 +1,22 @@
+/* Font declarations */
+@font-face {
+    font-family: 'Researcher';
+    src: url('/fonts/researcher-researcher-bold-700.ttf') format('truetype'),
+         url('/fonts/researcher-researcher-thin-200.ttf') format('truetype'),
+         url('/fonts/researcher-researcher-regular-400.ttf') format('truetype'),
+         url('/fonts/researcher-researcher-squid-700.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--heading-font);
 }
 
 html, body {

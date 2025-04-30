@@ -633,6 +633,11 @@
     
     .modal-header h4 {
         font-size: 1.2rem;
+        font-family: var(--heading-font);
+    }
+    
+    .modal-body {
+        padding: 15px;
     }
     
     .modal-body {
